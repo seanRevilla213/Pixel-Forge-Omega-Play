@@ -113,6 +113,7 @@ export const PremiumControllerShowcase: React.FC<PremiumControllerShowcaseProps>
                 className="relative transition-transform duration-500 ease-out preserve-3d"
               >
                 <img 
+                  key={activeVariant.image_url}
                   src={activeVariant.image_url} 
                   alt={activeVariant.name}
                   className="max-w-full h-auto drop-shadow-[0_50px_50px_rgba(0,0,0,0.5)] transition-all duration-700"
