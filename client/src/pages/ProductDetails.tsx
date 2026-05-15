@@ -73,7 +73,7 @@ const ProductDetails = () => {
 
   return (
     <PageTransition>
-      <div></div> className="relative bg-matte-black min-h-screen pt-40 pb-32 px-6 overflow-hidden">
+      <div>className="relative bg-matte-black min-h-screen pt-40 pb-32 px-6 overflow-hidden"</div>
       <AuroraBackground />
       <AmbientGlow />
 
