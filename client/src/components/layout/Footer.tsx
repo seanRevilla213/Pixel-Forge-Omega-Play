@@ -19,7 +19,7 @@ const Footer = () => {
               </div>
               <div>
                 <h3 className="font-heading text-sm font-bold tracking-wider text-text-primary">PIXEL FORGE</h3>
-                <p className="text-[10px] tracking-[0.3em] text-luxury-cyan/60 uppercase">Cyber Nexus 2077</p>
+                <p className="text-[10px] tracking-[0.3em] text-luxury-cyan/60 uppercase">Xbox 360 Wireless Controller</p>
               </div>
             </div>
             <p className="text-sm text-text-secondary leading-relaxed">

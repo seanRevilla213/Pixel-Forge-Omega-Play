@@ -64,7 +64,7 @@ const Navbar = () => {
               <h1 className="font-heading text-sm font-black tracking-[0.3em] text-white">
                 PIXEL<span className="text-luxury-violet">FORGE</span>
               </h1>
-              <p className="text-[8px] tracking-[0.4em] text-text-muted font-bold uppercase opacity-60">Cyber Nexus 2077</p>
+              <p className="text-[8px] tracking-[0.4em] text-text-muted font-bold uppercase opacity-60">Xbox 360 Wireless Controller</p>
             </div>
           </Link>
 

@@ -162,11 +162,11 @@ const seedData = async () => {
   if (pCount === 0) {
     const products = [
       {
-        id: uuidv4(), name: 'Cyber Nexus 2077', slug: 'cyber-nexus-2077',
-        description: 'The ultimate interface for the modern digital frontier. Experience the classic ergonomics and precision of the Cyber Nexus 2077 Pro Controller. Featuring integrated 2.4 GHz high-performance wireless technology and a premium matte finish, it delivers ultimate control for the discerning gamer.',
+        id: uuidv4(), name: 'Xbox 360 Wireless Controller', slug: 'xbox-360-wireless-controller',
+        description: 'The iconic Xbox 360 Wireless Controller offers precision, comfort, and control. Featuring integrated 2.4 GHz high-performance wireless technology and a sleek ergonomic design, it remains a favorite for gamers across PC and console platforms.',
         price: 29.99, original_price: 39.99, category: 'Controllers',
-        image_url: 'https://images.mirror.co.uk/mirror/xbox-360-controller.jpg', badge: 'ELITE', rating: 4.9, review_count: 5120,
-        in_stock: 1, featured: 1, platform: 'PC, Xbox 360, Cyber Nexus', genre: 'Input Device'
+        image_url: '/products/xbox-360-controller.jpg', badge: 'CLASSIC', rating: 4.9, review_count: 5120,
+        in_stock: 1, featured: 1, platform: 'PC, Xbox 360', genre: 'Input Device'
       },
       {
         id: uuidv4(), name: 'Quantum Strike Force', slug: 'quantum-strike-force',
