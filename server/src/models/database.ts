@@ -192,7 +192,7 @@ const seedData = async () => {
         id: uuidv4(), name: 'Redragon K670 Argo', slug: 'redragon-k670-argo',
         description: 'Durable high-performance mechanical keyboard with premium build quality and excellent user ratings.',
         price: 55.03, original_price: 69.99, category: 'Mechanical Keyboards',
-        image_url: 'https://ae-pic-a1.aliexpress-media.com/kf/S3a4550ec52b849fdbd82796c7764ff9dN.png',
+        image_url: 'https://redragonshop.com/cdn/shop/products/ArgoK670_1_800x.png',
         variants: JSON.stringify([
           { id: 'angle-front', name: 'Front Angle', image_url: 'https://redragonshop.com/cdn/shop/products/ArgoK670_1_800x.png', color: '#ff8c00', glow: 'rgba(255, 140, 0, 0.4)' },
           { id: 'angle-top', name: 'Top View', image_url: 'https://redragonshop.com/cdn/shop/products/ArgoK670_4_800x.png', color: '#ff8c00', glow: 'rgba(255, 140, 0, 0.4)' },

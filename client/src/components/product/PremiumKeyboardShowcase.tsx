@@ -51,9 +51,12 @@ export const PremiumKeyboardShowcase: React.FC<PremiumKeyboardShowcaseProps> = (
   useEffect(() => {
     if (currentProduct.variants) {
       try {
-        setAngles(JSON.parse(currentProduct.variants));
+        const parsedAngles = JSON.parse(currentProduct.variants);
+        setAngles(parsedAngles);
         setActiveAngleIndex(0);
+        console.log('Angles loaded:', parsedAngles);
       } catch (e) {
+        console.error('Failed to parse variants:', e);
         setAngles([]);
       }
     }
