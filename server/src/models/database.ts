@@ -75,6 +75,7 @@ const createTables = () => {
       original_price REAL CHECK(original_price >= 0),
       category TEXT NOT NULL,
       image_url TEXT NOT NULL,
+      variants TEXT, -- JSON string of { name: string, image_url: string }[]
       badge TEXT,
       rating REAL DEFAULT 0 CHECK(rating >= 0 AND rating <= 5),
       review_count INTEGER DEFAULT 0,
@@ -165,7 +166,13 @@ const seedData = async () => {
         id: uuidv4(), name: 'Xbox 360 Wireless Controller', slug: 'xbox-360-wireless-controller',
         description: 'The iconic Xbox 360 Wireless Controller offers precision, comfort, and control. Featuring integrated 2.4 GHz high-performance wireless technology and a sleek ergonomic design, it remains a favorite for gamers across PC and console platforms.',
         price: 29.99, original_price: 39.99, category: 'Controllers',
-        image_url: '/products/xbox-360-controller.jpg', badge: 'CLASSIC', rating: 4.9, review_count: 5120,
+        image_url: '/products/xbox-360-controller.jpg',
+        variants: JSON.stringify([
+          { name: 'Carbon Black', image_url: '/products/xbox-360-controller.jpg' },
+          { name: 'Alpine White', image_url: '/products/xbox-360-controller.jpg' },
+          { name: 'Crimson Red', image_url: '/products/xbox-360-controller.jpg' }
+        ]),
+        badge: 'CLASSIC', rating: 4.9, review_count: 5120,
         in_stock: 1, featured: 1, platform: 'PC, Xbox 360', genre: 'Input Device'
       },
       {
@@ -219,12 +226,12 @@ const seedData = async () => {
       },
     ];
 
-    const stmt = `INSERT INTO products (id, name, slug, description, price, original_price, category, image_url, badge, rating, review_count, in_stock, featured, platform, genre) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+    const stmt = `INSERT INTO products (id, name, slug, description, price, original_price, category, image_url, variants, badge, rating, review_count, in_stock, featured, platform, genre) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
 
     for (const p of products) {
       db.run(stmt, [
         p.id, p.name, p.slug, p.description, p.price, p.original_price,
-        p.category, p.image_url, p.badge, p.rating, p.review_count,
+        p.category, p.image_url, (p as any).variants || null, p.badge, p.rating, p.review_count,
         p.in_stock, p.featured, p.platform, p.genre,
       ]);
     }

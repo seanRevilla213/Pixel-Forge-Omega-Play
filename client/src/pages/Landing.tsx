@@ -10,6 +10,7 @@ import { LuxuryCartButton } from '../components/ui/LuxuryCartButton';
 import api from '../api/axiosInstance';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { ProductCard } from '../components/ui/ProductCard';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -113,35 +114,7 @@ const Landing = () => {
                 ))
               ) : (
                 featured.map((product, i) => (
-                  <motion.div
-                    key={product.id}
-                    initial={{ opacity: 0, y: 50 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: i * 0.1, duration: 0.8 }}
-                    className="group glasswave-card p-6 flex flex-col"
-                  >
-                    <div className="relative aspect-[4/5] rounded-[2rem] overflow-hidden bg-white/5 mb-8">
-                      <motion.img 
-                        whileHover={{ scale: 1.05 }}
-                        transition={{ duration: 1.2, ease: [0.23, 1, 0.32, 1] }}
-                        src={product.image_url} 
-                        alt={product.name} 
-                        className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700" 
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-matte-black/40 to-transparent" />
-                      <div className="absolute top-6 left-6 flex gap-2">
-                        <span className="glasswave-strong px-3 py-1 rounded-full text-[8px] font-black tracking-widest text-white uppercase">{product.category}</span>
-                      </div>
-                    </div>
-                    
-                    <h3 className="font-heading text-2xl font-black text-white mb-4 group-hover:text-luxury-cyan transition-colors line-clamp-1">{product.name}</h3>
-                    
-                    <div className="mt-auto flex items-center justify-between">
-                      <span className="text-2xl font-black text-white opacity-60 tracking-tight">{formatPHP(product.price)}</span>
-                      <LuxuryCartButton product={product} className="w-12 h-12 !px-0 rounded-full" />
-                    </div>
-                  </motion.div>
+                  <ProductCard key={product.id} product={product} index={i} />
                 ))
               )}
             </div>

@@ -21,6 +21,7 @@ export interface Product {
   featured: number;
   platform: string;
   genre: string;
+  variants?: string; // JSON string of { name: string, image_url: string }[]
 }
 
 export interface CartItem {
