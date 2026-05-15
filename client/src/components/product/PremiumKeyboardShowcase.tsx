@@ -212,6 +212,9 @@ export const PremiumKeyboardShowcase: React.FC<PremiumKeyboardShowcaseProps> = (
                   <motion.img 
                     src={activeAngle.image_url} 
                     alt={currentProduct.name}
+                    onError={(e) => {
+                      (e.target as HTMLImageElement).src = currentProduct.image_url;
+                    }}
                     className="max-w-[110%] h-auto drop-shadow-[0_100px_120px_rgba(0,0,0,0.7)] rounded-[3rem]"
                   />
                   
@@ -268,6 +271,9 @@ export const PremiumKeyboardShowcase: React.FC<PremiumKeyboardShowcaseProps> = (
                   <img 
                     src={angle.image_url} 
                     alt={angle.name} 
+                    onError={(e) => {
+                      (e.target as HTMLImageElement).src = currentProduct.image_url;
+                    }}
                     className="w-full h-full object-cover opacity-40 group-hover:opacity-100 transition-opacity duration-700"
                   />
                   <div className={`absolute inset-0 transition-all duration-700 ${activeAngleIndex === i ? 'bg-orange-500/10' : 'bg-transparent group-hover:bg-white/5'}`} />
