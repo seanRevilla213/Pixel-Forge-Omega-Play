@@ -4,7 +4,7 @@ import { FiPackage, FiClock, FiCheckCircle, FiXCircle, FiMonitor, FiTrash2 } fro
 import PageTransition from '../components/layout/PageTransition';
 import { useAuth } from '../context/AuthContext';
 import api from '../api/axiosInstance';
-import { Order, Session } from '../types';
+import type { Order, Session } from '../types';
 
 const UserDashboard = () => {
   const { user } = useAuth();

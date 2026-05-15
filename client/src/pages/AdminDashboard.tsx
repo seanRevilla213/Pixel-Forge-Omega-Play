@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { FiUsers, FiShoppingBag, FiDollarSign, FiBox, FiClock, FiCheckCircle, FiXCircle, FiShield } from 'react-icons/fi';
+import { FiUsers, FiShoppingBag, FiDollarSign, FiBox, FiShield } from 'react-icons/fi';
 import PageTransition from '../components/layout/PageTransition';
 import api from '../api/axiosInstance';
 import toast from 'react-hot-toast';

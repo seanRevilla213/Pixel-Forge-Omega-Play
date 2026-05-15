@@ -3,7 +3,7 @@ import { useParams, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { FiShoppingCart, FiStar, FiMonitor, FiTag, FiArrowLeft, FiPlus, FiMinus } from 'react-icons/fi';
 import PageTransition from '../components/layout/PageTransition';
-import { Product } from '../types';
+import type { Product } from '../types';
 import { useCart } from '../context/CartContext';
 import api from '../api/axiosInstance';
 

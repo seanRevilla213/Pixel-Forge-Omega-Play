@@ -1,6 +1,6 @@
-import { createContext, useContext, useState, useEffect, useCallback, ReactNode } from 'react';
-import api, { setAccessToken, getAccessToken } from '../api/axiosInstance';
-import { User, AuthResponse } from '../types';
+import { createContext, useContext, useState, useEffect, useCallback, type ReactNode } from 'react';
+import api, { setAccessToken } from '../api/axiosInstance';
+import type { User, AuthResponse } from '../types';
 
 interface AuthContextType {
   user: User | null;
