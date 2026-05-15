@@ -28,6 +28,9 @@ export const initDatabase = async (): Promise<any> => {
   db.run('PRAGMA journal_mode=WAL;');
   db.run('PRAGMA foreign_keys=ON;');
 
+  // Force re-seed for development
+  db.run('DROP TABLE IF EXISTS products;');
+  
   createTables();
   await seedData();
   saveDatabase();
@@ -163,7 +166,7 @@ const seedData = async () => {
   if (pCount === 0) {
     const products = [
       {
-        id: uuidv4(), name: 'Xbox 360 Wireless Controller', slug: 'xbox-360-wireless-controller',
+        id: uuidv4(), name: 'Xbox 360 Glow Edition', slug: 'xbox-glow-edition',
         description: 'The iconic Xbox 360 Wireless Controller offers precision, comfort, and control. Featuring integrated 2.4 GHz high-performance wireless technology and a sleek ergonomic design, it remains a favorite for gamers across PC and console platforms.',
         price: 29.99, original_price: 39.99, category: 'Controllers',
         image_url: '/products/xbox-360-controller.jpg',

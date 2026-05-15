@@ -28,11 +28,13 @@ export const PremiumControllerShowcase: React.FC<PremiumControllerShowcaseProps>
 
   useEffect(() => {
     if (product.variants) {
+      console.warn('CRITICAL DATA SYNC - LOADING VARIANTS:', product.variants);
       setVariants(JSON.parse(product.variants));
     }
   }, [product.variants]);
 
   const activeVariant = variants[currentIndex] || { name: 'Standard', color: '#00f0ff', glow: 'rgba(0, 240, 255, 0.3)', image_url: product.image_url };
+  console.warn('CURRENT ACTIVE VARIANT:', activeVariant.name, 'IMAGE:', activeVariant.image_url);
 
   const handleMouseMove = (e: React.MouseEvent) => {
     if (!containerRef.current) return;
