@@ -169,7 +169,7 @@ const seedData = async () => {
         image_url: '/products/xbox-360-controller.jpg',
         variants: JSON.stringify([
           { id: 'v1', name: 'Carbon Black', image_url: '/products/xbox-360-controller.jpg', color: '#080808', glow: 'rgba(255, 255, 255, 0.2)' },
-          { id: 'v2', name: 'Alpine White', image_url: '/products/xbox-360-controller.jpg', color: '#FFFFFF', glow: 'rgba(255, 255, 255, 0.4)' },
+          { id: 'v2', name: 'Alpine White', image_url: '/products/xbox-360-white.png', color: '#FFFFFF', glow: 'rgba(255, 255, 255, 0.4)' },
           { id: 'v3', name: 'Sapphire Blue', image_url: '/products/xbox-360-controller.jpg', color: '#0047AB', glow: 'rgba(0, 71, 171, 0.5)' },
           { id: 'v4', name: 'Crimson Red', image_url: '/products/xbox-360-controller.jpg', color: '#DC143C', glow: 'rgba(220, 20, 60, 0.5)' },
           { id: 'v5', name: 'Silver Chrome', image_url: '/products/xbox-360-controller.jpg', color: '#C0C0C0', glow: 'rgba(192, 192, 192, 0.6)' }

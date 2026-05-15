@@ -73,7 +73,7 @@ const ProductDetails = () => {
 
   return (
     <PageTransition>
-      <div>className="relative bg-matte-black min-h-screen pt-40 pb-32 px-6 overflow-hidden"</div>
+      <div className="relative bg-matte-black min-h-screen pt-40 pb-32 px-6 overflow-hidden">
       <AuroraBackground />
       <AmbientGlow />
 
@@ -99,7 +99,7 @@ const ProductDetails = () => {
             <img
               src={product.image_url}
               alt={product.name}
-              className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-1000"
+              className="w-full h-full object-cover group-hover:scale-105 transition-all duration-1000"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-matte-black/60 via-transparent to-transparent opacity-40" />
 
