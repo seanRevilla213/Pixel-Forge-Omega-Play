@@ -259,7 +259,7 @@ export const PremiumKeyboardShowcase: React.FC<PremiumKeyboardShowcaseProps> = (
               </div>
             </div>
             
-            <div className="grid grid-cols-3 gap-4">
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
               {angles.map((angle, i) => (
                 <button
                   key={angle.id}

@@ -195,11 +195,9 @@ const seedData = async () => {
         image_url: 'https://ae-pic-a1.aliexpress-media.com/kf/S3a4550ec52b849fdbd82796c7764ff9dN.png',
         variants: JSON.stringify([
           { id: 'angle-front', name: 'Front Angle', image_url: 'https://redragonshop.com/cdn/shop/products/ArgoK670_1_800x.png', color: '#ff8c00', glow: 'rgba(255, 140, 0, 0.4)' },
-          { id: 'angle-side', name: 'Side Angle', image_url: 'https://redragonshop.com/cdn/shop/products/ArgoK670_2_800x.png', color: '#ff8c00', glow: 'rgba(255, 140, 0, 0.4)' },
-          { id: 'angle-rgb', name: 'RGB Side Lighting', image_url: 'https://redragonshop.com/cdn/shop/products/ArgoK670_3_800x.png', color: '#ff8c00', glow: 'rgba(255, 140, 0, 0.4)' },
           { id: 'angle-top', name: 'Top View', image_url: 'https://redragonshop.com/cdn/shop/products/ArgoK670_4_800x.png', color: '#ff8c00', glow: 'rgba(255, 140, 0, 0.4)' },
-          { id: 'angle-back', name: 'Back View', image_url: 'https://redragonshop.com/cdn/shop/products/ArgoK670_5_800x.png', color: '#ff8c00', glow: 'rgba(255, 140, 0, 0.4)' },
-          { id: 'angle-perspective', name: 'Perspective View', image_url: 'https://redragonshop.com/cdn/shop/products/ArgoK670_6_800x.png', color: '#ff8c00', glow: 'rgba(255, 140, 0, 0.4)' }
+          { id: 'angle-side', name: 'Perspective View', image_url: 'https://redragonshop.com/cdn/shop/products/ArgoK670_6_800x.png', color: '#ff8c00', glow: 'rgba(255, 140, 0, 0.4)' },
+          { id: 'angle-rgb', name: 'RGB Detail', image_url: 'https://redragonshop.com/cdn/shop/products/ArgoK670_3_800x.png', color: '#ff8c00', glow: 'rgba(255, 140, 0, 0.4)' }
         ]),
         badge: 'ELITE', rating: 4.8, review_count: 1240,
         in_stock: 1, featured: 1, platform: 'PC, Mac', genre: 'Mechanical Keyboard',
