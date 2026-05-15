@@ -330,8 +330,8 @@ export const PremiumKeyboardShowcase: React.FC<PremiumKeyboardShowcaseProps> = (
                   style={{ x: btnSpringX, y: btnSpringY }}
                   onClick={handleAddToCart}
                   disabled={adding}
-                  className={`luxury-btn flex-1 h-20 rounded-[2.5rem] font-black text-[11px] tracking-[0.4em] uppercase transition-all duration-700 ${
-                    added ? 'bg-green-500/20 border-green-500/50 text-green-400' : 'bg-white text-matte-black'
+                  className={`flex-1 h-20 rounded-[2.5rem] font-black text-[11px] tracking-[0.4em] uppercase transition-all duration-700 relative overflow-hidden z-20 shadow-2xl flex items-center justify-center ${
+                    added ? 'bg-green-500 text-white' : 'bg-white text-matte-black hover:bg-white/90 active:scale-95'
                   }`}
                 >
                   <AnimatePresence mode="wait">
