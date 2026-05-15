@@ -2,6 +2,27 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Orbitron:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
 
 @theme {
+  /* Granular Breakpoints */
+  --breakpoint-xs: 320px;
+  --breakpoint-375: 375px;
+  --breakpoint-425: 425px;
+  --breakpoint-768: 768px;
+  --breakpoint-834: 834px;
+  --breakpoint-1024: 1024px;
+  --breakpoint-1280: 1280px;
+  --breakpoint-1440: 1440px;
+  --breakpoint-1920: 1920px;
+  --breakpoint-2560: 2560px;
+
+  /* Fluid Typography & Spacing */
+  --font-size-fluid-h1: clamp(2.5rem, 8vw, 5rem);
+  --font-size-fluid-h2: clamp(2rem, 6vw, 3.5rem);
+  --font-size-fluid-body: clamp(0.875rem, 2vw, 1.125rem);
+  --spacing-fluid-padding: clamp(1rem, 5vw, 4rem);
+
+  /* Performance: GPU Acceleration Utility */
+  --animate-gpu: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+
   --color-neon-cyan: #00F0FF;
   --color-neon-magenta: #FF00E5;
   --color-neon-purple: #B026FF;

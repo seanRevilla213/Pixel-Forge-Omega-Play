@@ -1,10 +1,11 @@
 import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { FiShoppingCart, FiStar, FiMonitor, FiTag, FiArrowLeft, FiPlus, FiMinus } from 'react-icons/fi';
+import { FiShoppingCart, FiStar, FiMonitor, FiTag, FiArrowLeft, FiPlus, FiMinus, FiShare2 } from 'react-icons/fi';
 import PageTransition from '../components/layout/PageTransition';
 import type { Product } from '../types';
 import { useCart } from '../context/CartContext';
+import { useResponsive, useAnimationSettings } from '../hooks/useResponsive';
 import api from '../api/axiosInstance';
 
 const ProductDetails = () => {
@@ -13,6 +14,9 @@ const ProductDetails = () => {
   const [loading, setLoading] = useState(true);
   const [quantity, setQuantity] = useState(1);
   const { addItem } = useCart();
+  
+  const { device, isMobile } = useResponsive();
+  const anim = useAnimationSettings();
 
   useEffect(() => {
     api.get(`/products/slug/${slug}`).then(({ data }) => {
@@ -24,14 +28,14 @@ const ProductDetails = () => {
   if (loading) {
     return (
       <div className="min-h-screen pt-24 pb-16">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
-            <div className="skeleton h-96 rounded-2xl" />
-            <div className="space-y-4">
-              <div className="skeleton h-8 w-2/3" />
-              <div className="skeleton h-4 w-1/3" />
+        <div className="max-w-6xl mx-auto px-6">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+            <div className="skeleton h-[300px] md:h-[500px] rounded-3xl" />
+            <div className="space-y-6">
+              <div className="skeleton h-12 w-3/4" />
+              <div className="skeleton h-4 w-1/4" />
+              <div className="skeleton h-32 w-full" />
               <div className="skeleton h-20 w-full" />
-              <div className="skeleton h-12 w-1/2" />
             </div>
           </div>
         </div>
@@ -43,8 +47,10 @@ const ProductDetails = () => {
     return (
       <div className="min-h-screen pt-24 flex items-center justify-center">
         <div className="text-center">
-          <h2 className="font-heading text-2xl text-text-primary mb-4">Product Not Found</h2>
-          <Link to="/products" className="text-neon-cyan hover:text-neon-magenta transition-colors">Back to Shop</Link>
+          <h2 className="font-heading text-2xl text-text-primary mb-6">Game Not Found</h2>
+          <Link to="/products" className="px-6 py-3 rounded-xl bg-neon-cyan/10 text-neon-cyan hover:bg-neon-cyan hover:text-dark-900 transition-all">
+            Browse Store
+          </Link>
         </div>
       </div>
     );
@@ -54,77 +60,114 @@ const ProductDetails = () => {
 
   return (
     <PageTransition>
-      <div className="min-h-screen pt-24 pb-16">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <Link to="/products" className="inline-flex items-center gap-2 text-text-secondary hover:text-neon-cyan transition-colors mb-8 text-sm">
-            <FiArrowLeft size={16} /> Back to Shop
-          </Link>
+      <div className={`min-h-screen pt-24 pb-24 lg:pb-16 px-6 ${device === 'ultrawide' ? 'max-w-screen-2xl' : 'max-w-7xl'} mx-auto`}>
+        <Link to="/products" className="inline-flex items-center gap-2 text-text-muted hover:text-neon-cyan transition-colors mb-10 text-sm font-bold uppercase tracking-widest">
+          <FiArrowLeft size={18} /> Back to Store
+        </Link>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
-            {/* Image */}
-            <motion.div initial={{ opacity: 0, x: -30 }} animate={{ opacity: 1, x: 0 }} className="relative rounded-2xl overflow-hidden glass">
-              <img src={product.image_url} alt={product.name} className="w-full h-80 lg:h-[450px] object-cover" />
-              <div className="absolute inset-0 bg-gradient-to-t from-dark-900/60 to-transparent" />
-              {product.badge && (
-                <span className={`absolute top-4 right-4 px-4 py-1.5 rounded-lg text-sm font-bold ${
-                  product.badge === 'SALE' ? 'bg-neon-red text-white' :
-                  product.badge === 'NEW' ? 'bg-neon-green text-dark-900' :
-                  'bg-neon-cyan text-dark-900'
-                }`}>{product.badge}</span>
-              )}
-            </motion.div>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 xl:gap-20">
+          {/* Image - Responsive Sizing */}
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.9 }} 
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.5 * anim.intensity }}
+            className="relative rounded-[2rem] overflow-hidden glass gpu h-fit"
+          >
+            <img src={product.image_url} alt={product.name} className="w-full h-auto min-h-[300px] max-h-[600px] object-cover" />
+            <div className="absolute inset-0 bg-gradient-to-t from-dark-900/40 to-transparent" />
+            {product.badge && (
+              <span className="absolute top-6 right-6 px-6 py-2 rounded-2xl text-xs font-black tracking-widest bg-neon-cyan text-dark-900 shadow-xl shadow-neon-cyan/20">
+                {product.badge}
+              </span>
+            )}
+          </motion.div>
 
-            {/* Info */}
-            <motion.div initial={{ opacity: 0, x: 30 }} animate={{ opacity: 1, x: 0 }} className="space-y-6">
-              <div>
-                <div className="flex items-center gap-3 mb-3">
-                  <span className="px-3 py-1 rounded-lg bg-neon-cyan/10 text-neon-cyan text-xs font-medium uppercase tracking-wider">{product.category}</span>
-                  <span className="px-3 py-1 rounded-lg bg-dark-600 text-text-secondary text-xs">{product.genre}</span>
+          {/* Info - Fluid Typography */}
+          <div className="space-y-8">
+            <div>
+              <div className="flex items-center gap-3 mb-6">
+                <span className="px-4 py-1.5 rounded-xl bg-neon-cyan/10 text-neon-cyan text-[10px] font-bold uppercase tracking-widest">{product.category}</span>
+                <span className="px-4 py-1.5 rounded-xl bg-dark-600 text-text-muted text-[10px] font-bold uppercase tracking-widest">{product.genre}</span>
+              </div>
+              <h1 className="font-heading font-black text-text-primary mb-4 leading-tight" style={{ fontSize: 'var(--font-size-fluid-h2)' }}>
+                {product.name}
+              </h1>
+              <div className="flex items-center gap-6">
+                <div className="flex items-center gap-2 text-neon-gold">
+                  <FiStar fill="currentColor" size={16} />
+                  <span className="font-bold">{product.rating}</span>
+                  <span className="text-text-muted font-medium ml-1">({product.review_count} reviews)</span>
                 </div>
-                <h1 className="font-heading text-3xl md:text-4xl font-bold text-text-primary mb-2">{product.name}</h1>
-                <div className="flex items-center gap-4 text-sm">
-                  <span className="flex items-center gap-1 text-neon-gold"><FiStar fill="currentColor" size={14} /> {product.rating} ({product.review_count} reviews)</span>
+                <button className="flex items-center gap-2 text-text-muted hover:text-neon-cyan transition-colors text-xs font-bold uppercase tracking-widest">
+                  <FiShare2 size={16} /> Share
+                </button>
+              </div>
+            </div>
+
+            <p className="text-text-secondary leading-relaxed" style={{ fontSize: 'var(--font-size-fluid-body)' }}>
+              {product.description}
+            </p>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div className="glass rounded-2xl p-5 flex items-center gap-4">
+                <div className="w-10 h-10 rounded-xl bg-neon-cyan/10 flex items-center justify-center text-neon-cyan">
+                  <FiMonitor size={20} />
+                </div>
+                <div>
+                  <p className="text-[10px] text-text-muted font-bold uppercase tracking-widest">Platform</p>
+                  <p className="text-sm font-bold text-text-primary">{product.platform}</p>
                 </div>
               </div>
-
-              <p className="text-text-secondary leading-relaxed">{product.description}</p>
-
-              <div className="glass rounded-xl p-5 space-y-3">
-                <div className="flex items-center gap-2 text-sm"><FiMonitor className="text-neon-cyan" size={16} /><span className="text-text-secondary">Platforms:</span><span className="text-text-primary">{product.platform}</span></div>
-                <div className="flex items-center gap-2 text-sm"><FiTag className="text-neon-magenta" size={16} /><span className="text-text-secondary">Genre:</span><span className="text-text-primary">{product.genre}</span></div>
-              </div>
-
-              {/* Price & Actions */}
-              <div className="glass rounded-xl p-6">
-                <div className="flex items-end gap-3 mb-6">
-                  <span className="font-heading text-4xl font-bold text-neon-cyan">
-                    {product.price === 0 ? 'FREE' : `$${product.price.toFixed(2)}`}
-                  </span>
-                  {product.original_price && (
-                    <>
-                      <span className="text-lg text-text-muted line-through">${product.original_price.toFixed(2)}</span>
-                      <span className="px-2 py-1 rounded-md bg-neon-green/20 text-neon-green text-xs font-bold">-{discount}%</span>
-                    </>
-                  )}
+              <div className="glass rounded-2xl p-5 flex items-center gap-4">
+                <div className="w-10 h-10 rounded-xl bg-neon-magenta/10 flex items-center justify-center text-neon-magenta">
+                  <FiTag size={20} />
                 </div>
+                <div>
+                  <p className="text-[10px] text-text-muted font-bold uppercase tracking-widest">Genre</p>
+                  <p className="text-sm font-bold text-text-primary">{product.genre}</p>
+                </div>
+              </div>
+            </div>
 
-                <div className="flex items-center gap-4 mb-4">
-                  <div className="flex items-center gap-0 glass rounded-xl overflow-hidden">
-                    <button onClick={() => setQuantity(q => Math.max(1, q - 1))} className="px-3 py-3 text-text-secondary hover:text-neon-cyan transition-colors"><FiMinus size={16} /></button>
-                    <span className="px-4 py-3 font-medium text-text-primary min-w-[50px] text-center">{quantity}</span>
-                    <button onClick={() => setQuantity(q => Math.min(99, q + 1))} className="px-3 py-3 text-text-secondary hover:text-neon-cyan transition-colors"><FiPlus size={16} /></button>
+            {/* Sticky Actions on Mobile */}
+            <div className={`${isMobile ? 'fixed bottom-20 left-0 right-0 p-6 glass-strong z-40 border-t border-glass-border' : 'glass-strong rounded-3xl p-8'}`}>
+              <div className="flex flex-col sm:flex-row items-center justify-between gap-6">
+                <div className="flex flex-col items-center sm:items-start">
+                  <span className="text-[10px] text-text-muted font-bold uppercase tracking-widest mb-1">Final Price</span>
+                  <div className="flex items-center gap-3">
+                    <span className="font-heading text-4xl font-black text-neon-cyan">
+                      {product.price === 0 ? 'FREE' : `$${product.price.toFixed(2)}`}
+                    </span>
+                    {product.original_price && (
+                      <div className="flex flex-col">
+                        <span className="text-sm text-text-muted line-through">${product.original_price.toFixed(2)}</span>
+                        <span className="text-[10px] font-black text-neon-green">-{discount}% OFF</span>
+                      </div>
+                    )}
                   </div>
                 </div>
 
-                <button
-                  onClick={() => { for (let i = 0; i < quantity; i++) addItem(product); }}
-                  className="w-full py-4 bg-gradient-to-r from-neon-cyan to-neon-magenta rounded-xl text-dark-900 font-bold text-base flex items-center justify-center gap-2 btn-hover-lift"
-                >
-                  <FiShoppingCart size={18} />
-                  Add to Cart
-                </button>
+                <div className="flex items-center gap-4 w-full sm:w-auto">
+                  <div className="flex items-center glass rounded-2xl overflow-hidden h-14">
+                    <button onClick={() => setQuantity(q => Math.max(1, q - 1))} className="w-12 h-full flex items-center justify-center text-text-muted hover:text-neon-cyan transition-colors">
+                      <FiMinus size={18} />
+                    </button>
+                    <span className="px-4 font-bold text-lg text-text-primary min-w-[50px] text-center">{quantity}</span>
+                    <button onClick={() => setQuantity(q => Math.min(99, q + 1))} className="w-12 h-full flex items-center justify-center text-text-muted hover:text-neon-cyan transition-colors">
+                      <FiPlus size={18} />
+                    </button>
+                  </div>
+
+                  <button
+                    onClick={() => { for (let i = 0; i < quantity; i++) addItem(product); }}
+                    className="flex-1 sm:flex-none px-8 h-14 bg-gradient-to-r from-neon-cyan to-neon-magenta rounded-2xl text-dark-900 font-black text-base flex items-center justify-center gap-3 btn-hover-lift"
+                  >
+                    <FiShoppingCart size={22} />
+                    {isMobile ? 'Add' : 'Add to Cart'}
+                  </button>
+                </div>
               </div>
-            </motion.div>
+            </div>
           </div>
         </div>
       </div>
