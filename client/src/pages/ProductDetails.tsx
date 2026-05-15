@@ -11,6 +11,7 @@ import api from '../api/axiosInstance';
 import gsap from 'gsap';
 
 import { PremiumControllerShowcase } from '../components/product/PremiumControllerShowcase';
+import { PremiumKeyboardShowcase } from '../components/product/PremiumKeyboardShowcase';
 
 const ProductDetails = () => {
   const { slug } = useParams();
@@ -67,6 +68,14 @@ const ProductDetails = () => {
     return (
       <PageTransition>
         <PremiumControllerShowcase product={product} />
+      </PageTransition>
+    );
+  }
+
+  if (product.category === 'Mechanical Keyboards') {
+    return (
+      <PageTransition>
+        <PremiumKeyboardShowcase product={product} />
       </PageTransition>
     );
   }

@@ -30,6 +30,7 @@ export interface Product {
   featured: number;
   platform: string;
   genre: string;
+  brand?: string;
 }
 
 export interface CartItem {
