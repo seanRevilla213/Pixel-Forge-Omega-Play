@@ -69,7 +69,7 @@ const Cart = () => {
               <AnimatePresence mode="popLayout">
                 {items.map((item) => (
                   <motion.div
-                    key={item.product.id}
+                    key={`${item.product.id}-${item.selectedVariant?.id || 'none'}`}
                     layout
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -77,7 +77,7 @@ const Cart = () => {
                     className="glasswave rounded-[3rem] p-8 flex gap-10 group relative transition-all duration-500 hover:bg-white/[0.04]"
                   >
                     <div className="relative w-28 h-28 sm:w-44 sm:h-44 rounded-[2rem] overflow-hidden flex-shrink-0 bg-white/5">
-                      <img src={item.product.image_url} alt={item.product.name} className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700" />
+                      <img src={item.selectedVariant?.image_url || item.product.image_url} alt={item.product.name} className="w-full h-full object-contain grayscale group-hover:grayscale-0 transition-all duration-700" />
                     </div>
                     <div className="flex-1 flex flex-col justify-between py-2">
                       <div className="space-y-4">
@@ -85,20 +85,30 @@ const Cart = () => {
                           <Link to={`/products/${item.product.slug}`} className="font-heading text-xl sm:text-2xl font-black text-white hover:text-luxury-cyan transition-colors tracking-tight leading-tight line-clamp-1">
                             {item.product.name}
                           </Link>
-                          <button onClick={() => removeItem(item.product.id)} className="p-3 text-text-muted hover:text-red-400 transition-all">
+                          <button onClick={() => removeItem(item.product.id, item.selectedVariant?.id)} className="p-3 text-text-muted hover:text-red-400 transition-all">
                             <Trash2 size={20} />
                           </button>
                         </div>
-                        <p className="text-[9px] text-text-muted font-black uppercase tracking-[0.4em] opacity-60">
-                          {item.product.category} // {item.product.platform}
-                        </p>
+                        <div className="flex flex-wrap items-center gap-3">
+                          <p className="text-[9px] text-text-muted font-black uppercase tracking-[0.4em] opacity-60">
+                            {item.product.category} // {item.product.platform}
+                          </p>
+                          {item.selectedVariant && (
+                            <>
+                              <div className="w-1 h-1 rounded-full bg-white/20" />
+                              <p className="text-[9px] text-luxury-cyan font-black uppercase tracking-[0.4em]">
+                                {item.selectedVariant.name} EDITION
+                              </p>
+                            </>
+                          )}
+                        </div>
                       </div>
                       
                       <div className="flex items-center justify-between mt-8">
                         <div className="flex items-center glasswave rounded-2xl h-12 border-white/5">
-                          <button onClick={() => updateQuantity(item.product.id, item.quantity - 1)} className="w-12 h-full flex items-center justify-center text-text-muted hover:text-white transition-colors"><Minus size={16} /></button>
+                          <button onClick={() => updateQuantity(item.product.id, item.quantity - 1, item.selectedVariant?.id)} className="w-12 h-full flex items-center justify-center text-text-muted hover:text-white transition-colors"><Minus size={16} /></button>
                           <span className="px-6 font-black text-lg text-white min-w-[50px] text-center">{item.quantity}</span>
-                          <button onClick={() => updateQuantity(item.product.id, item.quantity + 1)} className="w-12 h-full flex items-center justify-center text-text-muted hover:text-white transition-colors"><Plus size={16} /></button>
+                          <button onClick={() => updateQuantity(item.product.id, item.quantity + 1, item.selectedVariant?.id)} className="w-12 h-full flex items-center justify-center text-text-muted hover:text-white transition-colors"><Plus size={16} /></button>
                         </div>
                         <span className="font-heading text-3xl font-black text-white tracking-tighter opacity-80">{formatPHP(item.product.price * item.quantity)}</span>
                       </div>

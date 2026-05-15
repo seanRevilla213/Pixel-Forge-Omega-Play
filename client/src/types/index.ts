@@ -5,6 +5,14 @@ export interface User {
   role: 'user' | 'admin';
 }
 
+export interface ProductVariant {
+  id: string;
+  name: string;
+  image_url: string;
+  color: string;
+  glow: string;
+}
+
 export interface Product {
   id: string;
   name: string;
@@ -14,6 +22,7 @@ export interface Product {
   original_price: number | null;
   category: string;
   image_url: string;
+  variants?: string; // JSON string of ProductVariant[]
   badge: string | null;
   rating: number;
   review_count: number;
@@ -21,12 +30,12 @@ export interface Product {
   featured: number;
   platform: string;
   genre: string;
-  variants?: string; // JSON string of { name: string, image_url: string }[]
 }
 
 export interface CartItem {
   product: Product;
   quantity: number;
+  selectedVariant?: ProductVariant;
 }
 
 export interface Order {

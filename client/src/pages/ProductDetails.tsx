@@ -10,33 +10,20 @@ import { AuroraBackground, AmbientGlow } from '../components/ui/ImmersiveEffects
 import api from '../api/axiosInstance';
 import gsap from 'gsap';
 
+import { PremiumControllerShowcase } from '../components/product/PremiumControllerShowcase';
+
 const ProductDetails = () => {
   const { slug } = useParams();
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
+  
   const [adding, setAdding] = useState(false);
   const [added, setAdded] = useState(false);
   const [quantity, setQuantity] = useState(1);
   const { addItem, formatPHP } = useCart();
-  
   const { device, isMobile } = useResponsive();
   const contentRef = useRef(null);
-  const [rotation, setRotation] = useState(0);
-  const [variantIndex, setVariantIndex] = useState(0);
-
-  const controllerVariants = [
-    { name: 'Nexus Onyx', image: 'https://images.mirror.co.uk/mirror/xbox-360-controller.jpg' },
-    { name: 'Pulse White', image: 'https://m.media-amazon.com/images/I/41K995zG2sL._AC_.jpg' },
-    { name: 'Cyber Chrome', image: 'https://m.media-amazon.com/images/I/61MvS-W5VWL._AC_SL1500_.jpg' }
-  ];
-
-  const handleNextVariant = () => {
-    setRotation(prev => prev + 360);
-    setTimeout(() => {
-      setVariantIndex(prev => (prev + 1) % controllerVariants.length);
-    }, 150);
-  };
-
+  
   useEffect(() => {
     api.get(`/products/slug/${slug}`).then(({ data }) => {
       setProduct(data.product);
@@ -67,12 +54,8 @@ const ProductDetails = () => {
   if (loading) {
     return (
       <div className="min-h-screen bg-matte-black pt-40 px-6">
-        <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-20">
-          <div className="glasswave rounded-[4rem] aspect-square animate-pulse" />
-          <div className="space-y-12">
-            <div className="h-20 w-3/4 bg-white/5 rounded-3xl" />
-            <div className="h-40 w-full bg-white/5 rounded-[3rem]" />
-          </div>
+        <div className="max-w-7xl mx-auto flex items-center justify-center h-[50vh]">
+          <Loader2 size={48} className="animate-spin text-luxury-cyan" />
         </div>
       </div>
     );
@@ -80,13 +63,20 @@ const ProductDetails = () => {
 
   if (!product) return null;
 
+  if (product.category === 'Controllers') {
+    return (
+      <PageTransition>
+        <PremiumControllerShowcase product={product} />
+      </PageTransition>
+    );
+  }
+
   return (
     <PageTransition>
       <div className="relative bg-matte-black min-h-screen pt-40 pb-32 px-6 overflow-hidden">
         <AuroraBackground />
         <AmbientGlow />
-
-        <div className={`mx-auto relative z-10 ${device === 'ultrawide' ? 'max-w-screen-2xl' : 'max-w-7xl'}`}>
+        {/* ... existing standard layout ... */}
           <Link to="/products" className="inline-flex items-center gap-4 text-text-secondary hover:text-white transition-all mb-16 text-[10px] font-black uppercase tracking-[0.4em] group">
             <ArrowLeft size={16} className="group-hover:-translate-x-1 transition-transform" /> BACK TO CATALOG
           </Link>

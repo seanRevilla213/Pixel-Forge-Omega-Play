@@ -168,9 +168,11 @@ const seedData = async () => {
         price: 29.99, original_price: 39.99, category: 'Controllers',
         image_url: '/products/xbox-360-controller.jpg',
         variants: JSON.stringify([
-          { name: 'Carbon Black', image_url: '/products/xbox-360-controller.jpg' },
-          { name: 'Alpine White', image_url: '/products/xbox-360-controller.jpg' },
-          { name: 'Crimson Red', image_url: '/products/xbox-360-controller.jpg' }
+          { id: 'v1', name: 'Carbon Black', image_url: '/products/xbox-360-controller.jpg', color: '#080808', glow: 'rgba(255, 255, 255, 0.2)' },
+          { id: 'v2', name: 'Alpine White', image_url: '/products/xbox-360-controller.jpg', color: '#FFFFFF', glow: 'rgba(255, 255, 255, 0.4)' },
+          { id: 'v3', name: 'Sapphire Blue', image_url: '/products/xbox-360-controller.jpg', color: '#0047AB', glow: 'rgba(0, 71, 171, 0.5)' },
+          { id: 'v4', name: 'Crimson Red', image_url: '/products/xbox-360-controller.jpg', color: '#DC143C', glow: 'rgba(220, 20, 60, 0.5)' },
+          { id: 'v5', name: 'Silver Chrome', image_url: '/products/xbox-360-controller.jpg', color: '#C0C0C0', glow: 'rgba(192, 192, 192, 0.6)' }
         ]),
         badge: 'CLASSIC', rating: 4.9, review_count: 5120,
         in_stock: 1, featured: 1, platform: 'PC, Xbox 360', genre: 'Input Device'

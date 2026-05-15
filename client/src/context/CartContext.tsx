@@ -5,9 +5,9 @@ interface CartContextType {
   items: CartItem[];
   itemCount: number;
   total: number;
-  addItem: (product: Product) => void;
-  removeItem: (productId: string) => void;
-  updateQuantity: (productId: string, quantity: number) => void;
+  addItem: (product: Product, variant?: ProductVariant) => void;
+  removeItem: (productId: string, variantId?: string) => void;
+  updateQuantity: (productId: string, quantity: number, variantId?: string) => void;
   clearCart: () => void;
   formatPHP: (amount: number) => string;
 }
@@ -38,36 +38,42 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     localStorage.setItem(CART_KEY, JSON.stringify(items));
   }, [items]);
 
-  const addItem = useCallback((product: Product) => {
+  const addItem = useCallback((product: Product, selectedVariant?: ProductVariant) => {
     setItems((prev) => {
-      // Prevent duplicate bug by checking ID
-      const existing = prev.find((i) => i.product.id === product.id);
+      const existing = prev.find((i) => 
+        i.product.id === product.id && 
+        i.selectedVariant?.id === selectedVariant?.id
+      );
       if (existing) {
         return prev.map((i) =>
-          i.product.id === product.id
+          (i.product.id === product.id && i.selectedVariant?.id === selectedVariant?.id)
             ? { ...i, quantity: Math.min(i.quantity + 1, 99) }
             : i
         );
       }
-      return [...prev, { product, quantity: 1 }];
+      return [...prev, { product, quantity: 1, selectedVariant }];
     });
   }, []);
 
-  const removeItem = useCallback((productId: string) => {
-    setItems((prev) => prev.filter((i) => i.product.id !== productId));
+  const removeItem = useCallback((productId: string, variantId?: string) => {
+    setItems((prev) => prev.filter((i) => 
+      !(i.product.id === productId && i.selectedVariant?.id === variantId)
+    ));
   }, []);
 
-  const updateQuantity = useCallback((productId: string, quantity: number) => {
+  const updateQuantity = useCallback((productId: string, quantity: number, variantId?: string) => {
     if (quantity <= 0) {
-      setItems((prev) => prev.filter((i) => i.product.id !== productId));
+      removeItem(productId, variantId);
       return;
     }
     setItems((prev) =>
       prev.map((i) =>
-        i.product.id === productId ? { ...i, quantity: Math.min(quantity, 99) } : i
+        (i.product.id === productId && i.selectedVariant?.id === variantId) 
+          ? { ...i, quantity: Math.min(quantity, 99) } 
+          : i
       )
     );
-  }, []);
+  }, [removeItem]);
 
   const clearCart = useCallback(() => {
     setItems([]);
