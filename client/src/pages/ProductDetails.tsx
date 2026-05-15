@@ -76,7 +76,8 @@ const ProductDetails = () => {
       <div className="relative bg-matte-black min-h-screen pt-40 pb-32 px-6 overflow-hidden">
         <AuroraBackground />
         <AmbientGlow />
-        {/* ... existing standard layout ... */}
+
+        <div className={`mx-auto relative z-10 ${device === 'ultrawide' ? 'max-w-screen-2xl' : 'max-w-7xl'}`}>
           <Link to="/products" className="inline-flex items-center gap-4 text-text-secondary hover:text-white transition-all mb-16 text-[10px] font-black uppercase tracking-[0.4em] group">
             <ArrowLeft size={16} className="group-hover:-translate-x-1 transition-transform" /> BACK TO CATALOG
           </Link>
@@ -98,20 +99,12 @@ const ProductDetails = () => {
               className="relative rounded-[4rem] overflow-hidden glasswave-strong aspect-square group"
             >
               <img 
-                src={product.category === 'Controllers' ? controllerVariants[variantIndex].image : product.image_url} 
+                src={product.image_url} 
                 alt={product.name} 
                 className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-1000" 
               />
               <div className="absolute inset-0 bg-gradient-to-t from-matte-black/60 via-transparent to-transparent opacity-40" />
-              
-              {product.category === 'Controllers' && (
-                <button 
-                  onClick={handleNextVariant}
-                  className="absolute bottom-10 right-10 w-16 h-16 rounded-full glasswave-strong flex items-center justify-center text-white hover:text-luxury-cyan transition-all z-20 group/next"
-                >
-                  <ChevronRight size={24} className="group-hover/next:translate-x-1 transition-transform" />
-                </button>
-              )}
+
 
               {product.badge && (
                 <div className="absolute top-10 right-10 glasswave-strong px-6 py-2 rounded-2xl text-[9px] font-black tracking-[0.4em] text-white uppercase shadow-2xl">
@@ -137,27 +130,6 @@ const ProductDetails = () => {
                   {product.description}
                 </p>
 
-                {product.category === 'Controllers' && (
-                  <div className="pt-4">
-                    <p className="text-[9px] text-text-muted font-black tracking-[0.4em] uppercase mb-4">Select Variant</p>
-                    <div className="flex gap-4">
-                      {controllerVariants.map((v, i) => (
-                        <button
-                          key={v.name}
-                          onClick={() => {
-                            if (i !== variantIndex) {
-                              setRotation(prev => prev + 360);
-                              setTimeout(() => setVariantIndex(i), 150);
-                            }
-                          }}
-                          className={`px-4 py-2 rounded-xl text-[10px] font-black tracking-widest uppercase transition-all ${i === variantIndex ? 'bg-white text-matte-black shadow-xl' : 'glasswave text-text-secondary hover:text-white'}`}
-                        >
-                          {v.name}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-                )}
               </div>
 
               <div className="grid grid-cols-2 gap-8">
@@ -232,7 +204,6 @@ const ProductDetails = () => {
                 </div>
               </div>
             </div>
-          </div>
         </div>
       </div>
     </PageTransition>
