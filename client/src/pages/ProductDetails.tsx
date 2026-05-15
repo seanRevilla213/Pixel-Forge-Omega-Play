@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Star, Monitor, Tag, ArrowLeft, Plus, Minus, ShieldCheck, Zap, Sparkles, Loader2, Check, ChevronRight } from 'lucide-react';
+import { Star, Monitor, Tag, ArrowLeft, Plus, Minus, ShieldCheck, Zap, Sparkles, Loader2, Check } from 'lucide-react';
 import PageTransition from '../components/layout/PageTransition';
 import type { Product } from '../types';
 import { useCart } from '../context/CartContext';
@@ -88,13 +88,11 @@ const ProductDetails = () => {
               initial={{ opacity: 0, scale: 0.95 }} 
               animate={{ 
                 opacity: 1, 
-                scale: 1,
-                rotate: rotation 
+                scale: 1
               }}
               transition={{ 
                 duration: 1.2, 
-                ease: [0.23, 1, 0.32, 1],
-                rotate: { duration: 0.8, ease: "circOut" }
+                ease: [0.23, 1, 0.32, 1]
               }}
               className="relative rounded-[4rem] overflow-hidden glasswave-strong aspect-square group"
             >
@@ -203,9 +201,9 @@ const ProductDetails = () => {
                   <Sparkles size={16} className="text-white opacity-40" /> Elite Grade
                 </div>
               </div>
-            </div>
         </div>
       </div>
+    </div>
     </PageTransition>
   );
 };
