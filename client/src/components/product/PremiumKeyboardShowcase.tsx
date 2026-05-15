@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { motion, AnimatePresence, useSpring, useMotionValue } from 'framer-motion';
-import { Plus, Minus, Loader2, Check, Star, Cpu, Sparkles, Layers } from 'lucide-react';
+import { motion, AnimatePresence, useSpring, useMotionValue, useTransform } from 'framer-motion';
+import { ChevronRight, ChevronLeft, Plus, Minus, Loader2, Check, Star, Cpu, Sparkles, Layers, Eye, ShieldCheck, Zap } from 'lucide-react';
 import type { Product } from '../../types';
 import { useCart } from '../../context/CartContext';
 import { AuroraBackground } from '../ui/ImmersiveEffects';
@@ -15,8 +15,8 @@ export const PremiumKeyboardShowcase: React.FC<PremiumKeyboardShowcaseProps> = (
   const { addItem, formatPHP } = useCart();
   const [currentProduct, setCurrentProduct] = useState<Product>(initialProduct);
   const [allKeyboards, setAllKeyboards] = useState<Product[]>([]);
-  const [variants, setVariants] = useState<any[]>([]);
-  const [variantIndex, setVariantIndex] = useState(0);
+  const [angles, setAngles] = useState<any[]>([]);
+  const [activeAngleIndex, setActiveAngleIndex] = useState(0);
   const [quantity, setQuantity] = useState(1);
   const [adding, setAdding] = useState(false);
   const [added, setAdded] = useState(false);
@@ -28,17 +28,21 @@ export const PremiumKeyboardShowcase: React.FC<PremiumKeyboardShowcaseProps> = (
   const springX = useSpring(mouseX, { stiffness: 50, damping: 20 });
   const springY = useSpring(mouseY, { stiffness: 50, damping: 20 });
 
+  // Magnetic button effect values
+  const btnX = useMotionValue(0);
+  const btnY = useMotionValue(0);
+  const btnSpringX = useSpring(btnX, { stiffness: 100, damping: 10 });
+  const btnSpringY = useSpring(btnY, { stiffness: 100, damping: 10 });
+
   const containerRef = useRef<HTMLDivElement>(null);
   const keyboardRef = useRef<HTMLDivElement>(null);
 
-  // Brands requested by user
   const brands = [
     'Redragon', 'Razer', 'Logitech', 'Keychron', 
     'Royal Kludge', 'Corsair', 'SteelSeries', 'HyperX'
   ];
 
   useEffect(() => {
-    // Fetch all keyboards in this category for filtering
     api.get(`/products?category=${encodeURIComponent('Mechanical Keyboards')}&limit=50`).then(({ data }) => {
       setAllKeyboards(data.products);
     });
@@ -47,19 +51,19 @@ export const PremiumKeyboardShowcase: React.FC<PremiumKeyboardShowcaseProps> = (
   useEffect(() => {
     if (currentProduct.variants) {
       try {
-        setVariants(JSON.parse(currentProduct.variants));
-        setVariantIndex(0);
+        setAngles(JSON.parse(currentProduct.variants));
+        setActiveAngleIndex(0);
       } catch (e) {
-        setVariants([]);
+        setAngles([]);
       }
     }
   }, [currentProduct]);
 
-  const activeVariant = variants[variantIndex] || { 
-    name: 'Standard', 
-    color: '#00f0ff', 
-    glow: 'rgba(0, 240, 255, 0.3)', 
-    description: 'Original configuration' 
+  const activeAngle = angles[activeAngleIndex] || { 
+    name: 'Default View', 
+    color: '#ff8c00', 
+    glow: 'rgba(255, 140, 0, 0.3)', 
+    image_url: currentProduct.image_url 
   };
 
   const handleMouseMove = (e: React.MouseEvent) => {
@@ -70,19 +74,31 @@ export const PremiumKeyboardShowcase: React.FC<PremiumKeyboardShowcaseProps> = (
     mouseX.set(x);
     mouseY.set(y);
 
-    // Floating parallax for the keyboard
     if (keyboardRef.current) {
       const centerX = rect.width / 2;
       const centerY = rect.height / 2;
-      const moveX = (x - centerX) / 30;
-      const moveY = (y - centerY) / 30;
+      const moveX = (x - centerX) / 40;
+      const moveY = (y - centerY) / 40;
       gsap.to(keyboardRef.current, {
         rotateX: -moveY,
         rotateY: moveX,
-        duration: 1,
-        ease: "power2.out"
+        duration: 1.2,
+        ease: "power3.out"
       });
     }
+  };
+
+  const handleMagneticMove = (e: React.MouseEvent) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = e.clientX - (rect.left + rect.width / 2);
+    const y = e.clientY - (rect.top + rect.height / 2);
+    btnX.set(x * 0.4);
+    btnY.set(y * 0.4);
+  };
+
+  const handleMagneticLeave = () => {
+    btnX.set(0);
+    btnY.set(0);
   };
 
   const handleBrandSwitch = (brand: string) => {
@@ -92,7 +108,7 @@ export const PremiumKeyboardShowcase: React.FC<PremiumKeyboardShowcaseProps> = (
       setTimeout(() => {
         setCurrentProduct(target);
         setLoading(false);
-      }, 500);
+      }, 600);
     }
   };
 
@@ -100,12 +116,12 @@ export const PremiumKeyboardShowcase: React.FC<PremiumKeyboardShowcaseProps> = (
     setAdding(true);
     setTimeout(() => {
       for(let i=0; i<quantity; i++) {
-        addItem(currentProduct, activeVariant as any);
+        addItem(currentProduct, activeAngle as any);
       }
       setAdding(false);
       setAdded(true);
       setTimeout(() => setAdded(false), 2000);
-    }, 1000);
+    }, 1200);
   };
 
   return (
@@ -116,260 +132,225 @@ export const PremiumKeyboardShowcase: React.FC<PremiumKeyboardShowcaseProps> = (
     >
       <AuroraBackground />
       
-      {/* Premium Glass Particles */}
+      {/* Orange Ambient Glow Spheroids */}
+      <div className="absolute top-[20%] left-[-10%] w-[600px] h-[600px] bg-orange-500/10 blur-[120px] rounded-full animate-pulse pointer-events-none" />
+      <div className="absolute bottom-[-10%] right-[-5%] w-[500px] h-[500px] bg-amber-600/10 blur-[100px] rounded-full pointer-events-none" />
+
+      {/* Floating Particles */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
-        {[...Array(20)].map((_, i) => (
+        {[...Array(15)].map((_, i) => (
           <motion.div
             key={i}
             initial={{ 
-              x: Math.random() * window.innerWidth, 
-              y: Math.random() * window.innerHeight,
-              opacity: Math.random() * 0.3,
-              scale: Math.random() * 0.5 + 0.5
+              x: Math.random() * 2000, 
+              y: Math.random() * 1000,
+              opacity: 0.1,
+              scale: Math.random() * 0.5
             }}
             animate={{
-              y: [null, Math.random() * -100 - 50],
-              opacity: [null, 0]
+              y: [null, -200],
+              opacity: [0.1, 0]
             }}
             transition={{
-              duration: Math.random() * 10 + 10,
+              duration: Math.random() * 15 + 10,
               repeat: Infinity,
               ease: "linear"
             }}
-            className="absolute w-1 h-1 bg-white rounded-full blur-[1px]"
+            className="absolute w-1 h-1 bg-amber-400 rounded-full blur-[1px]"
           />
         ))}
       </div>
 
-      {/* Dynamic Brand Filter Drawer */}
-      <div className="relative z-30 max-w-7xl mx-auto w-full mb-12">
+      {/* Brand Selection Overlay */}
+      <div className="relative z-30 max-w-7xl mx-auto w-full mb-16">
         <div className="flex flex-col gap-6">
-          <p className="text-[10px] font-black tracking-[0.4em] text-white/40 uppercase text-center lg:text-left">Engineered By</p>
+          <p className="text-[10px] font-black tracking-[0.5em] text-white/30 uppercase text-center lg:text-left">Select Manufacturer</p>
           <div className="flex flex-wrap gap-3 justify-center lg:justify-start">
             {brands.map(brand => (
               <button
                 key={brand}
                 onClick={() => handleBrandSwitch(brand)}
                 disabled={!allKeyboards.some(k => k.brand === brand)}
-                className={`relative px-6 py-3 rounded-2xl text-[10px] font-black tracking-widest uppercase transition-all duration-500 overflow-hidden ${
+                className={`relative px-8 py-4 rounded-3xl text-[10px] font-black tracking-widest uppercase transition-all duration-700 ${
                   currentProduct.brand === brand 
-                    ? 'bg-white text-matte-black scale-110 shadow-[0_0_30px_rgba(255,255,255,0.2)]' 
+                    ? 'bg-white text-matte-black scale-110 shadow-[0_20px_40px_rgba(255,165,0,0.2)]' 
                     : 'glasswave text-text-secondary hover:text-white hover:bg-white/10 disabled:opacity-20'
                 }`}
               >
                 {brand}
-                {currentProduct.brand === brand && (
-                  <motion.div 
-                    layoutId="active-brand-glow"
-                    className="absolute inset-0 bg-white/20 blur-xl"
-                  />
-                )}
               </button>
             ))}
           </div>
         </div>
       </div>
 
-      <div className="max-w-7xl w-full mx-auto grid grid-cols-1 lg:grid-cols-2 gap-20 items-center relative z-10 flex-1">
+      <div className="max-w-screen-2xl w-full mx-auto grid grid-cols-1 lg:grid-cols-12 gap-20 items-center relative z-10 flex-1">
         
-        {/* Left Side: 3D Cinematic Display */}
-        <div className="relative flex items-center justify-center min-h-[400px] lg:min-h-[600px]">
-          {/* Spotlight Glow */}
+        {/* Left Side: Perspective Stage (7/12 cols) */}
+        <div className="lg:col-span-7 relative flex items-center justify-center min-h-[500px] lg:min-h-[700px]">
+          {/* Mouse-follow Ambient Spotlight */}
           <motion.div 
             style={{ 
               left: springX, 
               top: springY,
-              background: `radial-gradient(500px circle at center, ${activeVariant.glow}, transparent 80%)`
+              background: `radial-gradient(600px circle at center, ${activeAngle.glow}, transparent 80%)`
             }}
-            className="absolute pointer-events-none w-[1000px] h-[1000px] -translate-x-1/2 -translate-y-1/2 z-0 opacity-30 blur-[80px]"
+            className="absolute pointer-events-none w-[1200px] h-[1200px] -translate-x-1/2 -translate-y-1/2 z-0 opacity-40 blur-[120px]"
           />
 
           <AnimatePresence mode="wait">
             {!loading && (
               <motion.div
-                key={currentProduct.id}
-                initial={{ rotateX: 20, rotateY: -30, opacity: 0, scale: 0.8, y: 50 }}
-                animate={{ rotateX: 0, rotateY: 0, opacity: 1, scale: 1, y: 0 }}
-                exit={{ rotateX: -20, rotateY: 30, opacity: 0, scale: 0.8, y: -50 }}
-                transition={{ duration: 1.2, ease: [0.23, 1, 0.32, 1] }}
+                key={currentProduct.id + activeAngleIndex}
+                initial={{ rotateY: -45, opacity: 0, scale: 0.9, filter: 'blur(20px)' }}
+                animate={{ rotateY: 0, opacity: 1, scale: 1, filter: 'blur(0px)' }}
+                exit={{ rotateY: 45, opacity: 0, scale: 0.9, filter: 'blur(20px)' }}
+                transition={{ duration: 1, ease: [0.23, 1, 0.32, 1] }}
                 className="relative z-20 w-full flex items-center justify-center perspective-2000"
               >
-                <div 
-                  ref={keyboardRef}
-                  className="relative preserve-3d group cursor-none"
-                >
-                  <img 
-                    src={currentProduct.image_url} 
+                <div ref={keyboardRef} className="relative preserve-3d">
+                  <motion.img 
+                    src={activeAngle.image_url} 
                     alt={currentProduct.name}
-                    className="max-w-full h-auto drop-shadow-[0_80px_100px_rgba(0,0,0,0.6)] rounded-[2rem]"
+                    className="max-w-[110%] h-auto drop-shadow-[0_100px_120px_rgba(0,0,0,0.7)] rounded-[3rem]"
                   />
                   
-                  {/* Floating Idle Animation */}
+                  {/* Floating Idle Loop */}
                   <motion.div 
-                    animate={{ y: [0, -15, 0] }}
-                    transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-                    className="absolute -inset-4 border border-white/5 rounded-[2.5rem] pointer-events-none"
+                    animate={{ y: [0, -20, 0] }}
+                    transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
+                    className="absolute -inset-8 border border-white/5 rounded-[4rem] pointer-events-none"
                   />
 
-                  {/* Glass Reflection Overlay */}
-                  <div className="absolute inset-0 rounded-[2rem] bg-gradient-to-tr from-white/5 to-transparent pointer-events-none opacity-50" />
-                  
-                  {/* Shadow Bloom */}
-                  <div 
-                    className="absolute -bottom-20 left-1/2 -translate-x-1/2 w-4/5 h-20 blur-[100px] opacity-40 transition-colors duration-1000"
-                    style={{ backgroundColor: activeVariant.color }}
-                  />
+                  {/* Dynamic RGB Reflections */}
+                  <div className="absolute inset-0 rounded-[3rem] bg-gradient-to-tr from-orange-500/10 via-transparent to-white/5 pointer-events-none" />
                 </div>
-              </motion.div>
-            )}
-            {loading && (
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                className="flex flex-col items-center gap-4"
-              >
-                <Loader2 size={48} className="animate-spin text-luxury-cyan" />
-                <p className="text-[10px] font-black tracking-[0.5em] text-white/40 uppercase">Reconfiguring Matrix</p>
               </motion.div>
             )}
           </AnimatePresence>
         </div>
 
-        {/* Right Side: Configuration Interface */}
-        <div className="space-y-12">
-          <div className="space-y-6">
-            <motion.div 
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="flex items-center gap-4"
-            >
-              <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10">
-                <Cpu size={12} className="text-luxury-cyan" />
-                <span className="text-[9px] font-black tracking-widest text-white uppercase">{currentProduct.brand} SERIES</span>
-              </div>
-              <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10 text-luxury-violet">
-                <Star size={12} fill="currentColor" />
-                <span className="text-[9px] font-black tracking-widest uppercase">{currentProduct.rating} / 5.0</span>
-              </div>
-            </motion.div>
+        {/* Right Side: Product Matrix (5/12 cols) */}
+        <div className="lg:col-span-5 space-y-16">
+          <div className="space-y-8">
+            <div className="flex items-center gap-6">
+              <span className="text-[10px] font-black tracking-[0.6em] text-orange-500 uppercase">{currentProduct.brand} // ELITE</span>
+              <div className="h-px flex-1 bg-gradient-to-r from-orange-500/30 to-transparent" />
+            </div>
             
-            <h1 className="font-heading text-6xl lg:text-8xl font-black text-white leading-[0.9] tracking-tighter">
-              {currentProduct.name.split(' ').map((word, i) => (
-                <span key={i} className={i === 0 ? "" : "opacity-40 italic block ml-8"}>{word} </span>
-              ))}
+            <h1 className="font-heading text-6xl lg:text-8xl font-black text-white leading-none tracking-tighter">
+              {currentProduct.name}
             </h1>
             
-            <p className="text-text-secondary text-lg leading-relaxed max-w-xl font-medium opacity-60">
+            <p className="text-text-secondary text-xl leading-relaxed font-medium opacity-50 max-w-lg">
               {currentProduct.description}
             </p>
           </div>
 
-          {/* Switch Selector - User requested specific styles */}
+          {/* VIEW OTHER ANGLE Gallery System */}
           <div className="space-y-8">
             <div className="flex items-center justify-between">
-              <p className="text-[10px] font-black tracking-[0.4em] text-white/40 uppercase">Switch Architecture</p>
-              <div className="flex items-center gap-2 text-[10px] font-bold text-luxury-cyan">
-                <Sparkles size={14} /> <span>{activeVariant.type} FEEL</span>
+              <h3 className="text-[10px] font-black tracking-[0.5em] text-white/40 uppercase">VIEW OTHER ANGLE</h3>
+              <div className="flex items-center gap-2 text-[10px] font-bold text-orange-500">
+                <Eye size={14} /> <span>INTERACTIVE PREVIEW</span>
               </div>
             </div>
             
             <div className="grid grid-cols-3 gap-4">
-              {variants.map((v, i) => (
+              {angles.map((angle, i) => (
                 <button
-                  key={v.id}
-                  onClick={() => setVariantIndex(i)}
-                  className={`relative p-6 rounded-[2rem] transition-all duration-700 text-left overflow-hidden group ${
-                    variantIndex === i ? 'glasswave-strong border-white/20' : 'glasswave border-transparent hover:bg-white/5'
+                  key={angle.id}
+                  onClick={() => setActiveAngleIndex(i)}
+                  className={`group relative aspect-[4/3] rounded-[2rem] overflow-hidden transition-all duration-700 ${
+                    activeAngleIndex === i ? 'glasswave-strong scale-105 shadow-[0_0_40px_rgba(255,165,0,0.3)]' : 'glasswave hover:bg-white/5'
                   }`}
                 >
-                  <div 
-                    className={`w-12 h-12 rounded-2xl mb-4 flex items-center justify-center transition-all duration-700 ${
-                      variantIndex === i ? 'scale-110 rotate-12' : 'scale-90 opacity-40 group-hover:opacity-100'
-                    }`}
-                    style={{ backgroundColor: v.color, boxShadow: variantIndex === i ? `0 0 30px ${v.glow}` : 'none' }}
-                  >
-                    <Layers size={20} className="text-white" />
-                  </div>
-                  <h4 className={`text-xs font-black uppercase tracking-widest mb-1 ${variantIndex === i ? 'text-white' : 'text-text-muted'}`}>
-                    {v.name}
-                  </h4>
-                  <p className="text-[9px] font-bold text-text-muted uppercase tracking-tighter line-clamp-1">{v.description}</p>
+                  <img 
+                    src={angle.image_url} 
+                    alt={angle.name} 
+                    className="w-full h-full object-cover opacity-40 group-hover:opacity-100 transition-opacity duration-700"
+                  />
+                  <div className={`absolute inset-0 transition-all duration-700 ${activeAngleIndex === i ? 'bg-orange-500/10' : 'bg-transparent group-hover:bg-white/5'}`} />
                   
-                  {variantIndex === i && (
+                  {/* Active Indicator */}
+                  {activeAngleIndex === i && (
                     <motion.div 
-                      layoutId="switch-indicator"
-                      className="absolute bottom-0 left-0 w-full h-1 bg-white"
-                      style={{ backgroundColor: v.color }}
+                      layoutId="angle-active-indicator"
+                      className="absolute bottom-0 left-0 right-0 h-1 bg-orange-500 shadow-[0_-5px_15px_rgba(249,115,22,0.5)]"
                     />
                   )}
+
+                  {/* Spotlight Hover */}
+                  <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity bg-gradient-to-tr from-orange-500/20 to-transparent pointer-events-none" />
                 </button>
               ))}
             </div>
           </div>
 
-          {/* Acquisition Module */}
-          <div className="glasswave-strong rounded-[3rem] p-10 border border-white/5 shadow-2xl relative overflow-hidden group/module">
-            <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent opacity-0 group-hover/module:opacity-100 transition-opacity duration-1000" />
+          {/* Luxury Purchase Panel */}
+          <div className="glasswave-strong rounded-[4rem] p-12 border border-white/5 shadow-2xl relative overflow-hidden group/panel">
+            <div className="absolute inset-0 bg-gradient-to-br from-orange-500/5 via-transparent to-transparent opacity-0 group-hover/panel:opacity-100 transition-opacity duration-1000" />
             
-            <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-10">
-              <div className="space-y-2 text-center md:text-left">
-                <p className="text-[10px] font-black tracking-[0.4em] text-white/30 uppercase">Investment</p>
-                <div className="flex items-baseline gap-2">
-                  <span className="text-6xl font-black text-white tracking-tighter">
+            <div className="relative z-10 flex flex-col gap-12">
+              <div className="flex items-center justify-between">
+                <div className="space-y-1">
+                  <p className="text-[9px] font-black tracking-[0.4em] text-white/30 uppercase">Unit Valuation</p>
+                  <p className="text-5xl font-black text-white tracking-tighter">
                     {formatPHP(currentProduct.price * quantity)}
-                  </span>
+                  </p>
+                </div>
+                <div className="text-right">
+                  <div className="flex items-center gap-2 justify-end mb-1">
+                    <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
+                    <span className="text-[9px] font-black text-white/40 uppercase">Verified Stock</span>
+                  </div>
+                  <p className="text-[10px] font-bold text-orange-500 tracking-widest uppercase">READY FOR DISPATCH</p>
                 </div>
               </div>
 
               <div className="flex items-center gap-6">
-                <div className="flex items-center glasswave rounded-2xl h-16 border-white/10">
-                  <button onClick={() => setQuantity(q => Math.max(1, q - 1))} className="w-14 h-full flex items-center justify-center text-text-muted hover:text-white transition-colors"><Minus size={18} /></button>
-                  <span className="px-4 font-black text-xl text-white min-w-[50px] text-center">{quantity}</span>
-                  <button onClick={() => setQuantity(q => Math.min(99, q + 1))} className="w-14 h-full flex items-center justify-center text-text-muted hover:text-white transition-colors"><Plus size={18} /></button>
+                <div className="flex items-center glasswave rounded-3xl h-20 p-2 border-white/10">
+                  <button onClick={() => setQuantity(q => Math.max(1, q - 1))} className="w-16 h-full flex items-center justify-center text-text-muted hover:text-white transition-colors"><Minus size={20} /></button>
+                  <span className="px-6 font-black text-2xl text-white min-w-[60px] text-center">{quantity}</span>
+                  <button onClick={() => setQuantity(q => Math.min(99, q + 1))} className="w-16 h-full flex items-center justify-center text-text-muted hover:text-white transition-colors"><Plus size={20} /></button>
                 </div>
 
-                <button
+                <motion.button
+                  onMouseMove={handleMagneticMove}
+                  onMouseLeave={handleMagneticLeave}
+                  style={{ x: btnSpringX, y: btnSpringY }}
                   onClick={handleAddToCart}
                   disabled={adding}
-                  className={`luxury-btn h-16 px-10 min-w-[220px] text-[10px] tracking-[0.3em] font-black ${
-                    added ? 'bg-green-500/20 border-green-500/50 text-green-400' : ''
+                  className={`luxury-btn flex-1 h-20 rounded-[2.5rem] font-black text-[11px] tracking-[0.4em] uppercase transition-all duration-700 ${
+                    added ? 'bg-green-500/20 border-green-500/50 text-green-400' : 'bg-white text-matte-black'
                   }`}
                 >
-                  {adding ? (
-                    <div className="flex items-center gap-3"><Loader2 size={18} className="animate-spin" /> SYNCING</div>
-                  ) : added ? (
-                    <div className="flex items-center gap-3"><Check size={18} /> ACQUIRED</div>
-                  ) : (
-                    "INITIALIZE ORDER"
-                  )}
-                </button>
+                  <AnimatePresence mode="wait">
+                    {adding ? (
+                      <motion.div key="l" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex items-center gap-3"><Loader2 size={20} className="animate-spin" /> SYNCING</motion.div>
+                    ) : added ? (
+                      <motion.div key="a" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex items-center gap-3"><Check size={20} /> ACQUIRED</motion.div>
+                    ) : (
+                      "INITIALIZE ACQUISITION"
+                    )}
+                  </AnimatePresence>
+                </motion.button>
+              </div>
+
+              {/* Guarantees */}
+              <div className="flex items-center justify-between pt-4 border-t border-white/5">
+                <div className="flex items-center gap-3 text-[8px] font-black uppercase text-white/30 tracking-widest">
+                  <ShieldCheck size={14} className="text-orange-500" /> Secure Protocol
+                </div>
+                <div className="flex items-center gap-3 text-[8px] font-black uppercase text-white/30 tracking-widest">
+                  <Zap size={14} className="text-orange-500" /> Priority Build
+                </div>
+                <div className="flex items-center gap-3 text-[8px] font-black uppercase text-white/30 tracking-widest">
+                  <Sparkles size={14} className="text-orange-500" /> Elite Grade
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      </div>
-
-      {/* Cinematic HUD Footer */}
-      <div className="max-w-7xl mx-auto w-full mt-12 pt-12 border-t border-white/5 flex flex-wrap justify-between gap-12 opacity-40 hover:opacity-100 transition-opacity duration-1000">
-        <div className="flex gap-16">
-          <div className="space-y-2">
-            <p className="text-[8px] font-black tracking-[0.4em] uppercase text-luxury-cyan">Polling Rate</p>
-            <p className="text-xs font-bold text-white tracking-widest">8000Hz HYPER-POLLING</p>
-          </div>
-          <div className="space-y-2">
-            <p className="text-[8px] font-black tracking-[0.4em] uppercase text-luxury-violet">Response</p>
-            <p className="text-xs font-bold text-white tracking-widest">0.2ms OPTICAL ACTUATION</p>
-          </div>
-          <div className="space-y-2">
-            <p className="text-[8px] font-black tracking-[0.4em] uppercase text-indigo-400">Durability</p>
-            <p className="text-xs font-bold text-white tracking-widest">100M KEYPRESS LIFESPAN</p>
-          </div>
-        </div>
-        
-        <div className="flex items-center gap-4 glasswave px-6 py-4 rounded-3xl">
-          <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse shadow-[0_0_10px_#22c55e]" />
-          <p className="text-[9px] font-black tracking-widest text-white uppercase">Neural Link Established / Secure Protocol</p>
         </div>
       </div>
     </div>

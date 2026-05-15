@@ -194,9 +194,12 @@ const seedData = async () => {
         price: 55.03, original_price: 69.99, category: 'Mechanical Keyboards',
         image_url: 'https://ae-pic-a1.aliexpress-media.com/kf/S3a4550ec52b849fdbd82796c7764ff9dN.png',
         variants: JSON.stringify([
-          { id: 'sw-red', name: 'Red Switch', type: 'Linear', color: '#ff3131', glow: 'rgba(255, 49, 49, 0.5)', description: 'Smooth and quiet' },
-          { id: 'sw-blue', name: 'Blue Switch', type: 'Clicky', color: '#00f0ff', glow: 'rgba(0, 240, 255, 0.5)', description: 'Tactile and clicky' },
-          { id: 'sw-brown', name: 'Brown Switch', type: 'Tactile', color: '#ff8c00', glow: 'rgba(255, 140, 0, 0.5)', description: 'Balanced and tactile' }
+          { id: 'angle-front', name: 'Front Angle', image_url: 'https://ae-pic-a1.aliexpress-media.com/kf/S3a4550ec52b849fdbd82796c7764ff9dN.png', color: '#ff8c00', glow: 'rgba(255, 140, 0, 0.4)' },
+          { id: 'angle-side', name: 'Side Angle', image_url: 'https://ae-pic-a1.aliexpress-media.com/kf/S9fb5434d707b46d3a66970172e92c6328.png', color: '#ff8c00', glow: 'rgba(255, 140, 0, 0.4)' },
+          { id: 'angle-rgb', name: 'RGB Side Lighting', image_url: 'https://ae-pic-a1.aliexpress-media.com/kf/S6c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0cE.png', color: '#ff8c00', glow: 'rgba(255, 140, 0, 0.4)' },
+          { id: 'angle-top', name: 'Top View', image_url: 'https://ae-pic-a1.aliexpress-media.com/kf/S7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7aM.png', color: '#ff8c00', glow: 'rgba(255, 140, 0, 0.4)' },
+          { id: 'angle-back', name: 'Back View', image_url: 'https://ae-pic-a1.aliexpress-media.com/kf/S8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8bP.png', color: '#ff8c00', glow: 'rgba(255, 140, 0, 0.4)' },
+          { id: 'angle-perspective', name: 'Perspective View', image_url: 'https://ae-pic-a1.aliexpress-media.com/kf/S9c9c9c9c9c9c9c9c9c9c9c9c9c9c9c9cQ.png', color: '#ff8c00', glow: 'rgba(255, 140, 0, 0.4)' }
         ]),
         badge: 'ELITE', rating: 4.8, review_count: 1240,
         in_stock: 1, featured: 1, platform: 'PC, Mac', genre: 'Mechanical Keyboard',
