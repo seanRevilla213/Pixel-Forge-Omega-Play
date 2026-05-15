@@ -20,7 +20,7 @@ const ProductDetails = () => {
   const [adding, setAdding] = useState(false);
   const [added, setAdded] = useState(false);
   const [quantity, setQuantity] = useState(1);
-  const { addItem } = useCart();
+  const { addItem, formatPHP } = useCart();
   const { device, isMobile } = useResponsive();
   const contentRef = useRef(null);
 
@@ -203,6 +203,7 @@ const ProductDetails = () => {
             </div>
         </div>
       </div>
+    </div>
     </div>
     </PageTransition>
   );
