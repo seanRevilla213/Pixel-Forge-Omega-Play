@@ -118,11 +118,6 @@ export const PremiumControllerShowcase: React.FC<PremiumControllerShowcaseProps>
                   src={activeVariant.image_url} 
                   alt={activeVariant.name}
                   className="max-w-full h-auto drop-shadow-[0_50px_50px_rgba(0,0,0,0.5)] transition-all duration-700"
-                  style={{ 
-                    filter: activeVariant.id === 'v3' ? 'brightness(1.5) sepia(1) hue-rotate(190deg) saturate(5)' : 
-                            activeVariant.id === 'v4' ? 'brightness(1.5) sepia(1) hue-rotate(330deg) saturate(5)' : 
-                            activeVariant.id === 'v5' ? 'brightness(2) grayscale(0.5) contrast(1.5)' : 'none'
-                  }}
                 />
                 
                 {/* Dynamic Reflection/Shadow */}
