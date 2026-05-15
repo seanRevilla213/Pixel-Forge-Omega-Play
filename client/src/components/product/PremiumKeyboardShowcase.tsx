@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence, useSpring, useMotionValue } from 'framer-motion';
-import { ChevronRight, ChevronLeft, Plus, Minus, Loader2, Check, Star, Cpu, Sparkles, Layers, MousePointer2 } from 'lucide-react';
-import type { Product, ProductVariant } from '../../types';
+import { Plus, Minus, Loader2, Check, Star, Cpu, Sparkles, Layers } from 'lucide-react';
+import type { Product } from '../../types';
 import { useCart } from '../../context/CartContext';
 import { AuroraBackground } from '../ui/ImmersiveEffects';
 import api from '../../api/axiosInstance';
@@ -18,7 +18,6 @@ export const PremiumKeyboardShowcase: React.FC<PremiumKeyboardShowcaseProps> = (
   const [variants, setVariants] = useState<any[]>([]);
   const [variantIndex, setVariantIndex] = useState(0);
   const [quantity, setQuantity] = useState(1);
-  const [isRotating, setIsRotating] = useState(false);
   const [adding, setAdding] = useState(false);
   const [added, setAdded] = useState(false);
   const [loading, setLoading] = useState(false);
