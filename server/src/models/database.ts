@@ -192,7 +192,7 @@ const seedData = async () => {
         id: uuidv4(), name: 'Redragon K670 Argo', slug: 'redragon-k670-argo',
         description: 'Durable high-performance mechanical keyboard with premium build quality and excellent user ratings.',
         price: 55.03, original_price: 69.99, category: 'Mechanical Keyboards',
-        image_url: '/products/keyboard-redragon.jpg',
+        image_url: 'https://ae-pic-a1.aliexpress-media.com/kf/S3a4550ec52b849fdbd82796c7764ff9dN.png',
         variants: JSON.stringify([
           { id: 'sw-red', name: 'Red Switch', type: 'Linear', color: '#ff3131', glow: 'rgba(255, 49, 49, 0.5)', description: 'Smooth and quiet' },
           { id: 'sw-blue', name: 'Blue Switch', type: 'Clicky', color: '#00f0ff', glow: 'rgba(0, 240, 255, 0.5)', description: 'Tactile and clicky' },
@@ -206,7 +206,7 @@ const seedData = async () => {
         id: uuidv4(), name: 'Razer BlackWidow V4', slug: 'razer-blackwidow-v4',
         description: 'The iconic mechanical gaming keyboard with Razer Chroma RGB and dedicated macro keys.',
         price: 169.99, original_price: 189.99, category: 'Mechanical Keyboards',
-        image_url: '/products/keyboard-razer.jpg',
+        image_url: 'https://ae-pic-a1.aliexpress-media.com/kf/Sf3b2a5ef122b4632832569e200c59807E.png',
         variants: JSON.stringify([
           { id: 'sw-green', name: 'Green Switch', type: 'Clicky', color: '#39ff14', glow: 'rgba(57, 255, 20, 0.5)', description: 'Tactile and clicky' },
           { id: 'sw-yellow', name: 'Yellow Switch', type: 'Linear', color: '#ffff00', glow: 'rgba(255, 255, 0, 0.5)', description: 'Smooth and silent' }
@@ -219,7 +219,7 @@ const seedData = async () => {
         id: uuidv4(), name: 'Logitech G Pro X', slug: 'logitech-g-pro-x',
         description: 'Pro-grade performance with swappable switches and a compact tenkeyless design.',
         price: 149.99, original_price: null, category: 'Mechanical Keyboards',
-        image_url: '/products/keyboard-logitech.jpg',
+        image_url: 'https://ae-pic-a1.aliexpress-media.com/kf/Sf47d0e417935492db2c91811e51b68140.png',
         variants: JSON.stringify([
           { id: 'sw-gx-blue', name: 'GX Blue', type: 'Clicky', color: '#0062ff', glow: 'rgba(0, 98, 255, 0.5)', description: 'Classic clicky' },
           { id: 'sw-gx-red', name: 'GX Red', type: 'Linear', color: '#ff3131', glow: 'rgba(255, 49, 49, 0.5)', description: 'Pro-grade linear' }
@@ -232,7 +232,7 @@ const seedData = async () => {
         id: uuidv4(), name: 'Keychron Q1 Pro', slug: 'keychron-q1-pro',
         description: 'Fully customizable QMK/VIA wireless mechanical keyboard with a CNC aluminum body.',
         price: 199.99, original_price: null, category: 'Mechanical Keyboards',
-        image_url: '/products/keyboard-keychron.jpg',
+        image_url: 'https://ae-pic-a1.aliexpress-media.com/kf/S553315a6b7d3419894e7769919f972b2r.png',
         variants: JSON.stringify([
           { id: 'sw-k-red', name: 'K Pro Red', type: 'Linear', color: '#ff4d4d', glow: 'rgba(255, 77, 77, 0.5)', description: 'Premium linear' },
           { id: 'sw-k-brown', name: 'K Pro Brown', type: 'Tactile', color: '#d2691e', glow: 'rgba(210, 105, 30, 0.5)', description: 'Premium tactile' }
@@ -245,7 +245,7 @@ const seedData = async () => {
         id: uuidv4(), name: 'Royal Kludge RK61', slug: 'royal-kludge-rk61',
         description: 'Ultra-compact 60% mechanical keyboard with multi-device wireless connectivity.',
         price: 49.99, original_price: 59.99, category: 'Mechanical Keyboards',
-        image_url: '/products/keyboard-rk.jpg',
+        image_url: 'https://ae-pic-a1.aliexpress-media.com/kf/S4237d825f77846f89025c898c64188b49.png',
         variants: JSON.stringify([
           { id: 'sw-rk-blue', name: 'RK Blue', type: 'Clicky', color: '#00f0ff', glow: 'rgba(0, 240, 255, 0.5)', description: 'Tactile and clicky' },
           { id: 'sw-rk-red', name: 'RK Red', type: 'Linear', color: '#ff3131', glow: 'rgba(255, 49, 49, 0.5)', description: 'Smooth linear' }
@@ -258,7 +258,7 @@ const seedData = async () => {
         id: uuidv4(), name: 'Corsair K100 RGB', slug: 'corsair-k100-rgb',
         description: 'The pinnacle of Corsair keyboards, featuring AXON hyper-processing technology and OPX optical-mechanical switches.',
         price: 249.99, original_price: null, category: 'Mechanical Keyboards',
-        image_url: '/products/keyboard-corsair.jpg',
+        image_url: 'https://ae-pic-a1.aliexpress-media.com/kf/S9a3b6831d1024e659b85b4d4f8d55734Z.png',
         variants: JSON.stringify([
           { id: 'sw-opx', name: 'OPX Optical', type: 'Linear', color: '#ffff00', glow: 'rgba(255, 255, 0, 0.5)', description: 'Hyper-fast optical' }
         ]),
@@ -270,7 +270,7 @@ const seedData = async () => {
         id: uuidv4(), name: 'SteelSeries Apex Pro', slug: 'steelseries-apex-pro',
         description: 'The worlds fastest keyboard with OmniPoint 2.0 adjustable mechanical switches.',
         price: 199.99, original_price: 219.99, category: 'Mechanical Keyboards',
-        image_url: '/products/keyboard-steelseries.jpg',
+        image_url: 'https://ae-pic-a1.aliexpress-media.com/kf/S8f96e417a80b4393963488887e221379C.png',
         variants: JSON.stringify([
           { id: 'sw-omni', name: 'OmniPoint', type: 'Adjustable', color: '#ff4500', glow: 'rgba(255, 69, 0, 0.5)', description: 'Adjustable actuation' }
         ]),
@@ -282,7 +282,7 @@ const seedData = async () => {
         id: uuidv4(), name: 'HyperX Alloy Origins', slug: 'hyperx-alloy-origins',
         description: 'Compact, sturdy keyboard featuring custom HyperX mechanical switches designed for style and performance.',
         price: 109.99, original_price: null, category: 'Mechanical Keyboards',
-        image_url: '/products/keyboard-hyperx.jpg',
+        image_url: 'https://ae-pic-a1.aliexpress-media.com/kf/S053075a3637e4088a531e847688849b2t.png',
         variants: JSON.stringify([
           { id: 'sw-hx-red', name: 'HyperX Red', type: 'Linear', color: '#ff0000', glow: 'rgba(255, 0, 0, 0.5)', description: 'Fast and fluid' },
           { id: 'sw-hx-aqua', name: 'HyperX Aqua', type: 'Tactile', color: '#00ffff', glow: 'rgba(0, 255, 255, 0.5)', description: 'Tactile response' }
