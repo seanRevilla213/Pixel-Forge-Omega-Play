@@ -149,9 +149,9 @@ const Products = () => {
                 </div>
               ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
-                  {products.map((product) => (
+                  {products?.map((product, i) => (
                     <motion.div
-                      key={product.id}
+                      key={product?.id || i}
                       className="product-card group glasswave-card p-6 flex flex-col h-full"
                     >
                       <Link to={`/products/${product.slug}`} className="relative aspect-[4/5] rounded-[2rem] overflow-hidden bg-white/5 mb-8">

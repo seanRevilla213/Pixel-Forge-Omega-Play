@@ -113,8 +113,8 @@ const Landing = () => {
                   <div key={i} className="glasswave rounded-[3rem] h-[500px] animate-pulse" />
                 ))
               ) : (
-                featured.map((product, i) => (
-                  <ProductCard key={product.id} product={product} index={i} />
+                featured?.map((product, i) => (
+                  <ProductCard key={product?.id || i} product={product} index={i} />
                 ))
               )}
             </div>

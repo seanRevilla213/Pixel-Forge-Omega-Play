@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronRight } from 'lucide-react';
-import { Product } from '../../types';
+import type { Product } from '../../types';
 import { useCart } from '../../context/CartContext';
 import { LuxuryCartButton } from './LuxuryCartButton';
 

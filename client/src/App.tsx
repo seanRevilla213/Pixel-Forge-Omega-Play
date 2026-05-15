@@ -7,6 +7,7 @@ import { CartProvider } from './context/CartContext';
 import Navbar from './components/layout/Navbar';
 import Footer from './components/layout/Footer';
 import { AuthGuard, AdminGuard, GuestGuard } from './components/guards/Guards';
+import ErrorBoundary from './components/guards/ErrorBoundary';
 
 // Lazy loaded pages for code splitting
 const Landing = lazy(() => import('./pages/Landing'));
@@ -23,9 +24,9 @@ const AuthPages = lazy(() => import('./pages/Auth').then(m => ({ default: m.Logi
 const RegisterPage = lazy(() => import('./pages/Auth').then(m => ({ default: m.Register })));
 
 const PageLoader = () => (
-  <div className="min-h-screen flex items-center justify-center bg-dark-900">
+  <div className="min-h-screen flex items-center justify-center bg-matte-black">
     <div className="flex flex-col items-center gap-4">
-      <div className="w-12 h-12 border-2 border-neon-cyan border-t-transparent rounded-full animate-spin" />
+      <div className="w-12 h-12 border-2 border-luxury-cyan border-t-transparent rounded-full animate-spin" />
       <p className="text-text-secondary text-sm animate-pulse">Loading...</p>
     </div>
   </div>
@@ -36,12 +37,13 @@ function App() {
     <BrowserRouter>
       <AuthProvider>
         <CartProvider>
-          <div className="min-h-screen bg-dark-900 text-text-primary flex flex-col">
+          <div className="min-h-screen bg-matte-black text-text-primary flex flex-col">
             <Navbar />
             <main className="flex-1">
               <Suspense fallback={<PageLoader />}>
-                <AnimatePresence mode="wait">
-                  <Routes>
+                <ErrorBoundary>
+                  <AnimatePresence mode="wait">
+                    <Routes>
                     {/* Public Routes */}
                     <Route path="/" element={<Landing />} />
                     <Route path="/products" element={<Products />} />
@@ -64,14 +66,15 @@ function App() {
                     <Route path="*" element={
                       <div className="min-h-screen pt-24 flex items-center justify-center">
                         <div className="text-center">
-                          <h1 className="font-heading text-6xl font-bold text-neon-cyan mb-4">404</h1>
+                          <h1 className="font-heading text-6xl font-bold text-luxury-cyan mb-4">404</h1>
                           <p className="text-text-secondary mb-6">Page not found</p>
-                          <a href="/" className="text-neon-cyan hover:text-neon-magenta transition-colors">Go Home</a>
+                          <a href="/" className="text-luxury-cyan hover:text-luxury-cyan/80 transition-colors">Go Home</a>
                         </div>
                       </div>
                     } />
                   </Routes>
                 </AnimatePresence>
+                </ErrorBoundary>
               </Suspense>
             </main>
             <Footer />

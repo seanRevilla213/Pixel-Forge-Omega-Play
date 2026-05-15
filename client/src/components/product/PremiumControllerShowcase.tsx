@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence, useScroll, useTransform, useSpring, useMotionValue } from 'framer-motion';
 import { ChevronRight, ChevronLeft, Plus, Minus, Loader2, Check, Star } from 'lucide-react';
-import { Product, ProductVariant } from '../../types';
+import type { Product, ProductVariant } from '../../types';
 import { useCart } from '../../context/CartContext';
 import { AuroraBackground, AmbientGlow } from '../ui/ImmersiveEffects';
 import gsap from 'gsap';
