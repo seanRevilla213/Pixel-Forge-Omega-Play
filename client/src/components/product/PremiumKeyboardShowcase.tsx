@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { motion, AnimatePresence, useSpring, useMotionValue, useTransform } from 'framer-motion';
-import { ChevronRight, ChevronLeft, Plus, Minus, Loader2, Check, Star, Cpu, Sparkles, Layers, Eye, ShieldCheck, Zap } from 'lucide-react';
+import { motion, AnimatePresence, useSpring, useMotionValue } from 'framer-motion';
+import { Plus, Minus, Loader2, Check, Sparkles, Eye, ShieldCheck, Zap } from 'lucide-react';
 import type { Product } from '../../types';
 import { useCart } from '../../context/CartContext';
 import { AuroraBackground } from '../ui/ImmersiveEffects';
