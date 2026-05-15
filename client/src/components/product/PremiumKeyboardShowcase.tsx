@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence, useSpring, useMotionValue } from 'framer-motion';
 import { Plus, Minus, Loader2, Check, Sparkles, Eye, ShieldCheck, Zap } from 'lucide-react';
 import type { Product } from '../../types';
@@ -22,13 +22,11 @@ export const PremiumKeyboardShowcase: React.FC<PremiumKeyboardShowcaseProps> = (
   const [added, setAdded] = useState(false);
   const [loading, setLoading] = useState(false);
   
-  // Mouse tracking for spotlight and floating effects
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
   const springX = useSpring(mouseX, { stiffness: 50, damping: 20 });
   const springY = useSpring(mouseY, { stiffness: 50, damping: 20 });
 
-  // Magnetic button effect values
   const btnX = useMotionValue(0);
   const btnY = useMotionValue(0);
   const btnSpringX = useSpring(btnX, { stiffness: 100, damping: 10 });
@@ -77,13 +75,13 @@ export const PremiumKeyboardShowcase: React.FC<PremiumKeyboardShowcaseProps> = (
     if (keyboardRef.current) {
       const centerX = rect.width / 2;
       const centerY = rect.height / 2;
-      const moveX = (x - centerX) / 40;
-      const moveY = (y - centerY) / 40;
+      const moveX = (x - centerX) / 50;
+      const moveY = (y - centerY) / 50;
       gsap.to(keyboardRef.current, {
         rotateX: -moveY,
         rotateY: moveX,
-        duration: 1.2,
-        ease: "power3.out"
+        duration: 1.5,
+        ease: "power2.out"
       });
     }
   };
@@ -92,8 +90,8 @@ export const PremiumKeyboardShowcase: React.FC<PremiumKeyboardShowcaseProps> = (
     const rect = e.currentTarget.getBoundingClientRect();
     const x = e.clientX - (rect.left + rect.width / 2);
     const y = e.clientY - (rect.top + rect.height / 2);
-    btnX.set(x * 0.4);
-    btnY.set(y * 0.4);
+    btnX.set(x * 0.35);
+    btnY.set(y * 0.35);
   };
 
   const handleMagneticLeave = () => {
@@ -128,197 +126,179 @@ export const PremiumKeyboardShowcase: React.FC<PremiumKeyboardShowcaseProps> = (
     <div 
       ref={containerRef}
       onMouseMove={handleMouseMove}
-      className="relative min-h-screen bg-matte-black overflow-hidden flex flex-col pt-32 pb-12 px-6"
+      className="relative min-h-screen bg-[#050505] overflow-hidden flex flex-col pt-40 pb-20 px-8"
     >
       <AuroraBackground />
       
-      {/* Orange Ambient Glow Spheroids */}
-      <div className="absolute top-[20%] left-[-10%] w-[600px] h-[600px] bg-orange-500/10 blur-[120px] rounded-full animate-pulse pointer-events-none" />
-      <div className="absolute bottom-[-10%] right-[-5%] w-[500px] h-[500px] bg-amber-600/10 blur-[100px] rounded-full pointer-events-none" />
+      {/* Premium Orange Ambient Lighting */}
+      <div className="absolute top-[10%] left-[-5%] w-[800px] h-[800px] bg-orange-600/5 blur-[160px] rounded-full pointer-events-none" />
+      <div className="absolute bottom-[-15%] right-[-10%] w-[700px] h-[700px] bg-amber-500/5 blur-[140px] rounded-full pointer-events-none" />
 
-      {/* Floating Particles */}
-      <div className="absolute inset-0 pointer-events-none overflow-hidden">
-        {[...Array(15)].map((_, i) => (
-          <motion.div
-            key={i}
-            initial={{ 
-              x: Math.random() * 2000, 
-              y: Math.random() * 1000,
-              opacity: 0.1,
-              scale: Math.random() * 0.5
-            }}
-            animate={{
-              y: [null, -200],
-              opacity: [0.1, 0]
-            }}
-            transition={{
-              duration: Math.random() * 15 + 10,
-              repeat: Infinity,
-              ease: "linear"
-            }}
-            className="absolute w-1 h-1 bg-amber-400 rounded-full blur-[1px]"
-          />
-        ))}
-      </div>
-
-      {/* Brand Selection Overlay */}
-      <div className="relative z-30 max-w-7xl mx-auto w-full mb-16">
-        <div className="flex flex-col gap-6">
-          <p className="text-[10px] font-black tracking-[0.5em] text-white/30 uppercase text-center lg:text-left">Select Manufacturer</p>
-          <div className="flex flex-wrap gap-3 justify-center lg:justify-start">
-            {brands.map(brand => (
-              <button
+      {/* Brand Navigation Bar */}
+      <div className="relative z-40 max-w-7xl mx-auto w-full mb-24">
+        <div className="flex flex-col items-center lg:items-start gap-8">
+          <motion.div 
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            className="flex items-center gap-4"
+          >
+            <div className="w-12 h-px bg-orange-500/50" />
+            <span className="text-[10px] font-black tracking-[0.6em] text-white/40 uppercase">Manufacturer Index</span>
+          </motion.div>
+          <div className="flex flex-wrap gap-4 justify-center lg:justify-start">
+            {brands.map((brand, i) => (
+              <motion.button
                 key={brand}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: i * 0.05 }}
                 onClick={() => handleBrandSwitch(brand)}
                 disabled={!allKeyboards.some(k => k.brand === brand)}
-                className={`relative px-8 py-4 rounded-3xl text-[10px] font-black tracking-widest uppercase transition-all duration-700 ${
+                className={`group relative px-10 py-5 rounded-[2rem] text-[10px] font-black tracking-[0.2em] uppercase transition-all duration-700 overflow-hidden ${
                   currentProduct.brand === brand 
-                    ? 'bg-white text-matte-black scale-110 shadow-[0_20px_40px_rgba(255,165,0,0.2)]' 
-                    : 'glasswave text-text-secondary hover:text-white hover:bg-white/10 disabled:opacity-20'
+                    ? 'bg-white text-black scale-105 shadow-[0_30px_60px_rgba(255,165,0,0.25)]' 
+                    : 'glasswave text-white/40 hover:text-white hover:bg-white/5 disabled:opacity-10'
                 }`}
               >
-                {brand}
-              </button>
+                <span className="relative z-10">{brand}</span>
+                {currentProduct.brand === brand && (
+                  <motion.div 
+                    layoutId="brand-active-glow"
+                    className="absolute inset-0 bg-gradient-to-tr from-orange-500/10 to-transparent"
+                  />
+                )}
+              </motion.button>
             ))}
           </div>
         </div>
       </div>
 
-      <div className="max-w-screen-2xl w-full mx-auto grid grid-cols-1 lg:grid-cols-12 gap-20 items-center relative z-10 flex-1">
+      <div className="max-w-[1800px] w-full mx-auto grid grid-cols-1 lg:grid-cols-12 gap-24 items-center relative z-20">
         
-        {/* Left Side: Perspective Stage (7/12 cols) */}
-        <div className="lg:col-span-7 relative flex items-center justify-center min-h-[500px] lg:min-h-[700px]">
-          {/* Mouse-follow Ambient Spotlight */}
+        {/* Left: Product Stage */}
+        <div className="lg:col-span-7 relative flex items-center justify-center">
+          {/* Mouse-follow spotlight */}
           <motion.div 
             style={{ 
               left: springX, 
               top: springY,
-              background: `radial-gradient(600px circle at center, ${activeAngle.glow}, transparent 80%)`
+              background: `radial-gradient(500px circle at center, ${activeAngle.glow || 'rgba(255,165,0,0.15)'}, transparent 80%)`
             }}
-            className="absolute pointer-events-none w-[1200px] h-[1200px] -translate-x-1/2 -translate-y-1/2 z-0 opacity-40 blur-[120px]"
+            className="absolute pointer-events-none w-[1000px] h-[1000px] -translate-x-1/2 -translate-y-1/2 z-0 opacity-30 blur-[100px]"
           />
 
           <AnimatePresence mode="wait">
             {!loading && (
               <motion.div
                 key={currentProduct.id + activeAngleIndex}
-                initial={{ rotateY: -45, opacity: 0, scale: 0.9, filter: 'blur(20px)' }}
-                animate={{ rotateY: 0, opacity: 1, scale: 1, filter: 'blur(0px)' }}
-                exit={{ rotateY: 45, opacity: 0, scale: 0.9, filter: 'blur(20px)' }}
-                transition={{ duration: 1, ease: [0.23, 1, 0.32, 1] }}
-                className="relative z-20 w-full flex items-center justify-center perspective-2000"
+                initial={{ opacity: 0, scale: 0.95, y: 20, rotateX: 10 }}
+                animate={{ opacity: 1, scale: 1, y: 0, rotateX: 0 }}
+                exit={{ opacity: 0, scale: 1.05, y: -20, rotateX: -10 }}
+                transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
+                className="relative z-10 w-full flex flex-col items-center justify-center perspective-3000"
               >
-                <div ref={keyboardRef} className="relative preserve-3d">
+                <div ref={keyboardRef} className="relative preserve-3d group/keyboard">
                   <motion.img 
                     src={activeAngle.image_url} 
                     alt={currentProduct.name}
-                    onError={(e) => {
-                      (e.target as HTMLImageElement).src = currentProduct.image_url;
-                    }}
-                    className="max-w-[110%] h-auto drop-shadow-[0_100px_120px_rgba(0,0,0,0.7)] rounded-[3rem]"
+                    onError={(e) => { (e.target as HTMLImageElement).src = currentProduct.image_url; }}
+                    className="max-w-full h-auto drop-shadow-[0_120px_150px_rgba(0,0,0,0.8)] select-none pointer-events-none"
                   />
                   
-                  {/* Floating Idle Loop */}
+                  {/* Floating Idle with reflection */}
                   <motion.div 
-                    animate={{ y: [0, -20, 0] }}
-                    transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
-                    className="absolute -inset-8 border border-white/5 rounded-[4rem] pointer-events-none"
+                    animate={{ y: [0, -25, 0] }}
+                    transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
+                    className="absolute -bottom-20 left-1/2 -translate-x-1/2 w-4/5 h-20 bg-white/5 blur-3xl rounded-full opacity-20 pointer-events-none"
                   />
-
-                  {/* Dynamic RGB Reflections */}
-                  <div className="absolute inset-0 rounded-[3rem] bg-gradient-to-tr from-orange-500/10 via-transparent to-white/5 pointer-events-none" />
                 </div>
               </motion.div>
             )}
           </AnimatePresence>
         </div>
 
-        {/* Right Side: Product Matrix (5/12 cols) */}
+        {/* Right: Interaction Console */}
         <div className="lg:col-span-5 space-y-16">
           <div className="space-y-8">
             <div className="flex items-center gap-6">
-              <span className="text-[10px] font-black tracking-[0.6em] text-orange-500 uppercase">{currentProduct.brand} // ELITE</span>
-              <div className="h-px flex-1 bg-gradient-to-r from-orange-500/30 to-transparent" />
+              <span className="text-[11px] font-black tracking-[0.5em] text-orange-500 uppercase">{currentProduct.brand} Core Series</span>
+              <div className="h-[2px] flex-1 bg-gradient-to-r from-orange-500/20 to-transparent" />
             </div>
             
-            <h1 className="font-heading text-6xl lg:text-8xl font-black text-white leading-none tracking-tighter">
+            <h1 className="font-heading text-7xl lg:text-9xl font-black text-white leading-[0.85] tracking-tighter">
               {currentProduct.name}
             </h1>
             
-            <p className="text-text-secondary text-xl leading-relaxed font-medium opacity-50 max-w-lg">
+            <p className="text-white/40 text-xl leading-relaxed font-medium max-w-lg">
               {currentProduct.description}
             </p>
           </div>
 
-          {/* VIEW OTHER ANGLE Gallery System */}
+          {/* Angle Gallery with Improved UI */}
           <div className="space-y-8">
-            <div className="flex items-center justify-between">
-              <h3 className="text-[10px] font-black tracking-[0.5em] text-white/40 uppercase">VIEW OTHER ANGLE</h3>
-              <div className="flex items-center gap-2 text-[10px] font-bold text-orange-500">
-                <Eye size={14} /> <span>INTERACTIVE PREVIEW</span>
+            <div className="flex items-center justify-between px-2">
+              <div className="flex items-center gap-3">
+                <Eye size={14} className="text-orange-500" />
+                <h3 className="text-[10px] font-black tracking-[0.4em] text-white/50 uppercase">Gallery Selection</h3>
               </div>
+              <span className="text-[9px] font-bold text-white/20 uppercase tracking-[0.2em]">{angles.length} Perspective Slots</span>
             </div>
             
-            <div className="flex flex-wrap justify-center gap-4">
+            <div className="flex flex-wrap gap-4">
               {angles.map((angle, i) => (
                 <button
                   key={angle.id}
                   onClick={() => setActiveAngleIndex(i)}
-                  className={`group relative aspect-[4/3] rounded-[2rem] overflow-hidden transition-all duration-700 ${
-                    activeAngleIndex === i ? 'glasswave-strong scale-105 shadow-[0_0_40px_rgba(255,165,0,0.3)]' : 'glasswave hover:bg-white/5'
-                  }`}
+                  className={`group relative w-24 h-24 lg:w-32 lg:h-32 rounded-[2.5rem] overflow-hidden transition-all duration-700 ${
+                    activeAngleIndex === i 
+                      ? 'glasswave-strong scale-110 shadow-[0_0_50px_rgba(255,165,0,0.4)] border-orange-500/50' 
+                      : 'glasswave hover:bg-white/10 hover:scale-105 border-white/5'
+                  } border`}
                 >
                   <img 
                     src={angle.image_url} 
                     alt={angle.name} 
-                    onError={(e) => {
-                      (e.target as HTMLImageElement).src = currentProduct.image_url;
-                    }}
-                    className="w-full h-full object-cover opacity-40 group-hover:opacity-100 transition-opacity duration-700"
+                    onError={(e) => { (e.target as HTMLImageElement).src = currentProduct.image_url; }}
+                    className={`w-full h-full object-contain p-4 transition-all duration-700 ${
+                      activeAngleIndex === i ? 'opacity-100' : 'opacity-40 grayscale group-hover:opacity-80 group-hover:grayscale-0'
+                    }`}
                   />
-                  <div className={`absolute inset-0 transition-all duration-700 ${activeAngleIndex === i ? 'bg-orange-500/10' : 'bg-transparent group-hover:bg-white/5'}`} />
-                  
-                  {/* Active Indicator */}
                   {activeAngleIndex === i && (
                     <motion.div 
-                      layoutId="angle-active-indicator"
-                      className="absolute bottom-0 left-0 right-0 h-1 bg-orange-500 shadow-[0_-5px_15px_rgba(249,115,22,0.5)]"
+                      layoutId="gallery-active-line"
+                      className="absolute inset-0 bg-orange-500/5"
                     />
                   )}
-
-                  {/* Spotlight Hover */}
-                  <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity bg-gradient-to-tr from-orange-500/20 to-transparent pointer-events-none" />
                 </button>
               ))}
             </div>
           </div>
 
-          {/* Luxury Purchase Panel */}
-          <div className="glasswave-strong rounded-[4rem] p-12 border border-white/5 shadow-2xl relative overflow-hidden group/panel">
-            <div className="absolute inset-0 bg-gradient-to-br from-orange-500/5 via-transparent to-transparent opacity-0 group-hover/panel:opacity-100 transition-opacity duration-1000" />
+          {/* Purchase Controller */}
+          <div className="glasswave-strong rounded-[4rem] p-16 border border-white/5 relative overflow-hidden group/panel">
+            <div className="absolute inset-0 bg-gradient-to-br from-orange-500/[0.07] to-transparent opacity-0 group-hover/panel:opacity-100 transition-opacity duration-1000" />
             
-            <div className="relative z-10 flex flex-col gap-12">
-              <div className="flex items-center justify-between">
-                <div className="space-y-1">
-                  <p className="text-[9px] font-black tracking-[0.4em] text-white/30 uppercase">Unit Valuation</p>
-                  <p className="text-5xl font-black text-white tracking-tighter">
+            <div className="relative z-10 space-y-12">
+              <div className="flex items-end justify-between">
+                <div className="space-y-3">
+                  <p className="text-[10px] font-black tracking-[0.4em] text-white/20 uppercase">Acquisition Value</p>
+                  <p className="text-6xl font-black text-white tracking-tighter">
                     {formatPHP(currentProduct.price * quantity)}
                   </p>
                 </div>
-                <div className="text-right">
-                  <div className="flex items-center gap-2 justify-end mb-1">
+                <div className="flex flex-col items-end gap-2">
+                  <div className="flex items-center gap-3 glasswave px-4 py-2 rounded-full border-white/5">
                     <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
-                    <span className="text-[9px] font-black text-white/40 uppercase">Verified Stock</span>
+                    <span className="text-[10px] font-black text-white/60 tracking-widest uppercase">Live Stock</span>
                   </div>
-                  <p className="text-[10px] font-bold text-orange-500 tracking-widest uppercase">READY FOR DISPATCH</p>
                 </div>
               </div>
 
-              <div className="flex items-center gap-6">
-                <div className="flex items-center glasswave rounded-3xl h-20 p-2 border-white/10">
-                  <button onClick={() => setQuantity(q => Math.max(1, q - 1))} className="w-16 h-full flex items-center justify-center text-text-muted hover:text-white transition-colors"><Minus size={20} /></button>
-                  <span className="px-6 font-black text-2xl text-white min-w-[60px] text-center">{quantity}</span>
-                  <button onClick={() => setQuantity(q => Math.min(99, q + 1))} className="w-16 h-full flex items-center justify-center text-text-muted hover:text-white transition-colors"><Plus size={20} /></button>
+              <div className="flex flex-col sm:flex-row items-stretch gap-6">
+                <div className="flex items-center glasswave rounded-[2.5rem] h-24 px-4 border-white/5">
+                  <button onClick={() => setQuantity(q => Math.max(1, q - 1))} className="w-16 h-full flex items-center justify-center text-white/30 hover:text-white transition-colors"><Minus size={22} /></button>
+                  <span className="px-8 font-black text-3xl text-white min-w-[80px] text-center tabular-nums">{quantity}</span>
+                  <button onClick={() => setQuantity(q => Math.min(99, q + 1))} className="w-16 h-full flex items-center justify-center text-white/30 hover:text-white transition-colors"><Plus size={22} /></button>
                 </div>
 
                 <motion.button
@@ -327,32 +307,35 @@ export const PremiumKeyboardShowcase: React.FC<PremiumKeyboardShowcaseProps> = (
                   style={{ x: btnSpringX, y: btnSpringY }}
                   onClick={handleAddToCart}
                   disabled={adding}
-                  className={`luxury-btn flex-1 h-20 rounded-[2.5rem] font-black text-[11px] tracking-[0.4em] uppercase transition-all duration-700 ${
-                    added ? 'bg-green-500/20 border-green-500/50 text-green-400' : 'bg-white text-matte-black'
+                  className={`relative flex-1 h-24 rounded-[2.5rem] font-black text-[11px] tracking-[0.5em] uppercase transition-all duration-700 flex items-center justify-center gap-4 ${
+                    added ? 'bg-green-500 text-black shadow-[0_0_50px_rgba(34,197,94,0.4)]' : 'bg-white text-black hover:scale-105 active:scale-95 shadow-[0_40px_80px_rgba(255,255,255,0.1)]'
                   }`}
                 >
                   <AnimatePresence mode="wait">
                     {adding ? (
-                      <motion.div key="l" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex items-center gap-3"><Loader2 size={20} className="animate-spin" /> SYNCING</motion.div>
+                      <motion.div key="l" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex items-center gap-4"><Loader2 size={24} className="animate-spin" /> SYNCHRONIZING</motion.div>
                     ) : added ? (
-                      <motion.div key="a" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex items-center gap-3"><Check size={20} /> ACQUIRED</motion.div>
+                      <motion.div key="a" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex items-center gap-4"><Check size={24} /> ACQUIRED</motion.div>
                     ) : (
-                      "INITIALIZE ACQUISITION"
+                      <>INITIALIZE ACQUISITION <Zap size={18} className="text-orange-500" /></>
                     )}
                   </AnimatePresence>
                 </motion.button>
               </div>
 
-              {/* Guarantees */}
-              <div className="flex items-center justify-between pt-4 border-t border-white/5">
-                <div className="flex items-center gap-3 text-[8px] font-black uppercase text-white/30 tracking-widest">
-                  <ShieldCheck size={14} className="text-orange-500" /> Secure Protocol
+              {/* Verified Badge Row */}
+              <div className="grid grid-cols-3 gap-6 pt-8 border-t border-white/5">
+                <div className="flex flex-col items-center gap-3 text-center">
+                  <ShieldCheck size={20} className="text-orange-500/60" />
+                  <span className="text-[8px] font-black uppercase text-white/20 tracking-widest">Secure Build</span>
                 </div>
-                <div className="flex items-center gap-3 text-[8px] font-black uppercase text-white/30 tracking-widest">
-                  <Zap size={14} className="text-orange-500" /> Priority Build
+                <div className="flex flex-col items-center gap-3 text-center">
+                  <Zap size={20} className="text-orange-500/60" />
+                  <span className="text-[8px] font-black uppercase text-white/20 tracking-widest">Instant Sync</span>
                 </div>
-                <div className="flex items-center gap-3 text-[8px] font-black uppercase text-white/30 tracking-widest">
-                  <Sparkles size={14} className="text-orange-500" /> Elite Grade
+                <div className="flex flex-col items-center gap-3 text-center">
+                  <Sparkles size={20} className="text-orange-500/60" />
+                  <span className="text-[8px] font-black uppercase text-white/20 tracking-widest">Elite Grade</span>
                 </div>
               </div>
             </div>
