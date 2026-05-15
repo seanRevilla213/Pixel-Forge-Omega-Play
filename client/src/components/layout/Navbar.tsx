@@ -5,12 +5,14 @@ import { ShoppingCart, User, Menu, X, LogOut, LayoutGrid, Home, MessageSquare, S
 import { useAuth } from '../../context/AuthContext';
 import { useCart } from '../../context/CartContext';
 import { ResponsiveShow } from './ResponsiveWrapper';
+import { CartSidebar } from './CartSidebar';
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
   const [isMobileOpen, setIsMobileOpen] = useState(false);
+  const [isCartOpen, setIsCartOpen] = useState(false);
   const { user, isAuthenticated, logout } = useAuth();
   const { itemCount } = useCart();
   const location = useLocation();
@@ -18,7 +20,7 @@ const Navbar = () => {
   const handleScroll = useCallback(() => {
     const currentScrollY = window.scrollY;
     setIsScrolled(currentScrollY > 20);
-    if (currentScrollY > lastScrollY && currentScrollY > 80) setIsVisible(false);
+    if (currentScrollY > lastScrollY && currentScrollY > 100) setIsVisible(false);
     else setIsVisible(true);
     setLastScrollY(currentScrollY);
   }, [lastScrollY]);
@@ -31,89 +33,107 @@ const Navbar = () => {
   useEffect(() => setIsMobileOpen(false), [location]);
 
   const navLinks = [
-    { to: '/', label: 'Home', icon: Home },
-    { to: '/products', label: 'Shop', icon: LayoutGrid },
-    { to: '/contact', label: 'Contact', icon: MessageSquare },
+    { to: '/', label: 'HOME', icon: Home },
+    { to: '/products', label: 'INVENTORY', icon: LayoutGrid },
+    { to: '/contact', label: 'SUPPORT', icon: MessageSquare },
   ];
 
   return (
     <>
+      <CartSidebar isOpen={isCartOpen} onClose={() => setIsCartOpen(false)} />
+      
       <motion.nav
-        initial={{ y: -100 }}
-        animate={{ y: isVisible ? 20 : -100 }}
-        transition={{ type: 'spring', stiffness: 120, damping: 25 }}
-        className={`fixed left-1/2 -translate-x-1/2 z-50 w-[95%] max-w-7xl px-6 py-3 rounded-[2rem] transition-all duration-500 ${
-          isScrolled ? 'glass-strong shadow-2xl shadow-black/50' : 'glass border-transparent'
+        initial={{ y: -100, opacity: 0 }}
+        animate={{ y: isVisible ? 20 : -100, opacity: isVisible ? 1 : 0 }}
+        transition={{ type: 'spring', stiffness: 100, damping: 20 }}
+        className={`fixed left-1/2 -translate-x-1/2 z-50 w-[92%] max-w-6xl px-8 py-4 rounded-3xl transition-all duration-700 ease-[cubic-bezier(0.23,1,0.32,1)] ${
+          isScrolled ? 'glasswave-strong shadow-2xl backdrop-blur-3xl' : 'bg-transparent border-transparent'
         }`}
       >
         <div className="flex items-center justify-between">
-          {/* Logo */}
-          <Link to="/" className="flex items-center gap-3 group">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-neon-cyan via-neon-purple to-neon-pink flex items-center justify-center transform group-hover:rotate-12 transition-transform duration-500 shadow-lg shadow-neon-cyan/20">
-              <span className="font-heading font-black text-white text-xl">Ω</span>
+          {/* Minimal Logo */}
+          <Link to="/" className="flex items-center gap-4 group">
+            <div className="w-10 h-10 rounded-2xl bg-white/5 flex items-center justify-center border border-white/10 group-hover:scale-110 group-hover:rotate-6 transition-all duration-500 overflow-hidden">
+              <img 
+                src="https://images.mirror.co.uk/mirror/xbox-360-controller.jpg" 
+                alt="Pixel Forge Logo" 
+                className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500" 
+              />
             </div>
             <div className="hidden sm:block">
-              <h1 className="font-heading text-sm font-black tracking-widest text-white group-hover:text-neon-cyan transition-colors">
-                PIXEL FORGE
+              <h1 className="font-heading text-sm font-black tracking-[0.3em] text-white">
+                PIXEL<span className="text-luxury-violet">FORGE</span>
               </h1>
-              <p className="text-[9px] tracking-[0.4em] text-neon-purple font-bold uppercase">Omega Play</p>
+              <p className="text-[8px] tracking-[0.4em] text-text-muted font-bold uppercase opacity-60">Cyber Nexus 2077</p>
             </div>
           </Link>
 
-          {/* Desktop nav */}
-          <div className="hidden md:flex items-center gap-2">
+          {/* Luxury Links */}
+          <div className="hidden md:flex items-center gap-10">
             {navLinks.map((link) => (
               <Link
                 key={link.to}
                 to={link.to}
-                className={`relative px-6 py-2 text-xs font-bold tracking-widest uppercase transition-all duration-300 rounded-xl ${
-                  location.pathname === link.to ? 'text-neon-cyan' : 'text-text-secondary hover:text-white hover:bg-white/5'
+                className={`relative text-[10px] font-black tracking-[0.2em] uppercase transition-all duration-500 hover:text-white ${
+                  location.pathname === link.to ? 'text-white' : 'text-text-secondary'
                 }`}
               >
                 {link.label}
+                {location.pathname === link.to && (
+                  <motion.div 
+                    layoutId="nav-glow"
+                    className="absolute -bottom-2 left-0 right-0 h-[2px] bg-gradient-to-r from-luxury-violet to-luxury-cyan shadow-[0_0_10px_rgba(124,58,237,0.5)]"
+                  />
+                )}
               </Link>
             ))}
           </div>
 
-          {/* Right actions */}
-          <div className="flex items-center gap-3">
-            <button className="hidden sm:flex p-2.5 rounded-xl text-text-secondary hover:text-neon-cyan transition-all">
-              <Search size={20} />
+          {/* Actions */}
+          <div className="flex items-center gap-6">
+            <button className="hidden sm:block text-text-secondary hover:text-white transition-colors">
+              <Search size={18} />
             </button>
             
-            <Link to="/cart" className="relative p-2.5 rounded-xl text-text-secondary hover:text-neon-cyan transition-all bg-white/5">
-              <ShoppingCart size={20} />
+            <button 
+              onClick={() => setIsCartOpen(true)}
+              className="relative text-text-secondary hover:text-white transition-all group"
+            >
+              <ShoppingCart size={20} className="group-hover:scale-110 transition-transform" />
               <AnimatePresence>
                 {itemCount > 0 && (
                   <motion.span
-                    initial={{ scale: 0 }} animate={{ scale: 1 }} exit={{ scale: 0 }}
-                    className="absolute -top-1 -right-1 w-5 h-5 bg-gradient-to-r from-neon-pink to-neon-purple text-white text-[9px] font-black rounded-lg flex items-center justify-center shadow-lg"
+                    initial={{ scale: 0 }} 
+                    animate={{ scale: 1 }} 
+                    exit={{ scale: 0 }}
+                    key={itemCount} // Triggers animation on count change
+                    className="absolute -top-2 -right-2 w-5 h-5 bg-white text-matte-black text-[9px] font-black rounded-full flex items-center justify-center shadow-xl"
                   >
                     {itemCount}
                   </motion.span>
                 )}
               </AnimatePresence>
-            </Link>
+            </button>
 
             <ResponsiveShow isNot="mobile">
               {isAuthenticated ? (
-                <div className="flex items-center gap-2 pl-2 border-l border-white/10">
-                  <Link to={user?.role === 'admin' ? '/admin' : '/dashboard'} className="p-2.5 rounded-xl text-text-secondary hover:text-neon-cyan transition-all">
+                <div className="flex items-center gap-4 pl-4 border-l border-white/10">
+                  <Link to={user?.role === 'admin' ? '/admin' : '/dashboard'} className="text-text-secondary hover:text-white transition-all">
                     <User size={20} />
                   </Link>
-                  <button onClick={logout} className="p-2.5 rounded-xl text-text-secondary hover:text-neon-pink transition-all">
+                  <button onClick={logout} className="text-text-secondary hover:text-red-400 transition-all">
                     <LogOut size={20} />
                   </button>
                 </div>
               ) : (
-                <Link to="/login" className="px-6 py-2.5 bg-white/5 hover:bg-white/10 border border-white/10 hover:border-neon-cyan/50 rounded-xl text-xs font-black tracking-widest text-white transition-all uppercase">
-                  Sign In
+                <Link to="/login" className="px-8 py-2.5 bg-white text-matte-black hover:bg-opacity-90 rounded-2xl text-[10px] font-black tracking-widest transition-all uppercase text-center">
+                  ENTER
                 </Link>
               )}
             </ResponsiveShow>
 
             <ResponsiveShow is="mobile">
-              <button onClick={() => setIsMobileOpen(!isMobileOpen)} className="p-2.5 rounded-xl text-text-secondary hover:text-neon-cyan">
+              <button onClick={() => setIsMobileOpen(!isMobileOpen)} className="text-text-secondary hover:text-white">
                 {isMobileOpen ? <X size={24} /> : <Menu size={24} />}
               </button>
             </ResponsiveShow>
@@ -121,32 +141,32 @@ const Navbar = () => {
         </div>
       </motion.nav>
 
-      {/* Mobile Menu Overlay */}
+      {/* Luxury Mobile Overlay */}
       <AnimatePresence>
         {isMobileOpen && (
           <motion.div
-            initial={{ opacity: 0, scale: 0.95, y: 20 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: 0.95, y: 20 }}
-            className="fixed inset-4 z-[60] glass-strong rounded-[3rem] flex flex-col p-10 overflow-hidden"
+            initial={{ opacity: 0, backdropFilter: 'blur(0px)' }}
+            animate={{ opacity: 1, backdropFilter: 'blur(40px)' }}
+            exit={{ opacity: 0, backdropFilter: 'blur(0px)' }}
+            className="fixed inset-0 z-[60] bg-matte-black/40 flex flex-col items-center justify-center p-12"
           >
-            <div className="scanline" />
-            <div className="flex justify-between items-center mb-16">
-              <span className="font-heading font-black text-neon-cyan tracking-widest">SYSTEM MENU</span>
-              <button onClick={() => setIsMobileOpen(false)} className="p-3 bg-white/5 rounded-2xl text-text-muted">✕</button>
-            </div>
-            <div className="space-y-8">
+            <button onClick={() => setIsMobileOpen(false)} className="absolute top-10 right-10 p-4 glasswave rounded-full text-white">✕</button>
+            <div className="space-y-12 text-center">
               {navLinks.map((link) => (
-                <Link key={link.to} to={link.to} className="block text-4xl font-heading font-black text-white hover:text-neon-cyan transition-colors tracking-tighter">
+                <Link 
+                  key={link.to} 
+                  to={link.to} 
+                  className="block text-5xl font-heading font-black text-white hover:text-luxury-cyan transition-all tracking-tighter"
+                  onClick={() => setIsMobileOpen(false)}
+                >
                   {link.label}
                 </Link>
               ))}
-              <div className="pt-10 border-t border-white/10">
+              <div className="pt-12 border-t border-white/10">
                 {isAuthenticated ? (
-                  <div className="space-y-6">
-                    <Link to="/dashboard" className="block text-2xl text-text-secondary font-bold">DASHBOARD</Link>
-                    <button onClick={logout} className="text-2xl text-neon-pink font-bold">TERMINATE SESSION</button>
-                  </div>
+                  <button onClick={() => { logout(); setIsMobileOpen(false); }} className="text-2xl text-red-400 font-bold tracking-widest uppercase">TERMINATE SESSION</button>
                 ) : (
-                  <Link to="/login" className="block text-2xl text-neon-cyan font-bold tracking-widest">INITIALIZE AUTH</Link>
+                  <Link to="/login" className="text-2xl text-luxury-cyan font-bold tracking-[0.2em] uppercase">SYSTEM AUTH</Link>
                 )}
               </div>
             </div>

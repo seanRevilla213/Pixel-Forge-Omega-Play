@@ -1,11 +1,30 @@
 import { useEffect } from 'react';
 import { motion, useSpring, useMotionValue } from 'framer-motion';
 
-export const MouseGlow = () => {
+export const AuroraBackground = () => {
+  return (
+    <div className="aurora-bg">
+      <div 
+        className="aurora-sphere w-[800px] h-[800px] bg-luxury-violet top-[-20%] left-[-10%]" 
+        style={{ animationDuration: '25s' }} 
+      />
+      <div 
+        className="aurora-sphere w-[600px] h-[600px] bg-luxury-cyan bottom-[-10%] right-[-5%]" 
+        style={{ animationDuration: '30s', animationDirection: 'reverse' }} 
+      />
+      <div 
+        className="aurora-sphere w-[500px] h-[500px] bg-indigo-500 top-[40%] right-[20%]" 
+        style={{ animationDuration: '20s' }} 
+      />
+    </div>
+  );
+};
+
+export const AmbientGlow = () => {
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
 
-  const springConfig = { damping: 25, stiffness: 150 };
+  const springConfig = { damping: 50, stiffness: 200 };
   const x = useSpring(mouseX, springConfig);
   const y = useSpring(mouseY, springConfig);
 
@@ -14,44 +33,20 @@ export const MouseGlow = () => {
       mouseX.set(e.clientX);
       mouseY.set(e.clientY);
     };
-
     window.addEventListener('mousemove', handleMouseMove);
     return () => window.removeEventListener('mousemove', handleMouseMove);
   }, [mouseX, mouseY]);
 
   return (
     <motion.div
-      className="mouse-glow hidden lg:block"
-      style={{ x, y }}
+      className="fixed top-0 left-0 w-[1000px] h-[1000px] pointer-events-none z-[1] opacity-[0.07]"
+      style={{
+        x: x,
+        y: y,
+        translateX: '-50%',
+        translateY: '-50%',
+        background: 'radial-gradient(circle, rgba(255,255,255,0.4) 0%, transparent 70%)',
+      }}
     />
-  );
-};
-
-export const FloatingParticles = () => {
-  return (
-    <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
-      {Array.from({ length: 20 }).map((_, i) => (
-        <motion.div
-          key={i}
-          initial={{ 
-            x: Math.random() * 100 + '%', 
-            y: Math.random() * 100 + '%',
-            opacity: Math.random() * 0.5 + 0.1,
-            scale: Math.random() * 0.5 + 0.5
-          }}
-          animate={{ 
-            y: [null, Math.random() * -100 - 50 + '%'],
-            opacity: [null, 0]
-          }}
-          transition={{ 
-            duration: Math.random() * 10 + 10, 
-            repeat: Infinity,
-            ease: "linear",
-            delay: Math.random() * 10
-          }}
-          className="absolute w-1 h-1 bg-neon-cyan rounded-full"
-        />
-      ))}
-    </div>
   );
 };

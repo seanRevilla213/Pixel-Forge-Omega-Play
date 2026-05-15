@@ -79,7 +79,7 @@ export const login = async (req: Request, res: Response): Promise<void> => {
     const columns = result[0].columns;
     const row = result[0].values[0];
     const user: Record<string, any> = {};
-    columns.forEach((col, i) => { user[col] = row[i]; });
+    columns.forEach((col: string, i: number) => { user[col] = row[i]; });
 
     // Check if account is locked
     if (user.is_locked && user.locked_until) {
@@ -259,7 +259,7 @@ export const getProfile = async (req: Request, res: Response): Promise<void> => 
     const columns = result[0].columns;
     const row = result[0].values[0];
     const user: Record<string, any> = {};
-    columns.forEach((col, i) => { user[col] = row[i]; });
+    columns.forEach((col: string, i: number) => { user[col] = row[i]; });
 
     // Get active sessions
     const sessions = db.exec(
@@ -268,9 +268,9 @@ export const getProfile = async (req: Request, res: Response): Promise<void> => 
     );
 
     const activeSessions = sessions.length > 0
-      ? sessions[0].values.map((row) => {
+      ? sessions[0].values.map((row: any[]) => {
           const session: Record<string, any> = {};
-          sessions[0].columns.forEach((col, i) => { session[col] = row[i]; });
+          sessions[0].columns.forEach((col: string, i: number) => { session[col] = row[i]; });
           return session;
         })
       : [];
@@ -291,9 +291,9 @@ export const getSessions = async (req: Request, res: Response): Promise<void> =>
     );
 
     const data = sessions.length > 0
-      ? sessions[0].values.map((row) => {
+      ? sessions[0].values.map((row: any[]) => {
           const session: Record<string, any> = {};
-          sessions[0].columns.forEach((col, i) => { session[col] = row[i]; });
+          sessions[0].columns.forEach((col: string, i: number) => { session[col] = row[i]; });
           return session;
         })
       : [];

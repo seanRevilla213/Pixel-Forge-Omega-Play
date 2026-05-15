@@ -60,7 +60,7 @@ export const getAllProducts = async (req: Request, res: Response): Promise<void>
 
     // Get categories
     const catResult = db.exec("SELECT DISTINCT category FROM products WHERE in_stock = 1 ORDER BY category");
-    const categories = catResult.length > 0 ? catResult[0].values.map(r => r[0]) : [];
+    const categories = catResult.length > 0 ? catResult[0].values.map((r: any[]) => r[0]) : [];
 
     res.json({
       products,

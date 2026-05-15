@@ -1,4 +1,4 @@
-import initSqlJs, { Database as SqlJsDatabase } from 'sql.js';
+import initSqlJs from 'sql.js';
 import path from 'path';
 import fs from 'fs';
 import bcrypt from 'bcryptjs';
@@ -6,10 +6,10 @@ import { v4 as uuidv4 } from 'uuid';
 import { config } from '../config/security';
 import { logger } from '../utils/logger';
 
-let db: SqlJsDatabase;
+let db: any;
 const DB_PATH = path.resolve(__dirname, '../../data/pixel_forge.db');
 
-export const initDatabase = async (): Promise<SqlJsDatabase> => {
+export const initDatabase = async (): Promise<any> => {
   const SQL = await initSqlJs();
   const dataDir = path.dirname(DB_PATH);
 
@@ -163,10 +163,10 @@ const seedData = async () => {
     const products = [
       {
         id: uuidv4(), name: 'Cyber Nexus 2077', slug: 'cyber-nexus-2077',
-        description: 'Dive into a sprawling open-world cyberpunk RPG where every choice reshapes the neon-lit streets. Hack, fight, and negotiate your way through a dystopian megacity teeming with danger and opportunity.',
-        price: 59.99, original_price: 79.99, category: 'RPG',
-        image_url: '/api/placeholder/game1', badge: 'SALE', rating: 4.8, review_count: 2847,
-        in_stock: 1, featured: 1, platform: 'PC, PS5, Xbox', genre: 'Open World RPG'
+        description: 'The ultimate interface for the modern digital frontier. Experience the classic ergonomics and precision of the Cyber Nexus 2077 Pro Controller. Featuring integrated 2.4 GHz high-performance wireless technology and a premium matte finish, it delivers ultimate control for the discerning gamer.',
+        price: 29.99, original_price: 39.99, category: 'Controllers',
+        image_url: 'https://images.mirror.co.uk/mirror/xbox-360-controller.jpg', badge: 'ELITE', rating: 4.9, review_count: 5120,
+        in_stock: 1, featured: 1, platform: 'PC, Xbox 360, Cyber Nexus', genre: 'Input Device'
       },
       {
         id: uuidv4(), name: 'Quantum Strike Force', slug: 'quantum-strike-force',
@@ -241,7 +241,7 @@ export const saveDatabase = () => {
 // Save periodically
 setInterval(saveDatabase, 30000);
 
-export const getDb = (): SqlJsDatabase => {
+export const getDb = (): any => {
   if (!db) throw new Error('Database not initialized');
   return db;
 };

@@ -1,214 +1,145 @@
 import { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { motion, useScroll, useTransform } from 'framer-motion';
-import { ChevronRight, Star, ShoppingCart, Gamepad2, Keyboard, Headphones, Mouse, Cpu } from 'lucide-react';
+import { ArrowRight, ShieldCheck, Zap, Star, Layout, Globe, Cpu } from 'lucide-react';
 import PageTransition from '../components/layout/PageTransition';
 import type { Product } from '../types';
 import { useCart } from '../context/CartContext';
-import { useAnimationSettings } from '../hooks/useResponsive';
-import { MouseGlow, FloatingParticles } from '../components/ui/ImmersiveEffects';
+import { AuroraBackground, AmbientGlow } from '../components/ui/ImmersiveEffects';
+import { LuxuryCartButton } from '../components/ui/LuxuryCartButton';
 import api from '../api/axiosInstance';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+gsap.registerPlugin(ScrollTrigger);
 
 const Landing = () => {
   const [featured, setFeatured] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
-  const { addItem } = useCart();
-  const anim = useAnimationSettings();
+  const { formatPHP } = useCart();
   
-  const heroRef = useRef(null);
-  const { scrollYProgress } = useScroll({ target: heroRef, offset: ["start start", "end start"] });
-  const heroY = useTransform(scrollYProgress, [0, 1], [0, 200]);
-  const heroOpacity = useTransform(scrollYProgress, [0, 0.8], [1, 0]);
+  const mainRef = useRef(null);
+  const heroTextRef = useRef(null);
 
   useEffect(() => {
     api.get('/products/featured').then(({ data }) => {
       setFeatured(data.products);
       setLoading(false);
     }).catch(() => setLoading(false));
+
+    // GSAP Hero Reveal
+    gsap.fromTo(heroTextRef.current, 
+      { opacity: 0, y: 100, scale: 0.95 },
+      { opacity: 1, y: 0, scale: 1, duration: 1.5, ease: "expo.out" }
+    );
   }, []);
 
-  const categories = [
-    { name: 'Playstation Controllers', icon: Gamepad2, color: 'neon-cyan' },
-    { name: 'Xbox Controllers', icon: Gamepad2, color: 'neon-purple' },
-    { name: 'Gaming Keyboards', icon: Keyboard, color: 'neon-pink' },
-    { name: 'Gaming Mouse', icon: Mouse, color: 'neon-blue' },
-    { name: 'Gaming Headsets', icon: Headphones, color: 'neon-cyan' },
-    { name: 'Gaming Accessories', icon: Cpu, color: 'neon-purple' },
-  ];
+  const { scrollYProgress } = useScroll({ target: mainRef, offset: ["start start", "end end"] });
+  const scale = useTransform(scrollYProgress, [0, 0.2], [1, 0.95]);
+  const opacity = useTransform(scrollYProgress, [0, 0.2], [1, 0]);
 
   return (
     <PageTransition>
-      <div className="relative bg-dark-navy min-h-screen overflow-x-hidden">
-        <MouseGlow />
-        <FloatingParticles />
-        <div className="scanline" />
+      <div ref={mainRef} className="relative bg-matte-black min-h-screen">
+        <AuroraBackground />
+        <AmbientGlow />
 
         {/* Hero Section */}
-        <section ref={heroRef} className="relative min-h-screen flex items-center justify-center pt-20">
-          <motion.div style={{ y: heroY, opacity: heroOpacity }} className="absolute inset-0 z-0">
-            <div className="absolute inset-0 bg-gradient-to-b from-transparent via-neon-purple/5 to-dark-navy" />
-            
-            {/* Floating Hero Elements */}
-            <motion.div 
-              animate={{ y: [0, -30, 0], rotate: [0, 5, 0] }}
-              transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
-              className="absolute top-[20%] right-[10%] opacity-20 lg:opacity-40"
-            >
-              <Gamepad2 size={300} className="text-neon-cyan blur-sm" />
-            </motion.div>
-            <motion.div 
-              animate={{ y: [0, 30, 0], rotate: [0, -5, 0] }}
-              transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
-              className="absolute bottom-[15%] left-[5%] opacity-10 lg:opacity-30"
-            >
-              <Keyboard size={250} className="text-neon-pink blur-md" />
-            </motion.div>
-          </motion.div>
-
-          <div className="relative z-10 max-w-7xl mx-auto px-6 text-center">
-            <motion.div
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 1 * anim.intensity, ease: "easeOut" }}
-            >
+        <section className="relative min-h-[110vh] flex items-center justify-center pt-20 px-6">
+          <motion.div style={{ scale, opacity }} className="relative z-10 max-w-7xl mx-auto text-center">
+            <div ref={heroTextRef} className="space-y-12">
               <motion.div
-                initial={{ opacity: 0, letterSpacing: "0.2em" }}
-                animate={{ opacity: 1, letterSpacing: "0.5em" }}
-                className="text-neon-cyan text-[10px] sm:text-xs font-black uppercase mb-6"
+                initial={{ opacity: 0, letterSpacing: "0.5em" }}
+                animate={{ opacity: 1, letterSpacing: "1em" }}
+                transition={{ duration: 2 }}
+                className="text-text-secondary text-[10px] font-black uppercase"
               >
-                Welcome to the Future of Play
+                The Architecture of Play
               </motion.div>
 
-              <h1 className="font-heading font-black tracking-tighter leading-[0.9] mb-8" 
+              <h1 className="font-heading font-black tracking-tight leading-[0.85] text-white" 
                   style={{ fontSize: 'var(--font-size-fluid-h1)' }}>
-                <span className="text-white">PIXEL </span>
-                <span className="bg-gradient-to-r from-neon-cyan via-neon-purple to-neon-pink bg-clip-text text-transparent drop-shadow-[0_0_30px_rgba(188,19,254,0.3)]">
-                  FORGE
-                </span>
-                <br />
-                <span className="text-white/80 opacity-90" style={{ fontSize: '0.5em' }}>OMEGA PLAY</span>
+                PIXEL<br />
+                <span className="bg-gradient-to-r from-luxury-violet via-white to-luxury-cyan bg-clip-text text-transparent italic px-4">FORGE</span>
               </h1>
 
-              <p className="max-w-2xl mx-auto text-text-secondary font-medium leading-relaxed mb-12" 
+              <p className="max-w-2xl mx-auto text-text-secondary font-medium leading-relaxed opacity-80" 
                  style={{ fontSize: 'var(--font-size-fluid-body)' }}>
-                The luxury gaming store for the elite. Frosted glass, neon glows, and next-gen hardware. 
-                Experience immersive shopping like never before.
+                Redefining the digital frontier through a luxury interactive glasswave aesthetic. 
+                Experience elite performance wrapped in cinematic elegance.
               </p>
 
-              <div className="flex flex-col sm:flex-row items-center justify-center gap-6">
-                <Link to="/products" className="neon-btn min-w-[220px]">
-                  <span>INITIALIZE SHOP</span>
-                  <ChevronRight size={18} />
+              <div className="flex flex-col sm:flex-row items-center justify-center gap-8 pt-10">
+                <Link to="/products" className="luxury-btn min-w-[280px]">
+                  <span>ACCESS COLLECTIONS</span>
+                  <ArrowRight size={20} />
                 </Link>
-                <Link to="/products" className="glass px-10 py-4 rounded-2xl text-white font-bold tracking-widest text-xs hover:bg-white/10 transition-all border-white/5 uppercase">
-                  VIEW COLLECTIONS
+                <Link to="/contact" className="text-white font-bold tracking-widest text-xs uppercase hover:text-luxury-cyan transition-colors flex items-center gap-2 group text-center">
+                  REQUEST CUSTOM BUILD <Layout size={16} className="group-hover:translate-x-1 transition-transform" />
                 </Link>
               </div>
-            </motion.div>
-          </div>
-
-          <motion.div 
-            animate={{ y: [0, 10, 0] }}
-            transition={{ duration: 2, repeat: Infinity }}
-            className="absolute bottom-10 left-1/2 -translate-x-1/2 text-text-muted"
-          >
-            <div className="w-6 h-10 rounded-full border-2 border-white/10 flex justify-center pt-2">
-              <div className="w-1 h-2 bg-neon-cyan rounded-full" />
             </div>
           </motion.div>
+
+          {/* Floating Element */}
+          <motion.div 
+            animate={{ y: [0, -40, 0] }}
+            transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
+            className="absolute bottom-20 right-[10%] w-[400px] h-[400px] glasswave rounded-full opacity-20 hidden lg:block"
+          />
         </section>
 
-        {/* Categories Section */}
-        <section className="py-32 relative px-6 z-10">
+        {/* Asymmetric Product Showcase */}
+        <section className="py-40 px-6 relative z-10 overflow-hidden">
           <div className="max-w-7xl mx-auto">
-            <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
-              {categories.map((cat, i) => (
-                <motion.div
-                  key={cat.name}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: i * 0.1 }}
-                  className="glass p-6 rounded-[2rem] flex flex-col items-center gap-4 group cursor-pointer hover:border-neon-cyan/50 transition-all"
-                >
-                  <div className={`w-12 h-12 rounded-xl bg-${cat.color}/10 flex items-center justify-center group-hover:scale-110 transition-transform`}>
-                    <cat.icon className={`text-${cat.color}`} size={24} />
-                  </div>
-                  <span className="text-[9px] font-black uppercase tracking-widest text-center text-text-secondary group-hover:text-white transition-colors">{cat.name}</span>
-                </motion.div>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* Featured Section */}
-        <section className="py-32 relative px-6 z-10 bg-gradient-to-b from-transparent via-white/[0.02] to-transparent">
-          <div className="max-w-7xl mx-auto">
-            <div className="flex flex-col md:flex-row items-start md:items-end justify-between mb-16 gap-6">
-              <div>
-                <h2 className="font-heading font-black text-white leading-tight" style={{ fontSize: 'var(--font-size-fluid-h2)' }}>
-                  ELITE <span className="text-neon-cyan">HARDWARE</span>
+            <div className="flex flex-col lg:flex-row items-end justify-between mb-24 gap-10">
+              <div className="max-w-2xl text-center lg:text-left mx-auto lg:mx-0">
+                <h2 className="font-heading font-black text-white leading-none mb-8" style={{ fontSize: 'var(--font-size-fluid-h2)' }}>
+                  ELEVATED <span className="text-luxury-violet">ESSENTIALS</span>
                 </h2>
-                <p className="text-text-muted font-bold tracking-widest uppercase text-xs mt-2">Curated for top-tier performance</p>
+                <p className="text-text-secondary font-medium">Every piece is hand-selected and verified through our elite quality protocols.</p>
               </div>
-              <Link to="/products" className="text-neon-cyan font-black tracking-widest text-xs uppercase hover:text-neon-pink transition-colors">
-                FULL INVENTORY →
-              </Link>
+              <div className="flex gap-4 mx-auto lg:mx-0">
+                <div className="w-32 h-1 bg-white/10 rounded-full overflow-hidden">
+                  <motion.div style={{ scaleX: scrollYProgress }} className="h-full bg-luxury-cyan origin-left" />
+                </div>
+              </div>
             </div>
 
-            <div className="responsive-grid">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
               {loading ? (
-                [1, 2, 3, 4].map(i => (
-                  <div key={i} className="glass rounded-[2rem] h-[450px] animate-pulse overflow-hidden">
-                    <div className="h-64 bg-white/5" />
-                  </div>
+                Array.from({ length: 4 }).map((_, i) => (
+                  <div key={i} className="glasswave rounded-[3rem] h-[500px] animate-pulse" />
                 ))
               ) : (
                 featured.map((product, i) => (
                   <motion.div
                     key={product.id}
-                    initial={{ opacity: 0, y: 30 }}
+                    initial={{ opacity: 0, y: 50 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
-                    transition={{ delay: i * 0.1 }}
-                    className="group glass-card overflow-hidden h-full flex flex-col"
+                    transition={{ delay: i * 0.1, duration: 0.8 }}
+                    className="group glasswave-card p-6 flex flex-col"
                   >
-                    <div className="relative h-64 overflow-hidden bg-white/5">
+                    <div className="relative aspect-[4/5] rounded-[2rem] overflow-hidden bg-white/5 mb-8">
                       <motion.img 
-                        whileHover={{ scale: 1.1, rotate: 5 }}
-                        transition={{ duration: 0.8 }}
+                        whileHover={{ scale: 1.05 }}
+                        transition={{ duration: 1.2, ease: [0.23, 1, 0.32, 1] }}
                         src={product.image_url} 
                         alt={product.name} 
-                        className="w-full h-full object-cover" 
+                        className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700" 
                       />
-                      <div className="absolute inset-0 bg-gradient-to-t from-dark-navy to-transparent opacity-60" />
-                      {product.badge && (
-                        <div className="absolute top-6 right-6 rgb-border bg-dark-navy/80 px-4 py-1.5 rounded-xl text-[9px] font-black tracking-widest">
-                          {product.badge}
-                        </div>
-                      )}
+                      <div className="absolute inset-0 bg-gradient-to-t from-matte-black/40 to-transparent" />
+                      <div className="absolute top-6 left-6 flex gap-2">
+                        <span className="glasswave-strong px-3 py-1 rounded-full text-[8px] font-black tracking-widest text-white uppercase">{product.category}</span>
+                      </div>
                     </div>
-                    <div className="p-8 flex-1 flex flex-col">
-                      <div className="flex items-center gap-2 mb-4">
-                        <span className="text-[10px] text-neon-cyan font-black tracking-widest uppercase">{product.category}</span>
-                        <div className="w-1 h-1 rounded-full bg-white/20" />
-                        <div className="flex items-center gap-1 text-[10px] text-neon-purple font-black">
-                          <Star size={10} fill="currentColor" /> {product.rating}
-                        </div>
-                      </div>
-                      <h3 className="font-heading text-xl font-black text-white mb-6 group-hover:text-neon-cyan transition-colors">{product.name}</h3>
-                      <div className="mt-auto flex items-center justify-between">
-                        <div className="flex flex-col">
-                          <span className="text-3xl font-heading font-black text-white">${product.price.toFixed(2)}</span>
-                          {product.original_price && <span className="text-[10px] text-text-muted line-through font-bold">${product.original_price.toFixed(2)}</span>}
-                        </div>
-                        <button 
-                          onClick={() => addItem(product)}
-                          className="w-14 h-14 rounded-2xl bg-white/5 flex items-center justify-center text-white hover:bg-neon-cyan hover:text-dark-navy transition-all duration-500 shadow-xl"
-                        >
-                          <ShoppingCart size={22} />
-                        </button>
-                      </div>
+                    
+                    <h3 className="font-heading text-2xl font-black text-white mb-4 group-hover:text-luxury-cyan transition-colors line-clamp-1">{product.name}</h3>
+                    
+                    <div className="mt-auto flex items-center justify-between">
+                      <span className="text-2xl font-black text-white opacity-60 tracking-tight">{formatPHP(product.price)}</span>
+                      <LuxuryCartButton product={product} className="w-12 h-12 !px-0 rounded-full" />
                     </div>
                   </motion.div>
                 ))
@@ -217,26 +148,31 @@ const Landing = () => {
           </div>
         </section>
 
-        {/* Experience CTA */}
-        <section className="py-40 px-6">
-          <div className="max-w-6xl mx-auto">
+        {/* Cinematic Experience Block */}
+        <section className="py-60 px-6 relative">
+          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-luxury-violet/[0.03] to-transparent" />
+          <div className="max-w-5xl mx-auto text-center relative z-10">
             <motion.div
-              initial={{ opacity: 0, scale: 0.95 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true }}
-              className="relative rounded-[4rem] overflow-hidden p-12 lg:p-24 text-center"
+              initial={{ opacity: 0, y: 40 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              className="space-y-12"
             >
-              <div className="absolute inset-0 glass-strong" />
-              <div className="absolute inset-0 bg-gradient-to-br from-neon-cyan/10 via-neon-purple/10 to-neon-pink/10" />
-              <div className="relative z-10">
-                <h2 className="font-heading font-black text-white mb-6 leading-tight" style={{ fontSize: 'var(--font-size-fluid-h2)' }}>
-                  UNLEASH <span className="text-neon-pink">POWER</span>
-                </h2>
-                <p className="text-text-secondary text-lg mb-12 max-w-2xl mx-auto font-medium">
-                  Join the elite league of gamers. Get exclusive access to limited edition hardware and zero-latency gear.
-                </p>
-                <Link to="/register" className="neon-btn mx-auto max-w-[300px]">
-                  CREATE YOUR ID
+              <div className="flex flex-wrap justify-center gap-12 sm:gap-16 mb-20 opacity-30">
+                <Zap size={32} />
+                <ShieldCheck size={32} />
+                <Star size={32} />
+                <Globe size={32} />
+                <Cpu size={32} />
+              </div>
+              <h2 className="font-heading font-black text-white leading-tight" style={{ fontSize: 'var(--font-size-fluid-h2)' }}>
+                THE <span className="italic text-luxury-cyan">INTERACTIVE</span> STANDARD
+              </h2>
+              <p className="text-text-secondary text-xl font-medium max-w-3xl mx-auto leading-relaxed">
+                We believe gaming is the pinnacle of human-machine interaction. Our platform reflects that ambition through sophisticated glasswave architecture and unparalleled fluid motion.
+              </p>
+              <div className="pt-10">
+                <Link to="/register" className="luxury-btn mx-auto max-w-[320px] text-center">
+                  JOIN THE OMEGA ELITE
                 </Link>
               </div>
             </motion.div>

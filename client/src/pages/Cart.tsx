@@ -1,35 +1,35 @@
 import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Trash2, Plus, Minus, ShoppingBag, ArrowRight, ShieldCheck } from 'lucide-react';
+import { Trash2, Plus, Minus, ShoppingBag, ArrowRight, ShieldCheck, Sparkles, Command } from 'lucide-react';
 import PageTransition from '../components/layout/PageTransition';
 import { useCart } from '../context/CartContext';
-import { useResponsive, useAnimationSettings } from '../hooks/useResponsive';
-import { MouseGlow, FloatingParticles } from '../components/ui/ImmersiveEffects';
+import { useResponsive } from '../hooks/useResponsive';
+import { AuroraBackground, AmbientGlow } from '../components/ui/ImmersiveEffects';
 
 const Cart = () => {
-  const { items, total, itemCount, updateQuantity, removeItem, clearCart } = useCart();
+  const { items, total, itemCount, updateQuantity, removeItem, clearCart, formatPHP } = useCart();
   const { isMobile, device } = useResponsive();
-  const anim = useAnimationSettings();
 
   if (items.length === 0) {
     return (
       <PageTransition>
-        <div className="relative bg-dark-navy min-h-screen flex items-center justify-center px-6 overflow-hidden">
-          <MouseGlow />
-          <FloatingParticles />
-          <div className="scanline" />
+        <div className="relative bg-matte-black min-h-screen flex items-center justify-center px-6 overflow-hidden">
+          <AuroraBackground />
+          <AmbientGlow />
           
-          <div className="text-center relative z-10">
+          <div className="text-center relative z-10 space-y-10">
             <motion.div 
-              initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }}
-              className="w-32 h-32 mx-auto mb-10 rounded-[2.5rem] glass-strong flex items-center justify-center border-white/5"
+              initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }}
+              className="w-40 h-40 mx-auto rounded-[3rem] glasswave flex items-center justify-center border-white/5 shadow-2xl"
             >
-              <ShoppingBag className="text-text-muted" size={48} />
+              <ShoppingBag className="text-text-muted" size={56} />
             </motion.div>
-            <h2 className="font-heading text-4xl font-black text-white mb-6 tracking-tighter">STORAGE EMPTY</h2>
-            <p className="text-text-secondary mb-10 max-w-sm mx-auto font-medium uppercase tracking-widest text-[10px]">Your equipment bay is currently inactive. Re-initialize shopping to add gear.</p>
-            <Link to="/products" className="neon-btn mx-auto max-w-[280px]">
-              INITIALIZE STORE <ArrowRight size={18} />
+            <div className="space-y-4">
+              <h2 className="font-heading text-5xl font-black text-white tracking-tighter uppercase">Bay Inactive</h2>
+              <p className="text-text-secondary max-w-sm mx-auto font-medium uppercase tracking-[0.3em] text-[10px] opacity-60">Your luxury acquisition queue is currently empty.</p>
+            </div>
+            <Link to="/products" className="luxury-btn mx-auto min-w-[280px] text-center">
+              VIEW INVENTORY <ArrowRight size={18} />
             </Link>
           </div>
         </div>
@@ -39,62 +39,68 @@ const Cart = () => {
 
   return (
     <PageTransition>
-      <div className="relative bg-dark-navy min-h-screen pt-32 pb-32 px-6 overflow-hidden">
-        <MouseGlow />
-        <FloatingParticles />
-        <div className="scanline" />
+      <div className="relative bg-matte-black min-h-screen pt-40 pb-32 px-6 overflow-hidden">
+        <AuroraBackground />
+        <AmbientGlow />
 
         <div className={`mx-auto relative z-10 ${device === 'ultrawide' ? 'max-w-screen-2xl' : 'max-w-7xl'}`}>
-          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-16 gap-6">
-            <div>
-              <h1 className="font-heading text-4xl font-black text-white tracking-tighter">
-                EQUIPMENT <span className="text-neon-cyan">BAY</span>
+          <div className="flex flex-col sm:flex-row items-start sm:items-end justify-between mb-20 gap-8">
+            <div className="space-y-4">
+              <motion.div
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                className="inline-flex items-center gap-2 px-4 py-1 rounded-full bg-white/5 border border-white/10 text-[9px] font-black tracking-widest text-luxury-violet uppercase"
+              >
+                <Command size={12} /> Acquisition Queue
+              </motion.div>
+              <h1 className="font-heading text-5xl font-black text-white tracking-tighter uppercase">
+                YOUR <span className="text-luxury-cyan italic">SELECTION</span>
               </h1>
-              <p className="text-text-muted font-bold tracking-[0.3em] uppercase text-[9px] mt-2">Active session: {(itemCount)} items selected</p>
+              <p className="text-text-muted font-bold tracking-[0.4em] uppercase text-[9px] opacity-60">Session active // {itemCount} premium units</p>
             </div>
-            <button onClick={clearCart} className="text-[10px] font-black text-text-muted hover:text-neon-pink transition-colors uppercase tracking-[0.3em] px-6 py-3 glass rounded-xl">
-              PURGE ALL GEAR
+            <button onClick={clearCart} className="text-[10px] font-black text-text-muted hover:text-white transition-all uppercase tracking-[0.4em] px-8 py-4 glasswave rounded-2xl border-white/5">
+              CLEAR SELECTION
             </button>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
-            {/* Items Console */}
-            <div className="lg:col-span-2 space-y-6">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-16 items-start">
+            {/* Minimal Item List */}
+            <div className="lg:col-span-2 space-y-8">
               <AnimatePresence mode="popLayout">
                 {items.map((item) => (
                   <motion.div
                     key={item.product.id}
                     layout
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    exit={{ opacity: 0, x: -50 }}
-                    transition={{ duration: 0.3 * anim.intensity }}
-                    className="glass rounded-[2.5rem] p-6 flex gap-8 group relative overflow-hidden"
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, x: -100 }}
+                    className="glasswave rounded-[3rem] p-8 flex gap-10 group relative transition-all duration-500 hover:bg-white/[0.04]"
                   >
-                    <div className="absolute inset-0 bg-white/[0.01] group-hover:bg-white/[0.03] transition-colors" />
-                    <img src={item.product.image_url} alt={item.product.name} className="w-24 h-24 sm:w-40 sm:h-40 rounded-2xl object-cover flex-shrink-0 relative z-10" />
-                    <div className="flex-1 min-w-0 flex flex-col justify-between relative z-10">
-                      <div>
-                        <div className="flex justify-between items-start">
-                          <Link to={`/products/${item.product.slug}`} className="font-heading text-lg sm:text-xl font-black text-white hover:text-neon-cyan transition-colors truncate tracking-tighter">
+                    <div className="relative w-28 h-28 sm:w-44 sm:h-44 rounded-[2rem] overflow-hidden flex-shrink-0 bg-white/5">
+                      <img src={item.product.image_url} alt={item.product.name} className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700" />
+                    </div>
+                    <div className="flex-1 flex flex-col justify-between py-2">
+                      <div className="space-y-4">
+                        <div className="flex justify-between items-start gap-4">
+                          <Link to={`/products/${item.product.slug}`} className="font-heading text-xl sm:text-2xl font-black text-white hover:text-luxury-cyan transition-colors tracking-tight leading-tight line-clamp-1">
                             {item.product.name}
                           </Link>
-                          <button onClick={() => removeItem(item.product.id)} className="p-3 bg-white/5 rounded-xl text-text-muted hover:text-neon-pink transition-all">
-                            <Trash2 size={18} />
+                          <button onClick={() => removeItem(item.product.id)} className="p-3 text-text-muted hover:text-red-400 transition-all">
+                            <Trash2 size={20} />
                           </button>
                         </div>
-                        <p className="text-[9px] sm:text-[10px] text-text-muted font-black uppercase tracking-[0.2em] mt-2">
+                        <p className="text-[9px] text-text-muted font-black uppercase tracking-[0.4em] opacity-60">
                           {item.product.category} // {item.product.platform}
                         </p>
                       </div>
                       
-                      <div className="flex items-center justify-between mt-6">
-                        <div className="flex items-center glass rounded-2xl overflow-hidden h-12 border-white/5">
-                          <button onClick={() => updateQuantity(item.product.id, item.quantity - 1)} className="w-12 h-full flex items-center justify-center text-text-muted hover:text-neon-cyan transition-colors"><Minus size={16} /></button>
-                          <span className="px-4 font-black text-base text-white min-w-[40px] text-center">{item.quantity}</span>
-                          <button onClick={() => updateQuantity(item.product.id, item.quantity + 1)} className="w-12 h-full flex items-center justify-center text-text-muted hover:text-neon-cyan transition-colors"><Plus size={16} /></button>
+                      <div className="flex items-center justify-between mt-8">
+                        <div className="flex items-center glasswave rounded-2xl h-12 border-white/5">
+                          <button onClick={() => updateQuantity(item.product.id, item.quantity - 1)} className="w-12 h-full flex items-center justify-center text-text-muted hover:text-white transition-colors"><Minus size={16} /></button>
+                          <span className="px-6 font-black text-lg text-white min-w-[50px] text-center">{item.quantity}</span>
+                          <button onClick={() => updateQuantity(item.product.id, item.quantity + 1)} className="w-12 h-full flex items-center justify-center text-text-muted hover:text-white transition-colors"><Plus size={16} /></button>
                         </div>
-                        <span className="font-heading text-2xl sm:text-3xl font-black text-white tracking-tighter">${(item.product.price * item.quantity).toFixed(2)}</span>
+                        <span className="font-heading text-3xl font-black text-white tracking-tighter opacity-80">{formatPHP(item.product.price * item.quantity)}</span>
                       </div>
                     </div>
                   </motion.div>
@@ -102,33 +108,41 @@ const Cart = () => {
               </AnimatePresence>
             </div>
 
-            {/* Summary Console */}
+            {/* Summary Panel */}
             <div className="lg:col-span-1">
-              <div className={`glass-strong rounded-[3rem] p-10 border border-white/10 shadow-2xl ${isMobile ? '' : 'sticky top-32'}`}>
-                <h3 className="font-heading text-xl font-black text-white mb-10 tracking-widest uppercase border-b border-white/5 pb-6 text-center">ORDER MANIFEST</h3>
-                <div className="space-y-6 mb-12">
-                  <div className="flex justify-between items-center text-xs">
-                    <span className="text-text-muted font-bold tracking-widest uppercase">Units Base Cost</span>
-                    <span className="text-white font-black">${total.toFixed(2)}</span>
+              <div className={`glasswave-strong rounded-[4rem] p-12 border border-white/5 shadow-2xl space-y-12 ${isMobile ? '' : 'sticky top-40'}`}>
+                <div className="space-y-2 text-center">
+                  <h3 className="font-heading text-2xl font-black text-white tracking-tighter uppercase">Total Valuation</h3>
+                  <p className="text-[9px] text-text-muted font-black tracking-[0.4em] uppercase opacity-40">Order Manifest Finalized</p>
+                </div>
+                
+                <div className="space-y-6 border-y border-white/5 py-10">
+                  <div className="flex justify-between items-center text-[10px]">
+                    <span className="text-text-muted font-black tracking-widest uppercase">Units Subtotal</span>
+                    <span className="text-white font-black">{formatPHP(total)}</span>
                   </div>
-                  <div className="flex justify-between items-center text-xs">
-                    <span className="text-text-muted font-bold tracking-widest uppercase">Network Protocol</span>
-                    <span className="text-neon-cyan font-black tracking-widest uppercase">DIGITAL DELIVERY</span>
+                  <div className="flex justify-between items-center text-[10px]">
+                    <span className="text-text-muted font-black tracking-widest uppercase">Protocol Allocation</span>
+                    <span className="text-luxury-cyan font-black tracking-widest uppercase">FREE PRIORITY</span>
                   </div>
-                  <div className="pt-8 border-t border-white/10 flex justify-between items-end">
-                    <div className="flex flex-col">
-                      <span className="text-[9px] text-text-muted font-black tracking-[0.4em] uppercase mb-1">Total Credits</span>
-                      <span className="font-heading text-4xl font-black text-white tracking-tighter">${total.toFixed(2)}</span>
+                  <div className="pt-6 flex justify-between items-end">
+                    <div className="space-y-1">
+                      <span className="text-[8px] text-text-muted font-black tracking-[0.5em] uppercase opacity-40">Credits Total</span>
+                      <p className="font-heading text-5xl font-black text-white tracking-tighter">{formatPHP(total)}</p>
                     </div>
                   </div>
                 </div>
                 
-                <Link to="/checkout" className="neon-btn w-full py-5 text-base tracking-[0.3em] mb-6 shadow-[0_0_30px_rgba(0,210,255,0.2)]">
-                  FINALIZE PURCHASE <ArrowRight size={20} />
-                </Link>
-                
-                <div className="flex items-center justify-center gap-2 text-[9px] font-black text-text-muted tracking-widest uppercase">
-                  <ShieldCheck size={14} className="text-neon-cyan" /> Encrypted Transaction Channel
+                <div className="space-y-6">
+                  <Link to="/checkout" className="luxury-btn w-full text-sm tracking-[0.3em] shadow-2xl py-6 text-center">
+                    PROCEED TO ACQUISITION <ArrowRight size={20} />
+                  </Link>
+                  <div className="flex items-center justify-center gap-3 text-[9px] font-black text-text-muted tracking-widest uppercase opacity-40">
+                    <ShieldCheck size={14} className="text-luxury-cyan" /> Encrypted Transmission Channel
+                  </div>
+                  <div className="flex items-center justify-center gap-3 text-[9px] font-black text-text-muted tracking-widest uppercase opacity-40">
+                    <Sparkles size={14} className="text-luxury-violet" /> Quality Verified Build
+                  </div>
                 </div>
               </div>
             </div>

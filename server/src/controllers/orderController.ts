@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import { v4 as uuidv4 } from 'uuid';
 import { getDb, saveDatabase } from '../models/database';
 import { logger, auditLog } from '../utils/logger';
+import { sendOrderConfirmation } from '../utils/emailService';
 
 const rowsToObjects = (result: any[]): Record<string, any>[] => {
   if (result.length === 0 || result[0].values.length === 0) return [];
@@ -50,6 +51,26 @@ export const createOrder = async (req: Request, res: Response): Promise<void> =>
 
     saveDatabase();
     auditLog('ORDER_CREATED', userId, { orderId, total, itemCount: items.length });
+
+    // Send confirmation email asynchronously
+    const userResult = db.exec("SELECT email, name FROM users WHERE id = ?", [userId] as any);
+    const users = rowsToObjects(userResult);
+    if (users.length > 0) {
+      const productDetails = validatedItems.map(vi => {
+        const pResult = db.exec("SELECT name FROM products WHERE id = ?", [vi.productId] as any);
+        const p = rowsToObjects(pResult);
+        return { name: p[0]?.name || 'Unknown Component', quantity: vi.quantity, price: vi.price };
+      });
+
+      sendOrderConfirmation({
+        customerName: users[0].name,
+        customerEmail: users[0].email,
+        orderId,
+        items: productDetails,
+        total,
+        deliveryInfo: shippingAddress,
+      }).catch(err => logger.error('Email background error', { err }));
+    }
 
     res.status(201).json({
       order: { id: orderId, total, status: 'pending', itemCount: validatedItems.length },

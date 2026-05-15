@@ -10,12 +10,16 @@ const Footer = () => {
           {/* Brand */}
           <div className="md:col-span-1">
             <div className="flex items-center gap-3 mb-4">
-              <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-neon-cyan to-neon-magenta flex items-center justify-center">
-                <span className="font-heading font-bold text-dark-900 text-lg">P</span>
+              <div className="w-10 h-10 rounded-lg bg-white/5 flex items-center justify-center border border-white/10 overflow-hidden">
+                <img 
+                  src="https://images.mirror.co.uk/mirror/xbox-360-controller.jpg" 
+                  alt="Pixel Forge Logo" 
+                  className="w-full h-full object-cover grayscale" 
+                />
               </div>
               <div>
                 <h3 className="font-heading text-sm font-bold tracking-wider text-text-primary">PIXEL FORGE</h3>
-                <p className="text-[10px] tracking-[0.3em] text-neon-cyan/60 uppercase">Omega Play</p>
+                <p className="text-[10px] tracking-[0.3em] text-luxury-cyan/60 uppercase">Cyber Nexus 2077</p>
               </div>
             </div>
             <p className="text-sm text-text-secondary leading-relaxed">
