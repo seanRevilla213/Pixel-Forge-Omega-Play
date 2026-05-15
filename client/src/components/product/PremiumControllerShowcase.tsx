@@ -1,10 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { motion, AnimatePresence, useScroll, useTransform, useSpring, useMotionValue } from 'framer-motion';
+import { motion, AnimatePresence, useSpring, useMotionValue } from 'framer-motion';
 import { ChevronRight, ChevronLeft, Plus, Minus, Loader2, Check, Star } from 'lucide-react';
 import type { Product, ProductVariant } from '../../types';
 import { useCart } from '../../context/CartContext';
-import { AuroraBackground, AmbientGlow } from '../ui/ImmersiveEffects';
-import gsap from 'gsap';
+import { AuroraBackground } from '../ui/ImmersiveEffects';
 
 interface PremiumControllerShowcaseProps {
   product: Product;
@@ -26,7 +25,6 @@ export const PremiumControllerShowcase: React.FC<PremiumControllerShowcaseProps>
   const springY = useSpring(mouseY, { stiffness: 50, damping: 20 });
 
   const containerRef = useRef<HTMLDivElement>(null);
-  const imageRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (product.variants) {
