@@ -6,7 +6,6 @@ import PageTransition from '../components/layout/PageTransition';
 import type { Product } from '../types';
 import { useCart } from '../context/CartContext';
 import { AuroraBackground, AmbientGlow } from '../components/ui/ImmersiveEffects';
-import { LuxuryCartButton } from '../components/ui/LuxuryCartButton';
 import api from '../api/axiosInstance';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -17,7 +16,7 @@ gsap.registerPlugin(ScrollTrigger);
 const Landing = () => {
   const [featured, setFeatured] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
-  const { formatPHP } = useCart();
+  const { } = useCart();
   
   const mainRef = useRef(null);
   const heroTextRef = useRef(null);
