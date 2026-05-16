@@ -1,11 +1,10 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Search, ChevronLeft, ChevronRight, Grid, Filter, Sparkles } from 'lucide-react';
+import { Search, Filter, Sparkles } from 'lucide-react';
 import PageTransition from '../components/layout/PageTransition';
 import type { Product } from '../types';
 import { useResponsive } from '../hooks/useResponsive';
 import { AuroraBackground, AmbientGlow } from '../components/ui/ImmersiveEffects';
-import { ProductCard } from '../components/ui/ProductCard';
 import { PremiumControllerShowcase } from '../components/product/PremiumControllerShowcase';
 import { PremiumKeyboardShowcase } from '../components/product/PremiumKeyboardShowcase';
 import { PremiumHardwareShowcase } from '../components/product/PremiumHardwareShowcase';
@@ -27,9 +26,7 @@ const Products = () => {
   const [search, setSearch] = useState('');
   const [category, setCategory] = useState('');
   const [brand, setBrand] = useState('');
-  const [sort, setSort] = useState('');
   const [page, setPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
   const [showMobileFilters, setShowMobileFilters] = useState(false);
   
   const { device } = useResponsive();
@@ -40,17 +37,15 @@ const Products = () => {
     if (search) params.set('search', search);
     if (category) params.set('category', category);
     if (brand) params.set('brand', brand);
-    if (sort) params.set('sort', sort);
     params.set('page', page.toString());
     params.set('limit', device === 'ultrawide' ? '16' : '12');
 
     api.get(`/products?${params}`).then(({ data }) => {
       setProducts(data.products);
       setBrands(data.brands || []);
-      setTotalPages(data.pagination.totalPages);
       setLoading(false);
     }).catch(() => setLoading(false));
-  }, [search, category, brand, sort, page, device]);
+  }, [search, category, brand, page, device]);
 
   useEffect(() => {
     if (!loading) {
@@ -312,10 +307,10 @@ const Products = () => {
                 ) : (
                   <motion.div
                     key={products[0].id}
-                    initial={{ opacity: 0, x: 100, rotateY: 10 }}
-                    animate={{ opacity: 1, x: 0, rotateY: 0 }}
-                    exit={{ opacity: 0, x: -100, rotateY: -10 }}
-                    transition={{ duration: 0.8, ease: "circOut" }}
+                    initial={{ opacity: 0, scale: 0.8, rotateY: -20 }}
+                    animate={{ opacity: 1, scale: 1.1, rotateY: 0 }}
+                    exit={{ opacity: 0, scale: 1.2, rotateY: 20 }}
+                    transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
                     className="w-full"
                     style={{ perspective: '2000px' }}
                   >

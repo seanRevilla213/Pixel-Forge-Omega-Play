@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Star, ShoppingCart, Plus, Minus, ShieldCheck, Zap, Sparkles, Box, Info } from 'lucide-react';
+import { Star, Plus, Minus, ShieldCheck, Zap, Box, Info } from 'lucide-react';
 import { useCart } from '../../context/CartContext';
 import { useResponsive } from '../../hooks/useResponsive';
 import { LuxuryCartButton } from '../ui/LuxuryCartButton';
@@ -11,9 +11,7 @@ interface PremiumHardwareShowcaseProps {
 
 export const PremiumHardwareShowcase: React.FC<PremiumHardwareShowcaseProps> = ({ product }) => {
   const { formatPHP } = useCart();
-  const { device } = useResponsive();
   const [quantity, setQuantity] = useState(1);
-  const [activeAngle, setActiveAngle] = useState(0);
 
   // Theme colors based on category
   const getThemeColor = () => {
@@ -47,7 +45,7 @@ export const PremiumHardwareShowcase: React.FC<PremiumHardwareShowcaseProps> = (
             initial={{ opacity: 0, scale: 0.8, rotateY: -20 }}
             animate={{ opacity: 1, scale: 1.1, rotateY: 0 }}
             exit={{ opacity: 0, scale: 1.2, rotateY: 20 }}
-            transition={{ duration: 1, ease: "expoOut" }}
+            transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
             className="relative z-20 w-full h-full flex items-center justify-center"
           >
             <motion.img
