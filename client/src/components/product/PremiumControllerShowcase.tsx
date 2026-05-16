@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence, useSpring, useMotionValue } from 'framer-motion';
-import { ChevronRight, ChevronLeft, Plus, Minus, Loader2, Check, Star } from 'lucide-react';
+import { ChevronRight, ChevronLeft, Plus, Minus, Loader2, Check, Star, ShoppingCart, Zap, Battery, Crosshair, Shield, Truck, Package } from 'lucide-react';
 import type { Product, ProductVariant } from '../../types';
 import { useCart } from '../../context/CartContext';
 import { AuroraBackground } from '../ui/ImmersiveEffects';
@@ -9,10 +9,26 @@ interface PremiumControllerShowcaseProps {
   product: Product;
 }
 
+const ANGLES = [
+  { id: 'front', name: 'Front View', rotateY: 0, rotateX: 0, scale: 1 },
+  { id: 'side', name: 'Side View', rotateY: -35, rotateX: 5, scale: 0.9 },
+  { id: 'back', name: 'Back View', rotateY: 180, rotateX: 0, scale: 0.95 },
+  { id: 'top', name: 'Top Angle', rotateY: 0, rotateX: 45, scale: 0.85 },
+  { id: 'detail', name: 'Close-up Detail', rotateY: 15, rotateX: 10, scale: 1.4 },
+];
+
+const FEATURES = [
+  { icon: Zap, title: 'Wireless Connectivity', desc: 'Zero-latency 2.4GHz' },
+  { icon: Battery, title: 'Long Battery Life', desc: 'Up to 40 hours' },
+  { icon: Crosshair, title: 'Ergonomic Design', desc: 'Cinematic precision' },
+  { icon: Shield, title: 'Stable Connection', desc: 'Anti-interference' }
+];
+
 export const PremiumControllerShowcase: React.FC<PremiumControllerShowcaseProps> = ({ product }) => {
   const { addItem, formatPHP } = useCart();
   const [variants, setVariants] = useState<ProductVariant[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [activeAngleIndex, setActiveAngleIndex] = useState(0);
   const [quantity, setQuantity] = useState(1);
   const [isRotating, setIsRotating] = useState(false);
   const [adding, setAdding] = useState(false);
@@ -32,28 +48,27 @@ export const PremiumControllerShowcase: React.FC<PremiumControllerShowcaseProps>
     }
   }, [product.variants]);
 
-  const activeVariant = variants[currentIndex] || { name: 'Standard', color: '#00f0ff', glow: 'rgba(0, 240, 255, 0.3)', image_url: product.image_url };
+  const activeVariant = variants[currentIndex] || { name: 'Carbon Black', color: '#080808', glow: 'rgba(255, 255, 255, 0.2)', image_url: product.image_url };
+  const activeAngle = ANGLES[activeAngleIndex];
 
   const handleMouseMove = (e: React.MouseEvent) => {
     if (!containerRef.current) return;
     const rect = containerRef.current.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
-    mouseX.set(x);
-    mouseY.set(y);
+    mouseX.set(e.clientX - rect.left);
+    mouseY.set(e.clientY - rect.top);
   };
 
-  const handleNext = () => {
+  const handleNextAngle = () => {
     if (isRotating) return;
     setIsRotating(true);
-    setCurrentIndex((prev) => (prev + 1) % variants.length);
+    setActiveAngleIndex((prev) => (prev + 1) % ANGLES.length);
     setTimeout(() => setIsRotating(false), 800);
   };
 
-  const handlePrev = () => {
+  const handlePrevAngle = () => {
     if (isRotating) return;
     setIsRotating(true);
-    setCurrentIndex((prev) => (prev - 1 + variants.length) % variants.length);
+    setActiveAngleIndex((prev) => (prev - 1 + ANGLES.length) % ANGLES.length);
     setTimeout(() => setIsRotating(false), 800);
   };
 
@@ -73,7 +88,7 @@ export const PremiumControllerShowcase: React.FC<PremiumControllerShowcaseProps>
     <div 
       ref={containerRef}
       onMouseMove={handleMouseMove}
-      className="relative min-h-screen bg-matte-black overflow-hidden flex flex-col items-center justify-center pt-24 pb-12 px-6"
+      className="relative min-h-screen bg-matte-black overflow-x-hidden flex flex-col pt-24 pb-12 px-6 lg:px-12"
     >
       <AuroraBackground />
       
@@ -82,240 +97,263 @@ export const PremiumControllerShowcase: React.FC<PremiumControllerShowcaseProps>
         style={{ 
           left: springX, 
           top: springY,
-          background: `radial-gradient(600px circle at center, ${activeVariant.glow}, transparent 80%)`
+          background: `radial-gradient(800px circle at center, ${activeVariant.glow}, transparent 70%)`
         }}
-        className="fixed pointer-events-none w-[1200px] h-[1200px] -translate-x-1/2 -translate-y-1/2 z-0 opacity-40 blur-[100px]"
+        className="fixed pointer-events-none w-[1600px] h-[1600px] -translate-x-1/2 -translate-y-1/2 z-0 opacity-30 blur-[120px]"
       />
 
-      <div className="max-w-7xl w-full mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 items-center relative z-10">
+      <div className="max-w-[1920px] w-full mx-auto grid grid-cols-1 xl:grid-cols-12 gap-8 relative z-10 min-h-[85vh]">
         
-        {/* Left Side: Cinematic Stage */}
-        <div className="relative flex items-center justify-center aspect-square">
-          {/* Stage Glow */}
-          <div 
-            className="absolute inset-0 rounded-full blur-[120px] opacity-20 transition-colors duration-1000"
-            style={{ backgroundColor: activeVariant.color }}
-          />
-          
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={currentIndex}
-              initial={{ rotateY: -45, opacity: 0, scale: 0.8, x: -100 }}
-              animate={{ rotateY: 0, opacity: 1, scale: 1, x: 0 }}
-              exit={{ rotateY: 45, opacity: 0, scale: 0.8, x: 100 }}
-              transition={{ duration: 0.8, ease: [0.23, 1, 0.32, 1] }}
-              className="relative z-20 w-full h-full flex items-center justify-center perspective-1000"
+        {/* Left Side: Vertical Image Gallery */}
+        <div className="hidden xl:flex flex-col gap-4 col-span-1 justify-center z-20">
+          {ANGLES.map((angle, idx) => (
+            <button
+              key={angle.id}
+              onClick={() => setActiveAngleIndex(idx)}
+              className={`relative w-20 h-20 rounded-2xl glasswave overflow-hidden transition-all duration-300 group ${
+                activeAngleIndex === idx ? 'border-2 border-white/50 scale-110 shadow-lg' : 'border border-white/10 hover:scale-105 opacity-60 hover:opacity-100'
+              }`}
+              style={{ boxShadow: activeAngleIndex === idx ? `0 0 20px ${activeVariant.glow}` : 'none' }}
             >
-              {/* Product Image with Hover Tilt */}
+              <img 
+                src={activeVariant.image_url} 
+                alt={angle.name}
+                className="w-full h-full object-contain p-2"
+                style={{ transform: `rotateY(${angle.rotateY}deg) rotateX(${angle.rotateX}deg)` }}
+              />
+              {activeAngleIndex === idx && (
+                <div className="absolute inset-0 bg-gradient-to-t from-white/10 to-transparent" />
+              )}
+            </button>
+          ))}
+        </div>
+
+        {/* Center: Main Cinematic Showcase */}
+        <div className="col-span-1 xl:col-span-7 flex flex-col items-center justify-center relative">
+          
+          {/* Main Stage */}
+          <div className="relative w-full aspect-[4/3] flex items-center justify-center">
+            {/* Stage Ambient Glow */}
+            <div 
+              className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-3/4 h-3/4 rounded-full blur-[100px] opacity-20 transition-colors duration-1000"
+              style={{ backgroundColor: activeVariant.color }}
+            />
+            
+            <AnimatePresence mode="wait">
               <motion.div
-                whileHover={{ rotateX: 10, rotateY: 10 }}
-                style={{ rotateX: 0, rotateY: 0 }}
-                className="relative transition-transform duration-500 ease-out preserve-3d"
+                key={`${currentIndex}-${activeAngleIndex}`}
+                initial={{ rotateY: -30, opacity: 0, scale: 0.8, filter: 'blur(10px)' }}
+                animate={{ rotateY: 0, opacity: 1, scale: 1, filter: 'blur(0px)' }}
+                exit={{ rotateY: 30, opacity: 0, scale: 0.8, filter: 'blur(10px)' }}
+                transition={{ duration: 0.8, ease: [0.23, 1, 0.32, 1] }}
+                className="relative z-20 w-full h-full flex items-center justify-center perspective-1000"
+              >
+                {/* Floating Controller with 3D Effect */}
+                <motion.div
+                  animate={{ y: [0, -15, 0] }}
+                  transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+                  className="relative w-full h-full flex items-center justify-center preserve-3d"
+                >
+                  <motion.div
+                    whileHover={{ rotateX: 5, rotateY: 5, scale: 1.05 }}
+                    style={{ 
+                      rotateX: activeAngle.rotateX, 
+                      rotateY: activeAngle.rotateY,
+                      scale: activeAngle.scale
+                    }}
+                    className="relative transition-transform duration-700 ease-out preserve-3d w-full max-w-2xl"
+                  >
+                    <img 
+                      key={activeVariant.image_url}
+                      src={activeVariant.image_url} 
+                      alt={activeVariant.name}
+                      className="w-full h-auto drop-shadow-[0_60px_60px_rgba(0,0,0,0.6)] object-contain"
+                    />
+                    
+                    {/* Shadow underneath */}
+                    <div 
+                      className="absolute -bottom-20 left-1/2 -translate-x-1/2 w-[80%] h-12 blur-3xl opacity-50 rounded-[100%]"
+                      style={{ backgroundColor: activeVariant.color }}
+                    />
+                  </motion.div>
+                </motion.div>
+              </motion.div>
+            </AnimatePresence>
+
+            {/* View Other Angles Carousel Navigation */}
+            <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 flex justify-between px-4 sm:px-10 z-30 pointer-events-none">
+              <button 
+                onClick={handlePrevAngle}
+                className="w-16 h-16 rounded-full glasswave-strong flex items-center justify-center text-white hover:scale-110 active:scale-95 transition-all group pointer-events-auto"
+              >
+                <ChevronLeft size={28} className="group-hover:-translate-x-1 transition-transform" />
+              </button>
+              <button 
+                onClick={handleNextAngle}
+                className="w-16 h-16 rounded-full glasswave-strong flex items-center justify-center text-white hover:scale-110 active:scale-95 transition-all group pointer-events-auto"
+              >
+                <ChevronRight size={28} className="group-hover:translate-x-1 transition-transform" />
+              </button>
+            </div>
+          </div>
+
+          {/* View Other Angles Horizontal (Mobile/Tablet) */}
+          <div className="xl:hidden w-full overflow-x-auto pb-4 hide-scrollbar flex justify-center gap-4 mt-8 z-20">
+            {ANGLES.map((angle, idx) => (
+              <button
+                key={angle.id}
+                onClick={() => setActiveAngleIndex(idx)}
+                className={`flex-shrink-0 relative w-24 h-24 rounded-2xl glasswave overflow-hidden transition-all duration-300 group ${
+                  activeAngleIndex === idx ? 'border-2 border-white/50 scale-105' : 'border border-white/10 opacity-60'
+                }`}
               >
                 <img 
-                  key={activeVariant.image_url}
                   src={activeVariant.image_url} 
-                  alt={activeVariant.name}
-                  className="max-w-full h-auto drop-shadow-[0_50px_50px_rgba(0,0,0,0.5)] transition-all duration-700"
+                  alt={angle.name}
+                  className="w-full h-full object-contain p-3"
+                  style={{ transform: `rotateY(${angle.rotateY}deg) rotateX(${angle.rotateX}deg)` }}
                 />
-                
-                {/* Dynamic Reflection/Shadow */}
-                <div 
-                  className="absolute -bottom-10 left-1/2 -translate-x-1/2 w-3/4 h-10 blur-3xl opacity-50 rounded-full"
-                  style={{ backgroundColor: activeVariant.color }}
-                />
-              </motion.div>
-            </motion.div>
-          </AnimatePresence>
-
-          {/* Navigation Controls */}
-          <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 flex justify-between px-4 z-30">
-            <button 
-              onClick={handlePrev}
-              className="w-14 h-14 rounded-full glasswave flex items-center justify-center text-white hover:scale-110 active:scale-95 transition-all group"
-            >
-              <ChevronLeft size={24} className="group-hover:-translate-x-1 transition-transform" />
-            </button>
-            <button 
-              onClick={handleNext}
-              className="w-14 h-14 rounded-full glasswave flex items-center justify-center text-white hover:scale-110 active:scale-95 transition-all group"
-            >
-              <ChevronRight size={24} className="group-hover:translate-x-1 transition-transform" />
-            </button>
+              </button>
+            ))}
           </div>
         </div>
 
-        {/* Right Side: Info & Selection */}
-        <div className="space-y-10 text-center lg:text-left">
+        {/* Right Side: Product Information Panel */}
+        <div className="col-span-1 xl:col-span-4 flex flex-col justify-center space-y-8 z-20 bg-midnight/30 p-8 rounded-[3rem] border border-white/5 backdrop-blur-2xl">
+          
+          {/* Header & Badges */}
           <div className="space-y-4">
-            <motion.div 
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="flex items-center gap-4 justify-center lg:justify-start"
-            >
-              <span className="text-[10px] font-black tracking-[0.5em] text-luxury-cyan uppercase">Premium Hardware</span>
-              <div className="w-1 h-1 rounded-full bg-white/20" />
-              <div className="flex items-center gap-1.5 text-[10px] font-black text-luxury-violet uppercase tracking-widest">
-                <Star size={14} fill="currentColor" /> {product.rating} SERIES
+            <div className="flex flex-wrap items-center gap-3">
+              <span className="px-3 py-1 rounded-full bg-luxury-violet/20 text-luxury-violet text-[10px] font-black tracking-widest border border-luxury-violet/30">
+                {product.badge || 'PREMIUM'}
+              </span>
+              <div className="flex items-center gap-1.5 text-yellow-400 text-xs font-bold bg-white/5 px-3 py-1 rounded-full border border-white/10">
+                <Star size={14} fill="currentColor" /> {product.rating} ({product.review_count} Reviews)
               </div>
-            </motion.div>
-            
-            <motion.h1 
-              key={`title-${currentIndex}`}
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              className="font-heading text-5xl lg:text-7xl font-black text-white leading-tight tracking-tighter"
-            >
+              {product.in_stock ? (
+                <div className="flex items-center gap-1.5 text-green-400 text-xs font-bold bg-white/5 px-3 py-1 rounded-full border border-white/10">
+                  <Check size={14} /> In Stock
+                </div>
+              ) : null}
+            </div>
+
+            <h1 className="font-heading text-4xl lg:text-5xl font-black text-white leading-tight tracking-tight">
               {product.name}
-            </motion.h1>
+            </h1>
+
+            <div className="flex items-end gap-4">
+              <span className="text-4xl font-black text-white">
+                {formatPHP(product.price)}
+              </span>
+              {product.original_price && (
+                <span className="text-xl font-bold text-text-muted line-through mb-1">
+                  {formatPHP(product.original_price)}
+                </span>
+              )}
+            </div>
             
-            <motion.p 
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 0.7 }}
-              className="text-text-secondary text-lg leading-relaxed max-w-xl mx-auto lg:mx-0"
-            >
-              Experience elite precision and cinematic ergonomics. Hand-crafted for the ultimate interactive experience across all platforms.
-            </motion.p>
+            <p className="text-text-secondary text-sm leading-relaxed">
+              {product.description}
+            </p>
           </div>
 
-          {/* Variant Selector */}
-          <div className="space-y-6">
-            <p className="text-[9px] text-text-muted font-black tracking-[0.4em] uppercase">Select Edition</p>
-            <div className="flex flex-wrap gap-4 justify-center lg:justify-start">
+          {/* Color Variant Selector */}
+          <div className="space-y-4 pt-4 border-t border-white/10">
+            <div className="flex justify-between items-end">
+              <p className="text-[10px] text-text-muted font-black tracking-[0.3em] uppercase">Color Variant</p>
+              <p className="text-xs font-bold text-white">{activeVariant.name}</p>
+            </div>
+            <div className="flex flex-wrap gap-3">
               {variants.map((v, i) => (
                 <button
                   key={v.id}
                   onClick={() => setCurrentIndex(i)}
-                  className={`relative group flex items-center gap-4 p-4 rounded-3xl transition-all duration-500 ${
-                    currentIndex === i ? 'glasswave-strong scale-105' : 'glasswave hover:bg-white/5'
+                  className={`relative w-12 h-12 rounded-full transition-all duration-300 ${
+                    currentIndex === i ? 'scale-110 border-2 border-white' : 'scale-90 border border-white/20 hover:scale-100 hover:border-white/50'
                   }`}
+                  style={{ backgroundColor: v.color, boxShadow: currentIndex === i ? `0 0 20px ${v.glow}` : 'none' }}
                 >
-                  <div 
-                    className={`w-10 h-10 rounded-2xl flex items-center justify-center transition-all duration-500 ${
-                      currentIndex === i ? 'scale-110' : 'scale-90 group-hover:scale-100'
-                    }`}
-                    style={{ backgroundColor: v.color, boxShadow: currentIndex === i ? `0 0 20px ${v.glow}` : 'none' }}
-                  >
-                    <div className="w-2 h-2 rounded-full bg-white/30" />
-                  </div>
-                  <span className={`text-[10px] font-black uppercase tracking-widest transition-colors ${
-                    currentIndex === i ? 'text-white' : 'text-text-secondary'
-                  }`}>
-                    {v.name}
-                  </span>
-                  {currentIndex === i && (
-                    <motion.div 
-                      layoutId="variant-ring"
-                      className="absolute inset-0 rounded-3xl border-2 border-white/20 pointer-events-none"
-                    />
-                  )}
+                  <span className="sr-only">{v.name}</span>
                 </button>
               ))}
             </div>
           </div>
 
-          {/* Controls */}
-          <div className="pt-8 space-y-8">
-            <div className="flex flex-col sm:flex-row items-center gap-8 justify-center lg:justify-start">
-              <div className="flex items-center glasswave rounded-3xl h-20 p-2">
+          {/* Features Grid */}
+          <div className="grid grid-cols-2 gap-3 pt-4 border-t border-white/10">
+            {FEATURES.map((feature, idx) => (
+              <div key={idx} className="glasswave p-3 rounded-2xl flex flex-col gap-2 hover:bg-white/5 transition-colors group">
+                <feature.icon size={18} className="text-luxury-cyan group-hover:scale-110 transition-transform" />
+                <div>
+                  <h4 className="text-xs font-bold text-white">{feature.title}</h4>
+                  <p className="text-[10px] text-text-muted">{feature.desc}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Purchase Section */}
+          <div className="space-y-4 pt-6">
+            <div className="flex gap-4">
+              <div className="flex items-center justify-between glasswave rounded-2xl p-2 w-32 shrink-0 border border-white/10">
                 <button 
                   onClick={() => setQuantity(q => Math.max(1, q - 1))}
-                  className="w-16 h-full flex items-center justify-center text-text-muted hover:text-white transition-colors"
+                  className="w-8 h-8 flex items-center justify-center text-text-muted hover:text-white transition-colors bg-white/5 rounded-lg"
                 >
-                  <Minus size={24} />
+                  <Minus size={16} />
                 </button>
-                <span className="px-6 font-black text-2xl text-white min-w-[80px] text-center">
+                <span className="font-black text-white text-lg">
                   {quantity}
                 </span>
                 <button 
                   onClick={() => setQuantity(q => Math.min(99, q + 1))}
-                  className="w-16 h-full flex items-center justify-center text-text-muted hover:text-white transition-colors"
+                  className="w-8 h-8 flex items-center justify-center text-text-muted hover:text-white transition-colors bg-white/5 rounded-lg"
                 >
-                  <Plus size={24} />
+                  <Plus size={16} />
                 </button>
               </div>
 
-              <div className="text-center sm:text-left min-w-[200px]">
-                <p className="text-[9px] text-text-muted font-black tracking-[0.4em] uppercase mb-1">Total Valuation</p>
-                <span className="text-4xl font-black text-white tracking-tighter">
-                  {formatPHP(product.price * quantity)}
-                </span>
-              </div>
+              <button
+                onClick={handleAddToCart}
+                disabled={adding || added}
+                className={`relative flex-1 group h-14 rounded-2xl font-black text-sm tracking-widest uppercase transition-all duration-500 overflow-hidden ${
+                  added ? 'bg-green-500 text-white' : 'bg-luxury-cyan text-midnight hover:scale-[1.02] active:scale-[0.98]'
+                }`}
+                style={{ boxShadow: added ? 'none' : '0 0 20px rgba(6, 182, 212, 0.4)' }}
+              >
+                <AnimatePresence mode="wait">
+                  {adding ? (
+                    <motion.div key="adding" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="flex items-center justify-center gap-2">
+                      <Loader2 size={18} className="animate-spin" /> SYNCING
+                    </motion.div>
+                  ) : added ? (
+                    <motion.div key="added" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="flex items-center justify-center gap-2">
+                      <Check size={18} /> ADDED TO CART
+                    </motion.div>
+                  ) : (
+                    <motion.div key="standard" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="flex items-center justify-center gap-2">
+                      <ShoppingCart size={18} /> ADD TO CART
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </button>
             </div>
-
-            <button
-              onClick={handleAddToCart}
-              disabled={adding}
-              className={`relative group h-24 w-full lg:w-auto min-w-[320px] rounded-[2rem] font-black text-xs tracking-[0.4em] uppercase transition-all duration-700 overflow-hidden ${
-                added ? 'bg-green-500' : 'bg-white text-matte-black hover:scale-105 active:scale-95'
-              }`}
-            >
-              <AnimatePresence mode="wait">
-                {adding ? (
-                  <motion.div 
-                    key="adding"
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -10 }}
-                    className="flex items-center justify-center gap-3"
-                  >
-                    <Loader2 size={24} className="animate-spin" /> SYNCING UNIT
-                  </motion.div>
-                ) : added ? (
-                  <motion.div 
-                    key="added"
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -10 }}
-                    className="flex items-center justify-center gap-3 text-white"
-                  >
-                    <Check size={24} /> GEAR ACQUIRED
-                  </motion.div>
-                ) : (
-                  <motion.div 
-                    key="standard"
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -10 }}
-                    className="flex items-center justify-center gap-3"
-                  >
-                    INITIALIZE ACQUISITION
-                  </motion.div>
-                )}
-              </AnimatePresence>
-              
-              {/* Animated Background Effect */}
-              {!added && !adding && (
-                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-black/5 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
-              )}
+            
+            <button className="w-full h-14 rounded-2xl font-black text-sm tracking-widest uppercase border-2 border-white/20 text-white hover:bg-white hover:text-midnight transition-all duration-300">
+              BUY NOW
             </button>
           </div>
-        </div>
-      </div>
 
-      {/* Floating Specs Footer */}
-      <div className="fixed bottom-12 left-12 right-12 z-20 flex flex-wrap items-center justify-between gap-8 opacity-30 group-hover:opacity-100 transition-opacity pointer-events-none">
-        <div className="flex gap-12">
-          <div className="space-y-1">
-            <p className="text-[8px] font-black tracking-widest uppercase">Connectivity</p>
-            <p className="text-[10px] font-bold uppercase">2.4GHz Wireless / BT 5.2</p>
+          {/* Shipping Info */}
+          <div className="flex items-center justify-between pt-4 text-[10px] font-bold text-text-muted uppercase tracking-wider border-t border-white/10">
+            <div className="flex items-center gap-2">
+              <Truck size={14} /> Free Global Shipping
+            </div>
+            <div className="flex items-center gap-2">
+              <Package size={14} /> Ships in 24h
+            </div>
           </div>
-          <div className="space-y-1">
-            <p className="text-[8px] font-black tracking-widest uppercase">Response</p>
-            <p className="text-[10px] font-bold uppercase">0.1ms Ultra-Low Latency</p>
-          </div>
-          <div className="space-y-1">
-            <p className="text-[8px] font-black tracking-widest uppercase">Precision</p>
-            <p className="text-[10px] font-bold uppercase">Haptic Engine Elite</p>
-          </div>
-        </div>
-        
-        <div className="text-right">
-          <p className="text-[8px] font-black tracking-widest uppercase mb-1">Edition Status</p>
-          <div className="flex items-center gap-2">
-            <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
-            <span className="text-[10px] font-bold uppercase">Verified Stock</span>
-          </div>
+          
         </div>
       </div>
     </div>
