@@ -168,9 +168,11 @@ const seedData = async () => {
         price: 29.99, original_price: 39.99, category: 'Controllers',
         image_url: '/products/xbox-360-controller.jpg',
         variants: JSON.stringify([
-          { id: 'v1', name: 'Carbon Black', image_url: '/products/xbox-360-controller.jpg', color: '#080808', glow: 'rgba(255, 255, 255, 0.2)' },
-          { id: 'v2', name: 'Arctic White', image_url: '/products/xbox-360-white.png', color: '#ffffff', glow: 'rgba(255, 255, 255, 0.4)' },
-          { id: 'v3', name: 'Crystal Blue', image_url: '/products/glow-blue.jpg', color: '#0047AB', glow: 'rgba(0, 71, 171, 0.5)' }
+          { id: 'v1', name: 'Carbon Black', image_url: '/products/xbox-360-controller.jpg', color: '#080808', glow: 'rgba(255, 255, 255, 0.15)' },
+          { id: 'v2', name: 'Cyan', image_url: '/products/glow-cyan.jpg', color: '#00f0ff', glow: 'rgba(0, 240, 255, 0.5)' },
+          { id: 'v3', name: 'Blue', image_url: '/products/glow-blue.jpg', color: '#0047AB', glow: 'rgba(0, 71, 171, 0.5)' },
+          { id: 'v4', name: 'Green', image_url: '/products/glow-green.jpg', color: '#00ff41', glow: 'rgba(0, 255, 65, 0.5)' },
+          { id: 'v5', name: 'Pink', image_url: '/products/glow-pink.jpg', color: '#ff00ff', glow: 'rgba(255, 0, 255, 0.6)' }
         ]),
         badge: 'CLASSIC', rating: 4.9, review_count: 5120,
         in_stock: 1, featured: 1, platform: 'PC, Xbox 360', genre: 'Input Device'

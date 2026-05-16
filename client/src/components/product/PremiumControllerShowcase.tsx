@@ -69,6 +69,20 @@ export const PremiumControllerShowcase: React.FC<PremiumControllerShowcaseProps>
     mouseY.set(e.clientY - rect.top);
   };
 
+  const handleNextVariant = () => {
+    if (isRotating) return;
+    setIsRotating(true);
+    setCurrentIndex((prev) => (prev + 1) % variants.length);
+    setTimeout(() => setIsRotating(false), 800);
+  };
+
+  const handlePrevVariant = () => {
+    if (isRotating) return;
+    setIsRotating(true);
+    setCurrentIndex((prev) => (prev - 1 + variants.length) % variants.length);
+    setTimeout(() => setIsRotating(false), 800);
+  };
+
   const handleNextAngle = () => {
     if (isRotating) return;
     setIsRotating(true);
@@ -193,18 +207,39 @@ export const PremiumControllerShowcase: React.FC<PremiumControllerShowcaseProps>
 
             {/* View Other Angles Carousel Navigation */}
             <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 flex justify-between px-4 sm:px-10 z-30 pointer-events-none">
-              <button 
-                onClick={handlePrevAngle}
-                className="w-16 h-16 rounded-full glasswave-strong flex items-center justify-center text-white hover:scale-110 active:scale-95 transition-all group pointer-events-auto"
-              >
-                <ChevronLeft size={28} className="group-hover:-translate-x-1 transition-transform" />
-              </button>
-              <button 
-                onClick={handleNextAngle}
-                className="w-16 h-16 rounded-full glasswave-strong flex items-center justify-center text-white hover:scale-110 active:scale-95 transition-all group pointer-events-auto"
-              >
-                <ChevronRight size={28} className="group-hover:translate-x-1 transition-transform" />
-              </button>
+              <div className="flex flex-col gap-4 pointer-events-auto">
+                <button 
+                  onClick={handlePrevAngle}
+                  className="w-14 h-14 rounded-full glasswave-strong flex items-center justify-center text-white/40 hover:text-white hover:scale-110 active:scale-95 transition-all group"
+                  title="Previous Angle"
+                >
+                  <ChevronLeft size={24} />
+                </button>
+                <button 
+                  onClick={handlePrevVariant}
+                  className="w-16 h-16 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-white hover:bg-white/10 hover:scale-110 active:scale-95 transition-all group"
+                  title="Previous Edition"
+                >
+                  <ChevronLeft size={32} className="mr-1" />
+                </button>
+              </div>
+
+              <div className="flex flex-col gap-4 pointer-events-auto items-end">
+                <button 
+                  onClick={handleNextAngle}
+                  className="w-14 h-14 rounded-full glasswave-strong flex items-center justify-center text-white/40 hover:text-white hover:scale-110 active:scale-95 transition-all group"
+                  title="Next Angle"
+                >
+                  <ChevronRight size={24} />
+                </button>
+                <button 
+                  onClick={handleNextVariant}
+                  className="w-16 h-16 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-white hover:bg-white/10 hover:scale-110 active:scale-95 transition-all group"
+                  title="Next Edition"
+                >
+                  <ChevronRight size={32} className="ml-1" />
+                </button>
+              </div>
             </div>
           </div>
 
