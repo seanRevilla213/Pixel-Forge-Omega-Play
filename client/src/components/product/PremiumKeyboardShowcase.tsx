@@ -11,11 +11,18 @@ interface PremiumKeyboardShowcaseProps {
   product: Product;
 }
 
+const KEYBOARD_ANGLES = [
+  { id: 'front', name: 'Front View', rotateX: 0, rotateY: 0, scale: 1.1 },
+  { id: 'perspective', name: 'Perspective', rotateX: 15, rotateY: -25, scale: 1.2 },
+  { id: 'side', name: 'Side Profile', rotateX: 0, rotateY: -80, scale: 1.3 },
+  { id: 'top', name: 'Top Down', rotateX: 55, rotateY: 0, scale: 1.0 },
+  { id: 'rgb', name: 'RGB Side Lighting', rotateX: 5, rotateY: 45, scale: 1.4 },
+  { id: 'detail', name: 'Close-up Detail', rotateX: 10, rotateY: -10, scale: 1.8 }
+];
+
 export const PremiumKeyboardShowcase: React.FC<PremiumKeyboardShowcaseProps> = ({ product: initialProduct }) => {
   const { addItem, formatPHP } = useCart();
-  const [currentProduct, setCurrentProduct] = useState<Product>(initialProduct);
-  const [allKeyboards, setAllKeyboards] = useState<Product[]>([]);
-  const [angles, setAngles] = useState<any[]>([]);
+  const [currentProduct] = useState<Product>(initialProduct);
   const [activeAngleIndex, setActiveAngleIndex] = useState(0);
   const [quantity, setQuantity] = useState(1);
   const [adding, setAdding] = useState(false);
@@ -40,30 +47,7 @@ export const PremiumKeyboardShowcase: React.FC<PremiumKeyboardShowcaseProps> = (
     'Royal Kludge', 'Corsair', 'SteelSeries', 'HyperX'
   ];
 
-  useEffect(() => {
-    api.get(`/products?category=${encodeURIComponent('Mechanical Keyboards')}&limit=50`).then(({ data }) => {
-      setAllKeyboards(data.products);
-    });
-  }, []);
-
-  useEffect(() => {
-    if (currentProduct?.variants) {
-      try {
-        setAngles(JSON.parse(currentProduct.variants));
-        setActiveAngleIndex(0);
-      } catch (e) {
-        console.error("Failed to parse variants", e);
-        setAngles([]);
-      }
-    }
-  }, [currentProduct]);
-
-  const activeAngle = angles?.[activeAngleIndex] || { 
-    name: 'Default View', 
-    color: '#ff8c00', 
-    glow: 'rgba(255, 140, 0, 0.3)', 
-    image_url: currentProduct?.image_url || '/products/redragon-k670.png' 
-  };
+  const activeAngle = KEYBOARD_ANGLES[activeAngleIndex];
 
   const handleMouseMove = (e: React.MouseEvent) => {
     if (!containerRef.current) return;
@@ -100,22 +84,11 @@ export const PremiumKeyboardShowcase: React.FC<PremiumKeyboardShowcaseProps> = (
     btnY.set(0);
   };
 
-  const handleBrandSwitch = (brand: string) => {
-    const target = allKeyboards.find(k => k.brand === brand);
-    if (target) {
-      setLoading(true);
-      setTimeout(() => {
-        setCurrentProduct(target);
-        setLoading(false);
-      }, 600);
-    }
-  };
-
   const handleAddToCart = () => {
     setAdding(true);
     setTimeout(() => {
       for(let i=0; i<quantity; i++) {
-        addItem(currentProduct, activeAngle as any);
+        addItem(currentProduct);
       }
       setAdding(false);
       setAdded(true);
@@ -132,103 +105,110 @@ export const PremiumKeyboardShowcase: React.FC<PremiumKeyboardShowcaseProps> = (
       <AuroraBackground />
       
       {/* Premium Orange Ambient Lighting */}
-      <div className="absolute top-[10%] left-[-5%] w-[800px] h-[800px] bg-orange-600/5 blur-[160px] rounded-full pointer-events-none" />
-      <div className="absolute bottom-[-15%] right-[-10%] w-[700px] h-[700px] bg-amber-500/5 blur-[140px] rounded-full pointer-events-none" />
-
-      {/* Brand Navigation Bar */}
-      <div className="relative z-40 max-w-7xl mx-auto w-full mb-24">
-        <div className="flex flex-col items-center lg:items-start gap-8">
-          <motion.div 
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            className="flex items-center gap-4"
-          >
-            <div className="w-12 h-px bg-orange-500/50" />
-            <span className="text-[10px] font-black tracking-[0.6em] text-white/40 uppercase">Manufacturer Index</span>
-          </motion.div>
-          <div className="flex flex-wrap gap-4 justify-center lg:justify-start">
-            {brands.map((brand, i) => (
-              <motion.button
-                key={brand}
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: i * 0.05 }}
-                onClick={() => handleBrandSwitch(brand)}
-                disabled={!allKeyboards.some(k => k.brand === brand)}
-                className={`group relative px-10 py-5 rounded-[2rem] text-[10px] font-black tracking-[0.2em] uppercase transition-all duration-700 overflow-hidden ${
-                  currentProduct.brand === brand 
-                    ? 'bg-white text-black scale-105 shadow-[0_30px_60px_rgba(255,165,0,0.25)]' 
-                    : 'glasswave text-white/40 hover:text-white hover:bg-white/5 disabled:opacity-10'
-                }`}
-              >
-                <span className="relative z-10">{brand}</span>
-                {currentProduct.brand === brand && (
-                  <motion.div 
-                    layoutId="brand-active-glow"
-                    className="absolute inset-0 bg-gradient-to-tr from-orange-500/10 to-transparent"
-                  />
-                )}
-              </motion.button>
-            ))}
-          </div>
-        </div>
-      </div>
+      <div className="absolute top-[10%] left-[-5%] w-[800px] h-[800px] bg-orange-600/10 blur-[160px] rounded-full pointer-events-none opacity-40" />
+      <div className="absolute bottom-[-15%] right-[-10%] w-[700px] h-[700px] bg-amber-500/10 blur-[140px] rounded-full pointer-events-none opacity-40" />
 
       <div className="w-full mx-auto flex flex-col xl:flex-row gap-16 items-center relative z-20 min-h-[85vh]">
         
-        {/* Left: Product Stage */}
-        <div className="flex-1 relative flex items-center justify-center w-full h-[70vh] min-h-[500px]">
+        {/* Left: Product Stage & Gallery */}
+        <div className="flex-1 flex flex-col items-center gap-12 w-full h-[85vh]">
+          {/* Main Stage */}
+          <div className="relative flex items-center justify-center w-full flex-1">
           {/* Mouse-follow spotlight */}
           <motion.div 
             style={{ 
               left: springX, 
               top: springY,
-              background: `radial-gradient(500px circle at center, ${activeAngle.glow || 'rgba(255,165,0,0.15)'}, transparent 80%)`
+              background: `radial-gradient(500px circle at center, rgba(255,140,0,0.2), transparent 80%)`
             }}
-            className="absolute pointer-events-none w-[1000px] h-[1000px] -translate-x-1/2 -translate-y-1/2 z-0 opacity-30 blur-[100px]"
+            className="absolute pointer-events-none w-[1000px] h-[1000px] -translate-x-1/2 -translate-y-1/2 z-0 opacity-40 blur-[100px]"
           />
 
           <AnimatePresence mode="wait">
-            {!loading && (
-              <motion.div
-                key={currentProduct.id + activeAngleIndex}
-                initial={{ opacity: 0, scale: 0.95, y: 20, rotateX: 10 }}
-                animate={{ opacity: 1, scale: 1, y: 0, rotateX: 0 }}
-                exit={{ opacity: 0, scale: 1.05, y: -20, rotateX: -10 }}
-                transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
-                className="relative z-10 w-full flex flex-col items-center justify-center perspective-3000"
-              >
-                <div ref={keyboardRef} className="relative preserve-3d group/keyboard">
-                  <motion.img 
-                    src={activeAngle.image_url} 
-                    alt={currentProduct.name}
-                    onError={(e) => { (e.target as HTMLImageElement).src = currentProduct.image_url; }}
-                    whileHover={{ scale: 1.15, y: -30 }}
-                    transition={{ duration: 0.8, ease: "circOut" }}
-                    className="w-full h-full object-contain scale-[1.3] drop-shadow-[0_150px_180px_rgba(0,0,0,0.9)] select-none cursor-crosshair z-20 relative"
-                  />
-                  
-                  {/* Cinematic Floating Shadow */}
-                  <motion.div 
-                    animate={{ 
-                      scale: [1, 1.1, 1],
-                      opacity: [0.15, 0.25, 0.15]
-                    }}
-                    transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
-                    className="absolute -bottom-10 left-1/2 -translate-x-1/2 w-[90%] h-24 bg-black/60 blur-[60px] rounded-full pointer-events-none z-10"
-                  />
+            <motion.div
+              key={currentProduct.id + activeAngleIndex}
+              initial={{ opacity: 0, scale: 0.95, y: 20, rotateX: 10 }}
+              animate={{ opacity: 1, scale: 1, y: 0, rotateX: 0 }}
+              exit={{ opacity: 0, scale: 1.05, y: -20, rotateX: -10 }}
+              transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
+              className="relative z-10 w-full flex flex-col items-center justify-center perspective-3000"
+            >
+              <div ref={keyboardRef} className="relative preserve-3d group/keyboard">
+                <motion.img 
+                  src={currentProduct.image_url} 
+                  alt={currentProduct.name}
+                  animate={{
+                    rotateX: activeAngle.rotateX,
+                    rotateY: activeAngle.rotateY,
+                    scale: activeAngle.scale
+                  }}
+                  transition={{ duration: 1.5, ease: [0.16, 1, 0.3, 1] }}
+                  className="w-full h-full object-contain drop-shadow-[0_120px_150px_rgba(0,0,0,0.9)] select-none z-20 relative"
+                />
+                
+                {/* Cinematic Floating Shadow */}
+                <motion.div 
+                  animate={{ 
+                    scale: [1, 1.1, 1],
+                    opacity: [0.15, 0.25, 0.15]
+                  }}
+                  transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
+                  className="absolute -bottom-10 left-1/2 -translate-x-1/2 w-[90%] h-24 bg-black/60 blur-[60px] rounded-full pointer-events-none z-10"
+                />
 
-                  {/* Active Variant Glow Floor */}
-                  <motion.div 
-                    animate={{ opacity: [0.2, 0.4, 0.2] }}
-                    transition={{ duration: 4, repeat: Infinity }}
-                    className="absolute -bottom-5 left-1/2 -translate-x-1/2 w-3/4 h-[4px] blur-2xl rounded-full pointer-events-none"
-                    style={{ backgroundColor: activeAngle.color || '#ff8c00' }}
-                  />
-                </div>
-              </motion.div>
-            )}
+                {/* Active Variant Glow Floor */}
+                <motion.div 
+                  animate={{ opacity: [0.2, 0.5, 0.2] }}
+                  transition={{ duration: 4, repeat: Infinity }}
+                  className="absolute -bottom-5 left-1/2 -translate-x-1/2 w-3/4 h-[8px] blur-3xl rounded-full pointer-events-none bg-orange-500/40"
+                />
+              </div>
+            </motion.div>
           </AnimatePresence>
+          </div>
+
+          {/* Horizontal Angle Gallery */}
+          <div className="w-full max-w-4xl px-4 space-y-6">
+            <div className="flex items-center gap-4 px-2">
+              <Eye size={16} className="text-orange-500" />
+              <h3 className="text-[10px] font-black tracking-[0.4em] text-white/40 uppercase">VIEW OTHER ANGLE</h3>
+            </div>
+            
+            <div className="flex flex-row gap-4 overflow-x-auto pb-4 hide-scrollbar">
+              {KEYBOARD_ANGLES.map((angle, i) => (
+                <button
+                  key={angle.id}
+                  onClick={() => setActiveAngleIndex(i)}
+                  className={`flex-shrink-0 group relative w-32 h-32 rounded-[2rem] overflow-hidden transition-all duration-700 border ${
+                    activeAngleIndex === i 
+                      ? 'glasswave-strong scale-105 shadow-[0_20px_40px_rgba(255,165,0,0.2)] border-orange-500' 
+                      : 'glasswave border-white/5 hover:border-white/20'
+                  }`}
+                >
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent z-10" />
+                  <div className="relative z-20 w-full h-full flex items-center justify-center p-4">
+                    <img 
+                      src={currentProduct.image_url} 
+                      alt={angle.name} 
+                      className={`w-full h-full object-contain transition-all duration-700 ${
+                        activeAngleIndex === i ? 'scale-110' : 'opacity-40 grayscale group-hover:opacity-100 group-hover:grayscale-0'
+                      }`}
+                      style={{ 
+                        transform: `rotateX(${angle.rotateX}deg) rotateY(${angle.rotateY}deg) scale(${angle.scale * 0.7})` 
+                      }}
+                    />
+                  </div>
+                  <div className="absolute bottom-3 left-0 right-0 z-30 text-center">
+                    <span className={`text-[8px] font-black tracking-widest uppercase transition-all ${
+                      activeAngleIndex === i ? 'text-white' : 'text-white/20 group-hover:text-white/60'
+                    }`}>
+                      {angle.name.split(' ')[0]}
+                    </span>
+                  </div>
+                </button>
+              ))}
+            </div>
+          </div>
         </div>
 
         {/* Right: Interaction Console */}
@@ -248,44 +228,22 @@ export const PremiumKeyboardShowcase: React.FC<PremiumKeyboardShowcaseProps> = (
             </p>
           </div>
 
-          {/* Angle Gallery with Improved UI */}
-          <div className="space-y-8">
-            <div className="flex items-center justify-between px-2">
-              <div className="flex items-center gap-3">
-                <Eye size={14} className="text-orange-500" />
-                <h3 className="text-[10px] font-black tracking-[0.4em] text-white/50 uppercase">Gallery Selection</h3>
+          {/* Dynamic Specs */}
+          <div className="grid grid-cols-2 gap-6">
+             <div className="glasswave rounded-3xl p-8 border border-white/5 space-y-3 group hover:bg-white/5 transition-all">
+                <Zap size={20} className="text-orange-500/60 group-hover:scale-110 transition-transform" />
+                <div>
+                  <p className="text-[8px] font-black text-white/20 uppercase tracking-[0.3em] mb-1">Response Time</p>
+                  <p className="text-xs font-black text-white uppercase tracking-widest">1ms Wireless</p>
+                </div>
               </div>
-              <span className="text-[9px] font-bold text-white/20 uppercase tracking-[0.2em]">{angles.length} Perspective Slots</span>
-            </div>
-            
-            <div className="flex flex-wrap gap-4">
-              {angles.map((angle, i) => (
-                <button
-                  key={angle.id}
-                  onClick={() => setActiveAngleIndex(i)}
-                  className={`group relative w-24 h-24 lg:w-32 lg:h-32 rounded-[2.5rem] overflow-hidden transition-all duration-700 ${
-                    activeAngleIndex === i 
-                      ? 'glasswave-strong scale-110 shadow-[0_0_50px_rgba(255,165,0,0.4)] border-orange-500/50' 
-                      : 'glasswave hover:bg-white/10 hover:scale-105 border-white/5'
-                  } border`}
-                >
-                  <img 
-                    src={angle.image_url} 
-                    alt={angle.name} 
-                    onError={(e) => { (e.target as HTMLImageElement).src = currentProduct.image_url; }}
-                    className={`w-full h-full object-contain p-4 transition-all duration-700 ${
-                      activeAngleIndex === i ? 'opacity-100' : 'opacity-40 grayscale group-hover:opacity-80 group-hover:grayscale-0'
-                    }`}
-                  />
-                  {activeAngleIndex === i && (
-                    <motion.div 
-                      layoutId="gallery-active-line"
-                      className="absolute inset-0 bg-orange-500/5"
-                    />
-                  )}
-                </button>
-              ))}
-            </div>
+              <div className="glasswave rounded-3xl p-8 border border-white/5 space-y-3 group hover:bg-white/5 transition-all">
+                <Sparkles size={20} className="text-orange-500/60 group-hover:scale-110 transition-transform" />
+                <div>
+                  <p className="text-[8px] font-black text-white/20 uppercase tracking-[0.3em] mb-1">Lighting</p>
+                  <p className="text-xs font-black text-white uppercase tracking-widest">Aura RGB</p>
+                </div>
+              </div>
           </div>
 
           {/* Purchase Controller */}
