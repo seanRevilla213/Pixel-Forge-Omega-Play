@@ -48,7 +48,7 @@ export const PremiumControllerShowcase: React.FC<PremiumControllerShowcaseProps>
     }
   }, [product.variants]);
 
-  const activeVariant = variants[currentIndex] || { name: 'Carbon Black', color: '#080808', glow: 'rgba(255, 255, 255, 0.2)', image_url: product.image_url };
+  const activeVariant = variants[currentIndex] || { id: 'default', name: 'Carbon Black', color: '#080808', glow: 'rgba(255, 255, 255, 0.2)', image_url: product.image_url };
   const activeAngle = ANGLES[activeAngleIndex];
 
   const handleMouseMove = (e: React.MouseEvent) => {
