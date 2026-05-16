@@ -4,12 +4,12 @@ const path = require('path');
 
 async function checkDb() {
   const SQL = await initSqlJs();
-  const dbPath = path.join(__dirname, 'server/data/pixel_forge.db');
+  const dbPath = path.join(__dirname, 'data/pixel_forge.db');
   const data = fs.readFileSync(dbPath);
   const db = new SQL.Database(data);
   
-  const res = db.exec("SELECT variants FROM products WHERE slug = 'xbox-360-wireless-controller'");
-  console.log(JSON.stringify(res, null, 2));
+  const res = db.exec("SELECT id, name, slug, variants FROM products");
+  console.log(JSON.stringify(res[0].values, null, 2));
 }
 
-checkDb();
+checkDb().catch(console.error);

@@ -202,14 +202,27 @@ export const PremiumKeyboardShowcase: React.FC<PremiumKeyboardShowcaseProps> = (
                     src={activeAngle.image_url} 
                     alt={currentProduct.name}
                     onError={(e) => { (e.target as HTMLImageElement).src = currentProduct.image_url; }}
-                    className="max-w-full h-auto drop-shadow-[0_120px_150px_rgba(0,0,0,0.8)] select-none pointer-events-none"
+                    whileHover={{ scale: 1.1, y: -20 }}
+                    transition={{ duration: 0.8, ease: "circOut" }}
+                    className="max-w-full h-auto drop-shadow-[0_150px_180px_rgba(0,0,0,0.9)] select-none cursor-crosshair z-20 relative"
                   />
                   
-                  {/* Floating Idle with reflection */}
+                  {/* Cinematic Floating Shadow */}
                   <motion.div 
-                    animate={{ y: [0, -25, 0] }}
+                    animate={{ 
+                      scale: [1, 1.1, 1],
+                      opacity: [0.15, 0.25, 0.15]
+                    }}
                     transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
-                    className="absolute -bottom-20 left-1/2 -translate-x-1/2 w-4/5 h-20 bg-white/5 blur-3xl rounded-full opacity-20 pointer-events-none"
+                    className="absolute -bottom-10 left-1/2 -translate-x-1/2 w-[90%] h-24 bg-black/60 blur-[60px] rounded-full pointer-events-none z-10"
+                  />
+
+                  {/* Active Variant Glow Floor */}
+                  <motion.div 
+                    animate={{ opacity: [0.2, 0.4, 0.2] }}
+                    transition={{ duration: 4, repeat: Infinity }}
+                    className="absolute -bottom-5 left-1/2 -translate-x-1/2 w-3/4 h-[4px] blur-2xl rounded-full pointer-events-none"
+                    style={{ backgroundColor: activeAngle.color || '#ff8c00' }}
                   />
                 </div>
               </motion.div>
