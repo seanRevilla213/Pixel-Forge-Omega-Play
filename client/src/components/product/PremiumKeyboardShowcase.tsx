@@ -173,10 +173,10 @@ export const PremiumKeyboardShowcase: React.FC<PremiumKeyboardShowcaseProps> = (
         </div>
       </div>
 
-      <div className="max-w-[1800px] w-full mx-auto grid grid-cols-1 lg:grid-cols-12 gap-24 items-center relative z-20">
+      <div className="w-full mx-auto flex flex-col xl:flex-row gap-16 items-center relative z-20 min-h-[85vh]">
         
         {/* Left: Product Stage */}
-        <div className="lg:col-span-7 relative flex items-center justify-center">
+        <div className="flex-1 relative flex items-center justify-center w-full h-[70vh] min-h-[500px]">
           {/* Mouse-follow spotlight */}
           <motion.div 
             style={{ 
@@ -202,9 +202,9 @@ export const PremiumKeyboardShowcase: React.FC<PremiumKeyboardShowcaseProps> = (
                     src={activeAngle.image_url} 
                     alt={currentProduct.name}
                     onError={(e) => { (e.target as HTMLImageElement).src = currentProduct.image_url; }}
-                    whileHover={{ scale: 1.1, y: -20 }}
+                    whileHover={{ scale: 1.15, y: -30 }}
                     transition={{ duration: 0.8, ease: "circOut" }}
-                    className="max-w-full h-auto drop-shadow-[0_150px_180px_rgba(0,0,0,0.9)] select-none cursor-crosshair z-20 relative"
+                    className="w-full h-full object-contain scale-[1.3] drop-shadow-[0_150px_180px_rgba(0,0,0,0.9)] select-none cursor-crosshair z-20 relative"
                   />
                   
                   {/* Cinematic Floating Shadow */}
@@ -231,7 +231,7 @@ export const PremiumKeyboardShowcase: React.FC<PremiumKeyboardShowcaseProps> = (
         </div>
 
         {/* Right: Interaction Console */}
-        <div className="lg:col-span-5 space-y-16">
+        <div className="xl:w-[550px] 2xl:w-[650px] shrink-0 space-y-16 bg-midnight/20 p-10 rounded-[3rem] backdrop-blur-3xl border border-white/5">
           <div className="space-y-8">
             <div className="flex items-center gap-6">
               <span className="text-[11px] font-black tracking-[0.5em] text-orange-500 uppercase">{currentProduct.brand} Core Series</span>

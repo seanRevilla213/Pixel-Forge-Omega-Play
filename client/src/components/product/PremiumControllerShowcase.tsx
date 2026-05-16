@@ -102,10 +102,10 @@ export const PremiumControllerShowcase: React.FC<PremiumControllerShowcaseProps>
         className="fixed pointer-events-none w-[1600px] h-[1600px] -translate-x-1/2 -translate-y-1/2 z-0 opacity-30 blur-[120px]"
       />
 
-      <div className="max-w-[1920px] w-full mx-auto grid grid-cols-1 xl:grid-cols-12 gap-8 relative z-10 min-h-[85vh]">
+      <div className="w-full mx-auto flex flex-col xl:flex-row gap-12 relative z-10 min-h-screen items-center">
         
         {/* Left Side: Vertical Image Gallery */}
-        <div className="hidden xl:flex flex-col gap-4 col-span-1 justify-center z-20">
+        <div className="hidden xl:flex flex-col gap-6 justify-center z-20 shrink-0 w-24">
           {ANGLES.map((angle, idx) => (
             <button
               key={angle.id}
@@ -129,10 +129,10 @@ export const PremiumControllerShowcase: React.FC<PremiumControllerShowcaseProps>
         </div>
 
         {/* Center: Main Cinematic Showcase */}
-        <div className="col-span-1 xl:col-span-7 flex flex-col items-center justify-center relative">
+        <div className="flex-1 flex flex-col items-center justify-center relative w-full h-[80vh] min-h-[600px]">
           
           {/* Main Stage */}
-          <div className="relative w-full aspect-[4/3] flex items-center justify-center">
+          <div className="relative w-full h-full flex items-center justify-center">
             {/* Stage Ambient Glow */}
             <div 
               className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-3/4 h-3/4 rounded-full blur-[100px] opacity-20 transition-colors duration-1000"
@@ -161,13 +161,13 @@ export const PremiumControllerShowcase: React.FC<PremiumControllerShowcaseProps>
                       rotateY: activeAngle.rotateY,
                       scale: activeAngle.scale
                     }}
-                    className="relative transition-transform duration-700 ease-out preserve-3d w-full max-w-2xl"
+                    className="relative transition-transform duration-700 ease-out preserve-3d w-full h-full flex items-center justify-center p-8"
                   >
                     <img 
                       key={activeVariant.image_url}
                       src={activeVariant.image_url} 
                       alt={activeVariant.name}
-                      className="w-full h-auto drop-shadow-[0_60px_60px_rgba(0,0,0,0.6)] object-contain"
+                      className="w-full h-full object-contain drop-shadow-[0_80px_80px_rgba(0,0,0,0.8)] scale-125 hover:scale-[1.35] transition-transform duration-1000"
                     />
                     
                     {/* Shadow underneath */}
@@ -219,7 +219,7 @@ export const PremiumControllerShowcase: React.FC<PremiumControllerShowcaseProps>
         </div>
 
         {/* Right Side: Product Information Panel */}
-        <div className="col-span-1 xl:col-span-4 flex flex-col justify-center space-y-8 z-20 bg-midnight/30 p-8 rounded-[3rem] border border-white/5 backdrop-blur-2xl">
+        <div className="xl:w-[500px] 2xl:w-[600px] shrink-0 flex flex-col justify-center space-y-8 z-20 bg-midnight/40 p-10 rounded-[3rem] border border-white/10 backdrop-blur-3xl shadow-2xl">
           
           {/* Header & Badges */}
           <div className="space-y-4">
