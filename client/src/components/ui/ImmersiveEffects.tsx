@@ -50,3 +50,30 @@ export const AmbientGlow = () => {
     />
   );
 };
+export const FloatingParticles = () => {
+  return (
+    <div className="fixed inset-0 pointer-events-none z-0">
+      {[...Array(20)].map((_, i) => (
+        <motion.div
+          key={i}
+          initial={{ 
+            opacity: 0, 
+            x: Math.random() * 2000, 
+            y: Math.random() * 2000 
+          }}
+          animate={{ 
+            opacity: [0, 0.3, 0],
+            y: [null, Math.random() * -500],
+            rotate: [0, 360]
+          }}
+          transition={{ 
+            duration: 10 + Math.random() * 20, 
+            repeat: Infinity, 
+            ease: "linear" 
+          }}
+          className="absolute w-1 h-1 bg-orange-500 rounded-full blur-[1px]"
+        />
+      ))}
+    </div>
+  );
+};

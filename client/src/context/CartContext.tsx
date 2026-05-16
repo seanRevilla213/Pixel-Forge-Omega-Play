@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, useCallback, type ReactNode, useEffect } from 'react';
-import type { CartItem, Product } from '../types';
+import type { CartItem, Product, ProductVariant } from '../types';
 
 interface CartContextType {
   items: CartItem[];
@@ -80,11 +80,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   }, []);
 
   const formatPHP = useCallback((amount: number) => {
-    // Assuming base prices were in USD, multiply by 50 for realistic Peso values
-    // If prices are already in Peso, this can be removed. 
-    // Given the previous design, they were likely USD ($29.99 -> ₱1,499).
-    const pesoAmount = amount * 56; 
-    return phpFormatter.format(pesoAmount);
+    return phpFormatter.format(amount);
   }, []);
 
   const total = items.reduce((sum, i) => sum + (i.product.price * i.quantity), 0);

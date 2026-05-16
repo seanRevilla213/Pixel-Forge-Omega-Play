@@ -1,26 +1,26 @@
 import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Search, Star, ChevronLeft, ChevronRight, Grid, Filter, Sparkles } from 'lucide-react';
+import { Search, ChevronLeft, ChevronRight, Grid, Filter, Sparkles } from 'lucide-react';
 import PageTransition from '../components/layout/PageTransition';
 import type { Product } from '../types';
 import { useCart } from '../context/CartContext';
 import { useResponsive } from '../hooks/useResponsive';
 import { AuroraBackground, AmbientGlow } from '../components/ui/ImmersiveEffects';
-import { LuxuryCartButton } from '../components/ui/LuxuryCartButton';
+import { ProductCard } from '../components/ui/ProductCard';
 import api from '../api/axiosInstance';
 import gsap from 'gsap';
 
 const Products = () => {
   const [products, setProducts] = useState<Product[]>([]);
   const [categories, setCategories] = useState<string[]>([]);
+  const [brands, setBrands] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
   const [category, setCategory] = useState('');
+  const [brand, setBrand] = useState('');
   const [sort, setSort] = useState('');
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  const { formatPHP } = useCart();
   
   const { device } = useResponsive();
 
@@ -29,6 +29,7 @@ const Products = () => {
     const params = new URLSearchParams();
     if (search) params.set('search', search);
     if (category) params.set('category', category);
+    if (brand) params.set('brand', brand);
     if (sort) params.set('sort', sort);
     params.set('page', page.toString());
     params.set('limit', device === 'ultrawide' ? '16' : '12');
@@ -36,10 +37,11 @@ const Products = () => {
     api.get(`/products?${params}`).then(({ data }) => {
       setProducts(data.products);
       setCategories(data.categories);
+      setBrands(data.brands || []);
       setTotalPages(data.pagination.totalPages);
       setLoading(false);
     }).catch(() => setLoading(false));
-  }, [search, category, sort, page, device]);
+  }, [search, category, brand, sort, page, device]);
 
   useEffect(() => {
     if (!loading) {
@@ -66,7 +68,7 @@ const Products = () => {
             >
               <Sparkles size={12} /> Curated Inventory
             </motion.div>
-            <h1 className="font-heading font-black text-white leading-tight" style={{ fontSize: 'var(--font-size-fluid-h2)' }}>
+            <h1 className="font-heading font-black text-white leading-tight uppercase tracking-tighter" style={{ fontSize: 'var(--font-size-fluid-h2)' }}>
               SYSTEM <span className="italic opacity-50">MANIFEST</span>
             </h1>
             <p className="text-text-secondary font-medium mt-4 max-w-xl opacity-60 mx-auto lg:mx-0">Hand-selected gaming hardware for the discerning professional.</p>
@@ -82,7 +84,7 @@ const Products = () => {
             >
               <div className="space-y-6">
                 <h3 className="text-[10px] font-black tracking-[0.3em] text-white opacity-40 uppercase flex items-center gap-3">
-                  <Search size={14} /> CATALOG SEARCH
+                  <Search size={14} /> Catalog Search
                 </h3>
                 <div className="relative">
                   <input
@@ -97,19 +99,19 @@ const Products = () => {
 
               <div className="space-y-6">
                 <h3 className="text-[10px] font-black tracking-[0.3em] text-white opacity-40 uppercase flex items-center gap-3">
-                  <Filter size={14} /> CATEGORY
+                  <Filter size={14} /> Category
                 </h3>
                 <div className="flex flex-wrap lg:flex-col gap-3">
                   <button 
-                    onClick={() => setCategory('')}
+                    onClick={() => { setCategory(''); setBrand(''); setPage(1); }}
                     className={`px-6 py-3 rounded-2xl text-[10px] font-black tracking-widest uppercase transition-all ${category === '' ? 'bg-white text-matte-black shadow-xl' : 'glasswave text-text-secondary hover:text-white'}`}
                   >
-                    ALL SYSTEMS
+                    All Systems
                   </button>
                   {categories.map((c) => (
                     <button 
                       key={c}
-                      onClick={() => setCategory(c)}
+                      onClick={() => { setCategory(c); setBrand(''); setPage(1); }}
                       className={`px-6 py-3 rounded-2xl text-[10px] font-black tracking-widest uppercase transition-all ${category === c ? 'bg-white text-matte-black shadow-xl' : 'glasswave text-text-secondary hover:text-white'}`}
                     >
                       {c.toUpperCase()}
@@ -117,23 +119,53 @@ const Products = () => {
                   ))}
                 </div>
               </div>
+
+              {/* Dynamic Brand Filters */}
+              {brands.length > 0 && (
+                <motion.div 
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="space-y-6"
+                >
+                  <h3 className="text-[10px] font-black tracking-[0.3em] text-white opacity-40 uppercase flex items-center gap-3">
+                    <Sparkles size={14} /> Brands
+                  </h3>
+                  <div className="flex flex-wrap lg:flex-col gap-3">
+                    <button 
+                      onClick={() => { setBrand(''); setPage(1); }}
+                      className={`px-6 py-3 rounded-2xl text-[10px] font-black tracking-widest uppercase transition-all ${brand === '' ? 'bg-white/20 text-white shadow-xl' : 'glasswave text-text-secondary hover:text-white'}`}
+                    >
+                      All Brands
+                    </button>
+                    {brands.map((b) => (
+                      <button 
+                        key={b}
+                        onClick={() => { setBrand(b); setPage(1); }}
+                        className={`px-6 py-3 rounded-2xl text-[10px] font-black tracking-widest uppercase transition-all ${brand === b ? 'bg-white text-matte-black shadow-xl' : 'glasswave text-text-secondary hover:text-white'}`}
+                      >
+                        {b.toUpperCase()}
+                      </button>
+                    ))}
+                  </div>
+                </motion.div>
+              )}
             </motion.div>
 
             {/* Product Grid */}
             <div className="lg:col-span-3">
               <div className="flex items-center justify-between mb-12">
                 <div className="flex items-center gap-3 text-[10px] font-black tracking-widest text-text-secondary">
-                  <Grid size={16} /> SHOWING {products.length} ARCHIVES
+                  <Grid size={16} /> Showing {products.length} Archives
                 </div>
                 <select
                   value={sort}
                   onChange={(e) => { setSort(e.target.value); setPage(1); }}
                   className="bg-transparent text-[10px] font-black tracking-widest text-white focus:outline-none appearance-none cursor-pointer border-b border-white/10 pb-1 uppercase"
                 >
-                  <option value="" className="bg-matte-black">DEFAULT SEQUENCE</option>
-                  <option value="price_asc" className="bg-matte-black">COST: ASCENDING</option>
-                  <option value="price_desc" className="bg-matte-black">COST: DESCENDING</option>
-                  <option value="rating" className="bg-matte-black">ELITE RATING</option>
+                  <option value="" className="bg-matte-black">Default Sequence</option>
+                  <option value="price_asc" className="bg-matte-black">Cost: Ascending</option>
+                  <option value="price_desc" className="bg-matte-black">Cost: Descending</option>
+                  <option value="rating" className="bg-matte-black">Elite Rating</option>
                 </select>
               </div>
 
@@ -145,41 +177,12 @@ const Products = () => {
                 </div>
               ) : products.length === 0 ? (
                 <div className="text-center py-40 glasswave rounded-[4rem]">
-                  <p className="text-text-muted text-lg font-black tracking-[0.3em] uppercase">SYSTEM MATCH NOT FOUND</p>
+                  <p className="text-text-muted text-lg font-black tracking-[0.3em] uppercase italic opacity-40">System Match Not Found</p>
                 </div>
               ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
                   {products?.map((product, i) => (
-                    <motion.div
-                      key={product?.id || i}
-                      className="product-card group glasswave-card p-6 flex flex-col h-full"
-                    >
-                      <Link to={`/products/${product.slug}`} className="relative aspect-[4/5] rounded-[2rem] overflow-hidden bg-white/5 mb-8">
-                        <motion.img 
-                          whileHover={{ scale: 1.05 }}
-                          transition={{ duration: 1.2, ease: [0.23, 1, 0.32, 1] }}
-                          src={product.image_url} 
-                          alt={product.name} 
-                          className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700" 
-                        />
-                        <div className="absolute inset-0 bg-gradient-to-t from-matte-black/40 to-transparent" />
-                      </Link>
-                      
-                      <div className="flex items-center gap-3 mb-4">
-                        <span className="text-[9px] font-black text-luxury-cyan uppercase tracking-widest">{product.category}</span>
-                        <div className="w-1 h-1 rounded-full bg-white/10" />
-                        <div className="flex items-center gap-1 text-[9px] font-black text-luxury-violet">
-                          <Star size={10} fill="currentColor" /> {product.rating}
-                        </div>
-                      </div>
-
-                      <h3 className="font-heading text-xl font-black text-white mb-6 group-hover:text-luxury-cyan transition-colors leading-tight line-clamp-2">{product.name}</h3>
-                      
-                      <div className="mt-auto flex items-center justify-between">
-                        <span className="text-2xl font-black text-white opacity-80 tracking-tight">{formatPHP(product.price)}</span>
-                        <LuxuryCartButton product={product} className="w-12 h-12 !px-0 rounded-full" />
-                      </div>
-                    </motion.div>
+                    <ProductCard key={product.id} product={product} index={i} />
                   ))}
                 </div>
               )}

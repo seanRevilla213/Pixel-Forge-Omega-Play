@@ -13,7 +13,7 @@ const rowsToObjects = (result: any[]): Record<string, any>[] => {
 export const getAllProducts = async (req: Request, res: Response): Promise<void> => {
   try {
     const db = getDb();
-    const { category, search, sort, page = '1', limit = '12' } = req.query;
+    const { category, search, sort, brand, page = '1', limit = '12' } = req.query;
 
     let query = "SELECT * FROM products WHERE in_stock = 1";
     const params: any[] = [];
@@ -23,9 +23,14 @@ export const getAllProducts = async (req: Request, res: Response): Promise<void>
       params.push(category);
     }
 
+    if (brand && typeof brand === 'string') {
+      query += " AND brand = ?";
+      params.push(brand);
+    }
+
     if (search && typeof search === 'string') {
-      query += " AND (name LIKE ? OR description LIKE ?)";
-      params.push(`%${search}%`, `%${search}%`);
+      query += " AND (name LIKE ? OR description LIKE ? OR brand LIKE ?)";
+      params.push(`%${search}%`, `%${search}%`, `%${search}%`);
     }
 
     if (sort === 'price_asc') query += " ORDER BY price ASC";
@@ -45,9 +50,13 @@ export const getAllProducts = async (req: Request, res: Response): Promise<void>
       countQuery += " AND category = ?";
       countParams.push(category);
     }
+    if (brand && typeof brand === 'string') {
+      countQuery += " AND brand = ?";
+      countParams.push(brand);
+    }
     if (search && typeof search === 'string') {
-      countQuery += " AND (name LIKE ? OR description LIKE ?)";
-      countParams.push(`%${search}%`, `%${search}%`);
+      countQuery += " AND (name LIKE ? OR description LIKE ? OR brand LIKE ?)";
+      countParams.push(`%${search}%`, `%${search}%`, `%${search}%`);
     }
 
     const countResult = db.exec(countQuery, countParams as any);
@@ -62,6 +71,13 @@ export const getAllProducts = async (req: Request, res: Response): Promise<void>
     const catResult = db.exec("SELECT DISTINCT category FROM products WHERE in_stock = 1 ORDER BY category");
     const categories = catResult.length > 0 ? catResult[0].values.map((r: any[]) => r[0]) : [];
 
+    // Get brands if category is specified
+    let brands: string[] = [];
+    if (category) {
+      const brandResult = db.exec("SELECT DISTINCT brand FROM products WHERE category = ? AND brand IS NOT NULL ORDER BY brand", [category] as any);
+      brands = brandResult.length > 0 ? brandResult[0].values.map((r: any[]) => r[0]) : [];
+    }
+
     res.json({
       products,
       pagination: {
@@ -71,6 +87,7 @@ export const getAllProducts = async (req: Request, res: Response): Promise<void>
         totalPages: Math.ceil(total / limitNum),
       },
       categories,
+      brands
     });
   } catch (error: any) {
     res.status(500).json({ error: 'Failed to fetch products' });
