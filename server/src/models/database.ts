@@ -197,12 +197,12 @@ const seedData = async () => {
         in_stock: 1, featured: 1, platform: 'PC', genre: 'Mouse'
       },
       {
-        id: uuidv4(), name: 'Razer BlackShark V2 Pro', slug: 'razer-blackshark-v2-pro',
-        description: 'Wireless esports headset with HyperClear Super Wideband Mic and TriForce Titanium 50mm Drivers.',
-        price: 199.99, original_price: null, category: 'Headsets',
-        image_url: 'https://assets2.razerzone.com/images/pnx.assets/95213606f36599ccb2682974447475f4/razer-blackshark-v2-pro-2023-black-500x500.png',
-        badge: 'WIRELESS', rating: 4.7, review_count: 3500,
-        in_stock: 1, featured: 1, platform: 'PC, PS5, Switch', genre: 'Audio'
+        id: uuidv4(), name: 'HyperX Cloud Alpha', slug: 'hyperx-cloud-alpha',
+        description: 'Durable aluminum frame, detachable cable, and dual chamber drivers for more distinction and less distortion. Designed for pro-level gaming comfort.',
+        price: 99.99, original_price: null, category: 'Headsets',
+        image_url: 'https://hyperx.com/cdn/shop/products/hyperx_cloud_alpha_1_800x.png',
+        badge: 'PRO CHOICE', rating: 4.8, review_count: 8500,
+        in_stock: 1, featured: 1, platform: 'PC, PS5, Xbox, Switch', genre: 'Audio'
       },
       {
         id: uuidv4(), name: 'PlayStation 5 Console', slug: 'playstation-5',
@@ -213,12 +213,12 @@ const seedData = async () => {
         in_stock: 1, featured: 0, platform: 'PS5', genre: 'Console'
       },
       {
-        id: uuidv4(), name: 'HyperX QuadCast S', slug: 'hyperx-quadcast-s',
-        description: 'USB Condenser Microphone with RGB lighting and anti-vibration shock mount. Perfect for streaming and content creation.',
-        price: 159.99, original_price: 179.99, category: 'Accessories',
-        image_url: 'https://row.hyperx.com/cdn/shop/products/hyperx_quadcast_s_1_800x.png',
-        badge: 'STREAMING', rating: 4.8, review_count: 6700,
-        in_stock: 1, featured: 0, platform: 'PC, Mac, PS5', genre: 'Microphone'
+        id: uuidv4(), name: 'SteelSeries QcK Prism', slug: 'steelseries-qck-prism',
+        description: 'Elite cloth gaming mousepad with dynamic 2-zone RGB backlighting. The choice of esports pros for precision and control.',
+        price: 59.99, original_price: null, category: 'Accessories',
+        image_url: 'https://media.steelseriescdn.com/thumbs/catalog/items/63391/798402f12255476a80436d4df6c5478d.png.350x280_q100_crop-fit_optimize.png',
+        badge: 'RGB ELITE', rating: 4.9, review_count: 12000,
+        in_stock: 1, featured: 1, platform: 'Desktop', genre: 'Surface'
       }
     ];
 

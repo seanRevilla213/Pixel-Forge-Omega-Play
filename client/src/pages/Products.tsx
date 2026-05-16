@@ -6,6 +6,9 @@ import type { Product } from '../types';
 import { useResponsive } from '../hooks/useResponsive';
 import { AuroraBackground, AmbientGlow } from '../components/ui/ImmersiveEffects';
 import { ProductCard } from '../components/ui/ProductCard';
+import { PremiumControllerShowcase } from '../components/product/PremiumControllerShowcase';
+import { PremiumKeyboardShowcase } from '../components/product/PremiumKeyboardShowcase';
+import { PremiumHardwareShowcase } from '../components/product/PremiumHardwareShowcase';
 import api from '../api/axiosInstance';
 import gsap from 'gsap';
 
@@ -283,64 +286,49 @@ const Products = () => {
               )}
             </AnimatePresence>
 
-            {/* Product Grid */}
+            {/* Main Showcase Area */}
             <div className="lg:col-span-3">
-              <div className="flex items-center justify-between mb-12">
-                <div className="flex items-center gap-3 text-[10px] font-black tracking-widest text-text-secondary">
-                  <Grid size={16} /> Showing {products.length} Archives
-                </div>
-                <select
-                  value={sort}
-                  onChange={(e) => { setSort(e.target.value); setPage(1); }}
-                  className="bg-transparent text-[10px] font-black tracking-widest text-white focus:outline-none appearance-none cursor-pointer border-b border-white/10 pb-1 uppercase"
-                >
-                  <option value="" className="bg-matte-black">Default Sequence</option>
-                  <option value="price_asc" className="bg-matte-black">Cost: Ascending</option>
-                  <option value="price_desc" className="bg-matte-black">Cost: Descending</option>
-                  <option value="rating" className="bg-matte-black">Elite Rating</option>
-                </select>
-              </div>
-
-              {loading ? (
-                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
-                  {Array.from({ length: 6 }).map((_, i) => (
-                    <div key={i} className="glasswave rounded-[3rem] h-[500px] animate-pulse" />
-                  ))}
-                </div>
-              ) : products.length === 0 ? (
-                <div className="text-center py-40 glasswave rounded-[4rem]">
-                  <p className="text-text-muted text-lg font-black tracking-[0.3em] uppercase italic opacity-40">System Match Not Found</p>
-                </div>
-              ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
-                  {products?.map((product, i) => (
-                    <ProductCard key={product.id} product={product} index={i} />
-                  ))}
-                </div>
-              )}
-
-              {/* Pagination */}
-              {totalPages > 1 && (
-                <div className="flex items-center justify-center gap-6 mt-24">
-                  <button onClick={() => setPage(p => Math.max(1, p - 1))} disabled={page === 1} className="w-12 h-12 rounded-full glasswave flex items-center justify-center text-white hover:text-luxury-cyan disabled:opacity-20 transition-all">
-                    <ChevronLeft size={20} />
-                  </button>
-                  <div className="flex gap-4">
-                    {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
-                      <button 
-                        key={p} 
-                        onClick={() => setPage(p)} 
-                        className={`w-12 h-12 rounded-full font-black text-[10px] tracking-widest transition-all ${p === page ? 'bg-white text-matte-black shadow-2xl' : 'glasswave text-text-secondary hover:text-white'}`}
-                      >
-                        {p}
-                      </button>
-                    ))}
-                  </div>
-                  <button onClick={() => setPage(p => Math.min(totalPages, p + 1))} disabled={page === totalPages} className="w-12 h-12 rounded-full glasswave flex items-center justify-center text-white hover:text-luxury-cyan disabled:opacity-20 transition-all">
-                    <ChevronRight size={20} />
-                  </button>
-                </div>
-              )}
+              <AnimatePresence mode="wait">
+                {loading ? (
+                  <motion.div 
+                    key="loading"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    className="w-full h-[70vh] flex items-center justify-center"
+                  >
+                    <div className="w-16 h-16 border-4 border-luxury-cyan/20 border-t-luxury-cyan rounded-full animate-spin" />
+                  </motion.div>
+                ) : products.length === 0 ? (
+                  <motion.div 
+                    key="empty"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    className="text-center py-40 glasswave rounded-[4rem]"
+                  >
+                    <p className="text-text-muted text-lg font-black tracking-[0.3em] uppercase italic opacity-40">Archive Not Found</p>
+                  </motion.div>
+                ) : (
+                  <motion.div
+                    key={products[0].id}
+                    initial={{ opacity: 0, x: 100, rotateY: 10 }}
+                    animate={{ opacity: 1, x: 0, rotateY: 0 }}
+                    exit={{ opacity: 0, x: -100, rotateY: -10 }}
+                    transition={{ duration: 0.8, ease: "circOut" }}
+                    className="w-full"
+                    style={{ perspective: '2000px' }}
+                  >
+                    {products[0].category === 'Controllers' ? (
+                      <PremiumControllerShowcase product={products[0]} />
+                    ) : products[0].category === 'Mechanical Keyboards' ? (
+                      <PremiumKeyboardShowcase product={products[0]} />
+                    ) : (
+                      <PremiumHardwareShowcase product={products[0]} />
+                    )}
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </div>
           </div>
         </div>
