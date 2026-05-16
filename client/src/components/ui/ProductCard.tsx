@@ -1,6 +1,7 @@
 import React, { useState, useRef } from 'react';
 import { motion, AnimatePresence, useMotionValue, useSpring, useTransform } from 'framer-motion';
-import { ChevronRight, Star, Zap } from 'lucide-react';
+import { ChevronRight, ChevronLeft, Star, Zap } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import type { Product } from '../../types';
 import { useCart } from '../../context/CartContext';
 import { LuxuryCartButton } from './LuxuryCartButton';
@@ -74,18 +75,32 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, index }) => {
     setTimeout(() => setIsRotating(false), 800);
   };
 
+  const handlePrev = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (isRotating) return;
+    
+    setIsRotating(true);
+    setCurrentVariant((prev) => (prev - 1 + variants.length) % variants.length);
+    setTimeout(() => setIsRotating(false), 800);
+  };
+
   return (
-    <motion.div
+    <Link
+      to={`/products/${product.slug}`}
       ref={cardRef}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
-      initial={{ opacity: 0, y: 50 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }}
-      transition={{ delay: index * 0.1, duration: 0.8 }}
-      style={{ rotateX, rotateY, transformStyle: "preserve-3d" }}
-      className="group glasswave-card p-8 flex flex-col relative overflow-hidden transition-all duration-700 hover:shadow-[0_40px_100px_rgba(0,0,0,0.5)] border border-white/5"
+      className="group glasswave-card p-8 flex flex-col relative overflow-hidden transition-all duration-700 hover:shadow-[0_40px_100px_rgba(0,0,0,0.5)] border border-white/5 no-underline block"
     >
+      <motion.div
+        initial={{ opacity: 0, y: 50 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ delay: index * 0.1, duration: 0.8 }}
+        style={{ rotateX, rotateY, transformStyle: "preserve-3d" }}
+        className="w-full h-full flex flex-col"
+      >
       {/* Spotlight Effect */}
       <div className="card-spotlight absolute pointer-events-none opacity-0 w-64 h-64 -translate-x-1/2 -translate-y-1/2 bg-luxury-cyan blur-[80px] z-0 rounded-full" />
 
@@ -99,13 +114,13 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, index }) => {
           >
             <motion.img
               initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1.15 }}
+              animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.8 }}
-              whileHover={{ scale: 1.25, rotate: 2 }}
+              whileHover={{ scale: 1.1, rotate: 2 }}
               transition={{ duration: 0.8, ease: [0.23, 1, 0.32, 1] }}
               src={variants[currentVariant].image_url}
               alt={`${product.name} - ${variants[currentVariant].name}`}
-              className="max-w-[120%] max-h-[120%] object-contain drop-shadow-[0_40px_60px_rgba(0,0,0,0.6)] group-hover:drop-shadow-[0_50px_80px_rgba(0,240,255,0.3)] transition-all duration-700"
+              className="w-full h-full object-contain drop-shadow-[0_40px_60px_rgba(0,0,0,0.6)] group-hover:drop-shadow-[0_50px_80px_rgba(0,240,255,0.3)] transition-all duration-700"
             />
           </motion.div>
         </AnimatePresence>
@@ -124,14 +139,42 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, index }) => {
           </span>
         </div>
 
-        {/* Next Button for Variants */}
+        {/* Navigation Buttons for Variants */}
         {variants.length > 1 && (
-          <button
-            onClick={handleNext}
-            className="absolute right-6 top-1/2 -translate-y-1/2 w-14 h-14 rounded-full glasswave-strong flex items-center justify-center text-white opacity-0 group-hover:opacity-100 transition-all hover:scale-110 active:scale-95 z-30 shadow-[0_0_30px_rgba(0,240,255,0.2)] border border-white/20"
-          >
-            <ChevronRight size={28} />
-          </button>
+          <div className="absolute inset-x-6 top-1/2 -translate-y-1/2 flex justify-between z-30 opacity-0 group-hover:opacity-100 transition-opacity">
+            <button
+              onClick={handlePrev}
+              className="w-12 h-12 rounded-full glasswave-strong flex items-center justify-center text-white hover:scale-110 active:scale-95 shadow-[0_0_30px_rgba(0,240,255,0.2)] border border-white/20 transition-all"
+            >
+              <ChevronLeft size={24} />
+            </button>
+            <button
+              onClick={handleNext}
+              className="w-12 h-12 rounded-full glasswave-strong flex items-center justify-center text-white hover:scale-110 active:scale-95 shadow-[0_0_30px_rgba(0,240,255,0.2)] border border-white/20 transition-all"
+            >
+              <ChevronRight size={24} />
+            </button>
+          </div>
+        )}
+
+        {/* Variant Color Selector (Bubbles) */}
+        {variants.length > 1 && (
+          <div className="absolute bottom-6 right-6 flex gap-2 z-30 opacity-0 group-hover:opacity-100 transition-opacity">
+            {variants.map((v: any, i: number) => (
+              <button
+                key={i}
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  setCurrentVariant(i);
+                }}
+                className={`w-4 h-4 rounded-full border border-white/20 transition-all ${
+                  currentVariant === i ? 'scale-125 border-white shadow-[0_0_10px_rgba(255,255,255,0.5)]' : 'hover:scale-110'
+                }`}
+                style={{ backgroundColor: v.color || '#fff' }}
+              />
+            ))}
+          </div>
         )}
       </div>
       
@@ -168,6 +211,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, index }) => {
         </div>
         <LuxuryCartButton product={product} className="w-16 h-16 !px-0 rounded-2xl shadow-2xl hover:shadow-luxury-cyan/30 active:scale-90 transition-all" />
       </div>
-    </motion.div>
+      </motion.div>
+    </Link>
   );
 };

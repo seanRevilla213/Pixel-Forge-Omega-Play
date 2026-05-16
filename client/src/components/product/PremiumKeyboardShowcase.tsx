@@ -47,21 +47,22 @@ export const PremiumKeyboardShowcase: React.FC<PremiumKeyboardShowcaseProps> = (
   }, []);
 
   useEffect(() => {
-    if (currentProduct.variants) {
+    if (currentProduct?.variants) {
       try {
         setAngles(JSON.parse(currentProduct.variants));
         setActiveAngleIndex(0);
       } catch (e) {
+        console.error("Failed to parse variants", e);
         setAngles([]);
       }
     }
   }, [currentProduct]);
 
-  const activeAngle = angles[activeAngleIndex] || { 
+  const activeAngle = angles?.[activeAngleIndex] || { 
     name: 'Default View', 
     color: '#ff8c00', 
     glow: 'rgba(255, 140, 0, 0.3)', 
-    image_url: currentProduct.image_url 
+    image_url: currentProduct?.image_url || '/products/redragon-k670.png' 
   };
 
   const handleMouseMove = (e: React.MouseEvent) => {

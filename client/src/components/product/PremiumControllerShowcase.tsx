@@ -43,13 +43,24 @@ export const PremiumControllerShowcase: React.FC<PremiumControllerShowcaseProps>
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (product.variants) {
-      setVariants(JSON.parse(product.variants));
+    if (product?.variants) {
+      try {
+        setVariants(JSON.parse(product.variants));
+      } catch (e) {
+        console.error("Failed to parse variants", e);
+        setVariants([]);
+      }
     }
-  }, [product.variants]);
+  }, [product?.variants]);
 
-  const activeVariant = variants[currentIndex] || { id: 'default', name: 'Carbon Black', color: '#080808', glow: 'rgba(255, 255, 255, 0.2)', image_url: product.image_url };
-  const activeAngle = ANGLES[activeAngleIndex];
+  const activeVariant = variants?.[currentIndex] || { 
+    id: 'default', 
+    name: 'Carbon Black', 
+    color: '#080808', 
+    glow: 'rgba(255, 255, 255, 0.2)', 
+    image_url: product?.image_url || '/products/xbox-360-controller.jpg' 
+  };
+  const activeAngle = ANGLES?.[activeAngleIndex] || ANGLES[0];
 
   const handleMouseMove = (e: React.MouseEvent) => {
     if (!containerRef.current) return;
