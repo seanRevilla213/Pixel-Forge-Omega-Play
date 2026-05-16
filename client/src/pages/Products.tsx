@@ -1,9 +1,8 @@
 import { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Search, ChevronLeft, ChevronRight, Grid, Filter, Sparkles } from 'lucide-react';
 import PageTransition from '../components/layout/PageTransition';
 import type { Product } from '../types';
-import { useCart } from '../context/CartContext';
 import { useResponsive } from '../hooks/useResponsive';
 import { AuroraBackground, AmbientGlow } from '../components/ui/ImmersiveEffects';
 import { ProductCard } from '../components/ui/ProductCard';
@@ -20,7 +19,6 @@ const Products = () => {
     { id: 'consoles', name: 'Consoles', glow: 'rgba(239, 68, 68, 0.3)', color: '#ef4444' },
     { id: 'accessories', name: 'Accessories', glow: 'rgba(255, 255, 255, 0.2)', color: '#ffffff' }
   ];
-  const [categories, setCategories] = useState<string[]>([]);
   const [brands, setBrands] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
@@ -45,7 +43,6 @@ const Products = () => {
 
     api.get(`/products?${params}`).then(({ data }) => {
       setProducts(data.products);
-      setCategories(data.categories);
       setBrands(data.brands || []);
       setTotalPages(data.pagination.totalPages);
       setLoading(false);
