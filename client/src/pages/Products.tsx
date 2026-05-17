@@ -5,6 +5,7 @@ import { Search, Filter, Sparkles } from 'lucide-react';
 import PageTransition from '../components/layout/PageTransition';
 import type { Product } from '../types';
 import { useResponsive } from '../hooks/useResponsive';
+import { usePerformance } from '../context/PerformanceContext';
 import { AuroraBackground, AmbientGlow } from '../components/ui/ImmersiveEffects';
 import { PremiumControllerShowcase } from '../components/product/PremiumControllerShowcase';
 import { PremiumKeyboardShowcase } from '../components/product/PremiumKeyboardShowcase';
@@ -14,6 +15,7 @@ import gsap from 'gsap';
 
 const Products = () => {
   const [products, setProducts] = useState<Product[]>([]);
+  const { isLowEnd } = usePerformance();
   const FIXED_CATEGORIES = [
     { id: 'controllers', name: 'Controllers', glow: 'rgba(0, 240, 255, 0.4)', color: '#00f0ff' },
     { id: 'keyboards', name: 'Mechanical Keyboards', glow: 'rgba(255, 140, 0, 0.3)', color: '#ff8c00' },
@@ -77,13 +79,13 @@ const Products = () => {
   }, [search, category, brand, page, device]);
 
   useEffect(() => {
-    if (!loading) {
+    if (!loading && !isLowEnd) {
       gsap.fromTo(".product-card", 
         { opacity: 0, y: 30, scale: 0.98 },
         { opacity: 1, y: 0, scale: 1, stagger: 0.05, duration: 0.8, ease: "power4.out" }
       );
     }
-  }, [loading, products]);
+  }, [loading, products, isLowEnd]);
 
   return (
     <PageTransition>
@@ -336,12 +338,12 @@ const Products = () => {
                 ) : (
                   <motion.div
                     key={products[0].id}
-                    initial={{ opacity: 0, scale: 0.8, rotateY: -20 }}
+                    initial={isLowEnd ? { opacity: 0 } : { opacity: 0, scale: 0.8, rotateY: -20 }}
                     animate={{ opacity: 1, scale: 1.1, rotateY: 0 }}
-                    exit={{ opacity: 0, scale: 1.2, rotateY: 20 }}
-                    transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
+                    exit={isLowEnd ? { opacity: 0 } : { opacity: 0, scale: 1.2, rotateY: 20 }}
+                    transition={{ duration: isLowEnd ? 0.35 : 1, ease: [0.16, 1, 0.3, 1] }}
                     className="w-full"
-                    style={{ perspective: '2000px' }}
+                    style={isLowEnd ? {} : { perspective: '2000px' }}
                   >
                     {products[0].category === 'Controllers' ? (
                       <PremiumControllerShowcase product={products[0]} />

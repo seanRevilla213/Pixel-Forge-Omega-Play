@@ -5,6 +5,7 @@ import { ArrowRight, ShieldCheck, Zap, Star, Layout, Globe, Cpu } from 'lucide-r
 import PageTransition from '../components/layout/PageTransition';
 import type { Product } from '../types';
 import { useCart } from '../context/CartContext';
+import { usePerformance } from '../context/PerformanceContext';
 import { AuroraBackground, AmbientGlow } from '../components/ui/ImmersiveEffects';
 import api from '../api/axiosInstance';
 import gsap from 'gsap';
@@ -17,6 +18,7 @@ const Landing = () => {
   const [featured, setFeatured] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const { } = useCart();
+  const { isLowEnd } = usePerformance();
   
   const mainRef = useRef(null);
   const heroTextRef = useRef(null);
@@ -28,11 +30,13 @@ const Landing = () => {
     }).catch(() => setLoading(false));
 
     // GSAP Hero Reveal
-    gsap.fromTo(heroTextRef.current, 
-      { opacity: 0, y: 100, scale: 0.95 },
-      { opacity: 1, y: 0, scale: 1, duration: 1.5, ease: "expo.out" }
-    );
-  }, []);
+    if (!isLowEnd) {
+      gsap.fromTo(heroTextRef.current, 
+        { opacity: 0, y: 100, scale: 0.95 },
+        { opacity: 1, y: 0, scale: 1, duration: 1.5, ease: "expo.out" }
+      );
+    }
+  }, [isLowEnd]);
 
   const { scrollYProgress } = useScroll({ target: mainRef, offset: ["start start", "end end"] });
   const scale = useTransform(scrollYProgress, [0, 0.2], [1, 0.95]);
@@ -46,12 +50,12 @@ const Landing = () => {
 
         {/* Hero Section */}
         <section className="relative min-h-[110vh] flex items-center justify-center pt-20 px-6">
-          <motion.div style={{ scale, opacity }} className="relative z-10 max-w-7xl mx-auto text-center">
+          <motion.div style={isLowEnd ? {} : { scale, opacity }} className="relative z-10 max-w-7xl mx-auto text-center">
             <div ref={heroTextRef} className="space-y-12">
               <motion.div
                 initial={{ opacity: 0, letterSpacing: "0.5em" }}
-                animate={{ opacity: 1, letterSpacing: "1em" }}
-                transition={{ duration: 2 }}
+                animate={{ opacity: 1, letterSpacing: "1.0em" }}
+                transition={{ duration: isLowEnd ? 0.5 : 2 }}
                 className="text-text-secondary text-[10px] font-black uppercase"
               >
                 The Architecture of Play
@@ -83,8 +87,8 @@ const Landing = () => {
 
           {/* Floating Element */}
           <motion.div 
-            animate={{ y: [0, -40, 0] }}
-            transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
+            animate={isLowEnd ? { y: 0 } : { y: [0, -40, 0] }}
+            transition={isLowEnd ? {} : { duration: 10, repeat: Infinity, ease: "easeInOut" }}
             className="absolute bottom-20 right-[10%] w-[400px] h-[400px] glasswave rounded-full opacity-20 hidden lg:block"
           />
         </section>
