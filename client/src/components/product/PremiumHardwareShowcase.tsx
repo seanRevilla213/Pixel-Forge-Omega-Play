@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Star, Plus, Minus, ShieldCheck, Zap, Box, Info } from 'lucide-react';
 import { useCart } from '../../context/CartContext';
+import { usePerformance } from '../../context/PerformanceContext';
 import { LuxuryCartButton } from '../ui/LuxuryCartButton';
 
 interface PremiumHardwareShowcaseProps {
@@ -10,6 +11,7 @@ interface PremiumHardwareShowcaseProps {
 
 export const PremiumHardwareShowcase: React.FC<PremiumHardwareShowcaseProps> = ({ product }) => {
   const { formatPHP } = useCart();
+  const { isLowEnd } = usePerformance();
   const [quantity, setQuantity] = useState(1);
 
   // Theme colors based on category
@@ -32,31 +34,38 @@ export const PremiumHardwareShowcase: React.FC<PremiumHardwareShowcaseProps> = (
       {/* Left: Interactive Stage */}
       <div className="flex-1 relative flex items-center justify-center w-full h-[60vh] min-h-[500px]">
         {/* Ambient Glow */}
-        <div 
-          className="absolute inset-0 blur-[150px] opacity-20 rounded-full transition-colors duration-1000"
-          style={{ backgroundColor: themeColor }}
-        />
+        {!isLowEnd && (
+          <div 
+            className="absolute inset-0 blur-[150px] opacity-20 rounded-full transition-colors duration-1000"
+            style={{ backgroundColor: themeColor }}
+          />
+        )}
 
         {/* Floating Product */}
         <AnimatePresence mode="wait">
           <motion.div
             key={product.id}
-            initial={{ opacity: 0, scale: 0.8, rotateY: -20 }}
+            initial={isLowEnd ? { opacity: 0 } : { opacity: 0, scale: 0.8, rotateY: -20 }}
             animate={{ opacity: 1, scale: 1.1, rotateY: 0 }}
-            exit={{ opacity: 0, scale: 1.2, rotateY: 20 }}
-            transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
+            exit={isLowEnd ? { opacity: 0 } : { opacity: 0, scale: 1.2, rotateY: 20 }}
+            transition={{ duration: isLowEnd ? 0.3 : 1, ease: [0.16, 1, 0.3, 1] }}
             className="relative z-20 w-full h-full flex items-center justify-center"
           >
             <motion.img
-              animate={{ y: [0, -25, 0] }}
-              transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
+              animate={isLowEnd ? { y: 0 } : { y: [0, -25, 0] }}
+              transition={isLowEnd ? {} : { duration: 6, repeat: Infinity, ease: "easeInOut" }}
               src={product.image_url}
               alt={product.name}
-              className="max-w-[90%] max-h-[90%] object-contain drop-shadow-[0_80px_100px_rgba(0,0,0,0.8)]"
+              loading="lazy"
+              className={isLowEnd 
+                ? "max-w-[90%] max-h-[90%] object-contain"
+                : "max-w-[90%] max-h-[90%] object-contain drop-shadow-[0_80px_100px_rgba(0,0,0,0.8)]"}
             />
             
             {/* Spotlight */}
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[120%] bg-radial-gradient from-white/10 to-transparent pointer-events-none opacity-40" />
+            {!isLowEnd && (
+              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[120%] bg-radial-gradient from-white/10 to-transparent pointer-events-none opacity-40" />
+            )}
           </motion.div>
         </AnimatePresence>
 

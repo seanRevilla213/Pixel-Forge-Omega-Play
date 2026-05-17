@@ -3,6 +3,7 @@ import { motion, AnimatePresence, useSpring, useMotionValue } from 'framer-motio
 import { ChevronRight, ChevronLeft, Plus, Minus, Loader2, Check, Star, ShoppingCart, Zap, Battery, Crosshair, Shield, Truck, Package } from 'lucide-react';
 import type { Product, ProductVariant } from '../../types';
 import { useCart } from '../../context/CartContext';
+import { usePerformance } from '../../context/PerformanceContext';
 import { AuroraBackground } from '../ui/ImmersiveEffects';
 
 interface PremiumControllerShowcaseProps {
@@ -26,6 +27,7 @@ const FEATURES = [
 
 export const PremiumControllerShowcase: React.FC<PremiumControllerShowcaseProps> = ({ product }) => {
   const { addItem, formatPHP } = useCart();
+  const { isLowEnd } = usePerformance();
   const [variants, setVariants] = useState<ProductVariant[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [activeAngleIndex, setActiveAngleIndex] = useState(0);
@@ -63,7 +65,7 @@ export const PremiumControllerShowcase: React.FC<PremiumControllerShowcaseProps>
   const activeAngle = ANGLES?.[activeAngleIndex] || ANGLES[0];
 
   const handleMouseMove = (e: React.MouseEvent) => {
-    if (!containerRef.current) return;
+    if (isLowEnd || !containerRef.current) return;
     const rect = containerRef.current.getBoundingClientRect();
     mouseX.set(e.clientX - rect.left);
     mouseY.set(e.clientY - rect.top);
@@ -118,14 +120,16 @@ export const PremiumControllerShowcase: React.FC<PremiumControllerShowcaseProps>
       <AuroraBackground />
       
       {/* Dynamic Spotlight */}
-      <motion.div 
-        style={{ 
-          left: springX, 
-          top: springY,
-          background: `radial-gradient(800px circle at center, ${activeVariant.glow}, transparent 70%)`
-        }}
-        className="fixed pointer-events-none w-[1600px] h-[1600px] -translate-x-1/2 -translate-y-1/2 z-0 opacity-30 blur-[120px]"
-      />
+      {!isLowEnd && (
+        <motion.div 
+          style={{ 
+            left: springX, 
+            top: springY,
+            background: `radial-gradient(800px circle at center, ${activeVariant.glow}, transparent 70%)`
+          }}
+          className="fixed pointer-events-none w-[1600px] h-[1600px] -translate-x-1/2 -translate-y-1/2 z-0 opacity-30 blur-[120px]"
+        />
+      )}
 
       <div className="w-full mx-auto flex flex-col xl:flex-row gap-12 relative z-10 min-h-screen items-center">
         
@@ -138,13 +142,14 @@ export const PremiumControllerShowcase: React.FC<PremiumControllerShowcaseProps>
               className={`relative w-20 h-20 rounded-2xl glasswave overflow-hidden transition-all duration-300 group ${
                 activeAngleIndex === idx ? 'border-2 border-white/50 scale-110 shadow-lg' : 'border border-white/10 hover:scale-105 opacity-60 hover:opacity-100'
               }`}
-              style={{ boxShadow: activeAngleIndex === idx ? `0 0 20px ${activeVariant.glow}` : 'none' }}
+              style={{ boxShadow: (!isLowEnd && activeAngleIndex === idx) ? `0 0 20px ${activeVariant.glow}` : 'none' }}
             >
               <img 
                 src={activeVariant.image_url} 
                 alt={angle.name}
+                loading="lazy"
                 className="w-full h-full object-contain p-2"
-                style={{ transform: `rotateY(${angle.rotateY}deg) rotateX(${angle.rotateX}deg)` }}
+                style={isLowEnd ? {} : { transform: `rotateY(${angle.rotateY}deg) rotateX(${angle.rotateX}deg)` }}
               />
               {activeAngleIndex === idx && (
                 <div className="absolute inset-0 bg-gradient-to-t from-white/10 to-transparent" />
@@ -159,29 +164,31 @@ export const PremiumControllerShowcase: React.FC<PremiumControllerShowcaseProps>
           {/* Main Stage */}
           <div className="relative w-full h-full flex items-center justify-center">
             {/* Stage Ambient Glow */}
-            <div 
-              className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-3/4 h-3/4 rounded-full blur-[100px] opacity-20 transition-colors duration-1000"
-              style={{ backgroundColor: activeVariant.color }}
-            />
+            {!isLowEnd && (
+              <div 
+                className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-3/4 h-3/4 rounded-full blur-[100px] opacity-20 transition-colors duration-1000"
+                style={{ backgroundColor: activeVariant.color }}
+              />
+            )}
             
             <AnimatePresence mode="wait">
               <motion.div
                 key={`${currentIndex}-${activeAngleIndex}`}
-                initial={{ rotateY: -30, opacity: 0, scale: 0.8, filter: 'blur(10px)' }}
+                initial={isLowEnd ? { opacity: 0 } : { rotateY: -30, opacity: 0, scale: 0.8, filter: 'blur(10px)' }}
                 animate={{ rotateY: 0, opacity: 1, scale: 1, filter: 'blur(0px)' }}
-                exit={{ rotateY: 30, opacity: 0, scale: 0.8, filter: 'blur(10px)' }}
-                transition={{ duration: 0.8, ease: [0.23, 1, 0.32, 1] }}
+                exit={isLowEnd ? { opacity: 0 } : { rotateY: 30, opacity: 0, scale: 0.8, filter: 'blur(10px)' }}
+                transition={{ duration: isLowEnd ? 0.3 : 0.8, ease: [0.23, 1, 0.32, 1] }}
                 className="relative z-20 w-full h-full flex items-center justify-center perspective-1000"
               >
                 {/* Floating Controller with 3D Effect */}
                 <motion.div
-                  animate={{ y: [0, -15, 0] }}
-                  transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+                  animate={isLowEnd ? { y: 0 } : { y: [0, -15, 0] }}
+                  transition={isLowEnd ? {} : { duration: 4, repeat: Infinity, ease: "easeInOut" }}
                   className="relative w-full h-full flex items-center justify-center preserve-3d"
                 >
                   <motion.div
-                    whileHover={{ rotateX: 5, rotateY: 5, scale: 1.05 }}
-                    style={{ 
+                    whileHover={isLowEnd ? {} : { rotateX: 5, rotateY: 5, scale: 1.05 }}
+                    style={isLowEnd ? {} : { 
                       rotateX: activeAngle.rotateX, 
                       rotateY: activeAngle.rotateY,
                       scale: activeAngle.scale
@@ -192,14 +199,18 @@ export const PremiumControllerShowcase: React.FC<PremiumControllerShowcaseProps>
                       key={activeVariant.image_url}
                       src={activeVariant.image_url} 
                       alt={activeVariant.name}
-                      className="w-full h-full object-contain drop-shadow-[0_80px_80px_rgba(0,0,0,0.8)] scale-125 hover:scale-[1.35] transition-transform duration-1000"
+                      className={isLowEnd 
+                        ? "w-full h-full object-contain scale-110" 
+                        : "w-full h-full object-contain drop-shadow-[0_80px_80px_rgba(0,0,0,0.8)] scale-125 hover:scale-[1.35] transition-transform duration-1000"}
                     />
                     
                     {/* Shadow underneath */}
-                    <div 
-                      className="absolute -bottom-20 left-1/2 -translate-x-1/2 w-[80%] h-12 blur-3xl opacity-50 rounded-[100%]"
-                      style={{ backgroundColor: activeVariant.color }}
-                    />
+                    {!isLowEnd && (
+                      <div 
+                        className="absolute -bottom-20 left-1/2 -translate-x-1/2 w-[80%] h-12 blur-3xl opacity-50 rounded-[100%]"
+                        style={{ backgroundColor: activeVariant.color }}
+                      />
+                    )}
                   </motion.div>
                 </motion.div>
               </motion.div>

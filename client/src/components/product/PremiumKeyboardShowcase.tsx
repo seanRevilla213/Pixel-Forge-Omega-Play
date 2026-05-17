@@ -1,9 +1,27 @@
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence, useSpring, useMotionValue } from 'framer-motion';
-import { Plus, Minus, Loader2, Check, Sparkles, Eye, ShieldCheck, Zap, ShoppingCart } from 'lucide-react';
+import { 
+  Plus, 
+  Minus, 
+  Loader2, 
+  Check, 
+  Sparkles, 
+  Gamepad, 
+  Keyboard, 
+  MousePointer, 
+  Headphones, 
+  Tv, 
+  Sliders, 
+  Layers, 
+  Zap, 
+  ShoppingCart, 
+  Search, 
+  ArrowRight 
+} from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import type { Product } from '../../types';
+import type { Product, ProductVariant } from '../../types';
 import { useCart } from '../../context/CartContext';
+import { usePerformance } from '../../context/PerformanceContext';
 import { AuroraBackground } from '../ui/ImmersiveEffects';
 import gsap from 'gsap';
 
@@ -26,12 +44,16 @@ const KEYBOARD_ANGLES = [
 
 export const PremiumKeyboardShowcase: React.FC<PremiumKeyboardShowcaseProps> = ({ product }) => {
   const { addItem, formatPHP } = useCart();
+  const { isLowEnd } = usePerformance();
   const navigate = useNavigate();
   
   const [activeAngleIndex, setActiveAngleIndex] = useState(0);
   const [quantity, setQuantity] = useState(1);
   const [adding, setAdding] = useState(false);
   const [added, setAdded] = useState(false);
+  const [localSearch, setLocalSearch] = useState('');
+  const [variants, setVariants] = useState<ProductVariant[]>([]);
+  const [variantIndex, setVariantIndex] = useState(0);
   
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
@@ -46,16 +68,30 @@ export const PremiumKeyboardShowcase: React.FC<PremiumKeyboardShowcaseProps> = (
   const containerRef = useRef<HTMLDivElement>(null);
   const keyboardRef = useRef<HTMLDivElement>(null);
 
+  // Parse variants from JSON if they exist
+  useEffect(() => {
+    if (product?.variants) {
+      try {
+        setVariants(JSON.parse(product.variants));
+      } catch (e) {
+        console.error("Failed to parse variants", e);
+        setVariants([]);
+      }
+    }
+  }, [product?.variants]);
+
   // Force reset indices and states when a new keyboard product is mounted/selected
   useEffect(() => {
     setActiveAngleIndex(0);
     setQuantity(1);
+    setVariantIndex(0);
   }, [product.id]);
 
   const activeAngle = KEYBOARD_ANGLES[activeAngleIndex];
+  const activeVariant = variants?.[variantIndex] || null;
 
   const handleMouseMove = (e: React.MouseEvent) => {
-    if (!containerRef.current) return;
+    if (isLowEnd || !containerRef.current) return;
     const rect = containerRef.current.getBoundingClientRect();
     const x = e.clientX - rect.left;
     const y = e.clientY - rect.top;
@@ -65,8 +101,8 @@ export const PremiumKeyboardShowcase: React.FC<PremiumKeyboardShowcaseProps> = (
     if (keyboardRef.current) {
       const centerX = rect.width / 2;
       const centerY = rect.height / 2;
-      const moveX = (x - centerX) / 50;
-      const moveY = (y - centerY) / 50;
+      const moveX = (x - centerX) / 60;
+      const moveY = (y - centerY) / 60;
       gsap.to(keyboardRef.current, {
         rotateX: -moveY,
         rotateY: moveX,
@@ -77,6 +113,7 @@ export const PremiumKeyboardShowcase: React.FC<PremiumKeyboardShowcaseProps> = (
   };
 
   const handleMagneticMove = (e: React.MouseEvent) => {
+    if (isLowEnd) return;
     const rect = e.currentTarget.getBoundingClientRect();
     const x = e.clientX - (rect.left + rect.width / 2);
     const y = e.clientY - (rect.top + rect.height / 2);
@@ -85,6 +122,7 @@ export const PremiumKeyboardShowcase: React.FC<PremiumKeyboardShowcaseProps> = (
   };
 
   const handleMagneticLeave = () => {
+    if (isLowEnd) return;
     btnX.set(0);
     btnY.set(0);
   };
@@ -93,7 +131,7 @@ export const PremiumKeyboardShowcase: React.FC<PremiumKeyboardShowcaseProps> = (
     setAdding(true);
     setTimeout(() => {
       for(let i=0; i<quantity; i++) {
-        addItem(product);
+        addItem(product, activeVariant || undefined);
       }
       setAdding(false);
       setAdded(true);
@@ -103,238 +141,405 @@ export const PremiumKeyboardShowcase: React.FC<PremiumKeyboardShowcaseProps> = (
 
   const handleBuyNow = () => {
     for(let i=0; i<quantity; i++) {
-      addItem(product);
+      addItem(product, activeVariant || undefined);
     }
     navigate('/cart');
+  };
+
+  const handleSearchSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (localSearch.trim()) {
+      navigate(`/products?search=${encodeURIComponent(localSearch.trim())}`);
+    }
+  };
+
+  const handleCategoryClick = (catName: string) => {
+    navigate(`/products?category=${encodeURIComponent(catName)}`);
+  };
+
+  const handleBrandClick = (brandName: string) => {
+    navigate(`/products?brand=${encodeURIComponent(brandName)}`);
   };
 
   return (
     <div 
       ref={containerRef}
       onMouseMove={handleMouseMove}
-      className="relative min-h-screen bg-[#050505] overflow-hidden flex flex-col pt-40 pb-20 px-8"
+      className="relative min-h-screen bg-[#050505] overflow-x-hidden flex flex-col pt-32 pb-16 px-4 sm:px-8 lg:px-12"
     >
       <AuroraBackground />
       
-      {/* Premium Orange Ambient Lighting */}
-      <div className="absolute top-[10%] left-[-5%] w-[800px] h-[800px] bg-orange-600/10 blur-[160px] rounded-full pointer-events-none opacity-40" />
-      <div className="absolute bottom-[-15%] right-[-10%] w-[700px] h-[700px] bg-amber-500/10 blur-[140px] rounded-full pointer-events-none opacity-40" />
+      {/* Orange Ambient Lighting - Elegant, Subtle */}
+      {!isLowEnd && (
+        <>
+          <div className="absolute top-[10%] left-[20%] w-[600px] h-[600px] bg-orange-600/5 blur-[150px] rounded-full pointer-events-none opacity-40 z-0 animate-pulse duration-[8000ms]" />
+          <div className="absolute bottom-[10%] right-[10%] w-[500px] h-[500px] bg-amber-500/5 blur-[120px] rounded-full pointer-events-none opacity-30 z-0" />
+        </>
+      )}
 
-      <div className="w-full mx-auto flex flex-col xl:flex-row gap-16 items-center relative z-20 min-h-[85vh]">
+      {/* Main Grid/Flex Container */}
+      <div className="w-full max-w-[1700px] mx-auto flex flex-col lg:flex-row gap-8 lg:gap-12 relative z-20 items-stretch">
         
-        {/* Left: Product Stage & Gallery */}
-        <div className="flex-1 flex flex-col items-center gap-12 w-full h-[85vh]">
-          {/* Main Stage */}
-          <div className="relative flex items-center justify-center w-full flex-1">
-            {/* Mouse-follow spotlight */}
-            <motion.div 
-              style={{ 
-                left: springX, 
-                top: springY,
-                background: `radial-gradient(500px circle at center, rgba(255,140,0,0.25), transparent 80%)`
-              }}
-              className="absolute pointer-events-none w-[1000px] h-[1000px] -translate-x-1/2 -translate-y-1/2 z-0 opacity-40 blur-[100px]"
-            />
-
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={product.id + '-' + activeAngleIndex}
-                initial={{ opacity: 0, scale: 0.95, y: 20, rotateX: 10 }}
-                animate={{ opacity: 1, scale: 1, y: 0, rotateX: 0 }}
-                exit={{ opacity: 0, scale: 1.05, y: -20, rotateX: -10 }}
-                transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
-                className="relative z-10 w-full flex flex-col items-center justify-center perspective-3000"
-              >
-                <div ref={keyboardRef} className="relative preserve-3d group/keyboard">
-                  <motion.img 
-                    src={activeAngle.image_url} 
-                    alt={product.name}
-                    animate={{
-                      rotateX: activeAngle.rotateX,
-                      rotateY: activeAngle.rotateY,
-                      scale: activeAngle.scale
-                    }}
-                    transition={{ duration: 1.5, ease: [0.16, 1, 0.3, 1] }}
-                    className="w-full h-[400px] object-contain drop-shadow-[0_80px_100px_rgba(0,0,0,0.8)] select-none z-20 relative"
-                  />
-                  
-                  {/* Cinematic Floating Shadow */}
-                  <motion.div 
-                    animate={{ 
-                      scale: [1, 1.1, 1],
-                      opacity: [0.15, 0.25, 0.15]
-                    }}
-                    transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
-                    className="absolute -bottom-10 left-1/2 -translate-x-1/2 w-[90%] h-24 bg-black/60 blur-[60px] rounded-full pointer-events-none z-10"
-                  />
-
-                  {/* Active Variant Glow Floor */}
-                  <motion.div 
-                    animate={{ opacity: [0.2, 0.5, 0.2] }}
-                    transition={{ duration: 4, repeat: Infinity }}
-                    className="absolute -bottom-5 left-1/2 -translate-x-1/2 w-3/4 h-[8px] blur-3xl rounded-full pointer-events-none bg-orange-500/40"
-                  />
-                </div>
-              </motion.div>
-            </AnimatePresence>
+        {/* ==================================================
+            LEFT SIDEBAR: CATEGORY, SEARCH & BRAND FILTERS
+           ================================================== */}
+        <div className="w-full lg:w-[260px] shrink-0 flex flex-col gap-8 z-30">
+          
+          {/* Catalog Search */}
+          <div className="glasswave-strong p-6 rounded-3xl border border-white/5 backdrop-blur-2xl space-y-4">
+            <h3 className="text-[10px] font-black tracking-[0.4em] text-white/30 uppercase flex items-center gap-3">
+              <Search size={14} className="text-orange-500" /> catalog search
+            </h3>
+            <form onSubmit={handleSearchSubmit} className="relative">
+              <input
+                type="text"
+                value={localSearch}
+                onChange={(e) => setLocalSearch(e.target.value)}
+                placeholder="Search products..."
+                className="w-full bg-white/5 border border-white/10 rounded-2xl py-3.5 px-4 text-white text-[10px] font-bold tracking-widest focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500/30 transition-all placeholder:text-white/20 uppercase"
+              />
+              <button type="submit" className="absolute right-4 top-1/2 -translate-y-1/2 text-white/40 hover:text-orange-500 transition-colors">
+                <ArrowRight size={14} />
+              </button>
+            </form>
           </div>
 
-          {/* Horizontal Angle Gallery */}
-          <div className="w-full max-w-4xl px-4 space-y-6">
-            <div className="flex items-center gap-4 px-2">
-              <Eye size={16} className="text-orange-500" />
-              <h3 className="text-[10px] font-black tracking-[0.4em] text-white/40 uppercase">VIEW OTHER ANGLES</h3>
-            </div>
-            
-            <div className="flex flex-row gap-4 overflow-x-auto pb-4 hide-scrollbar justify-center">
-              {KEYBOARD_ANGLES.map((angle, i) => (
-                <button
-                  key={angle.id}
-                  onClick={() => setActiveAngleIndex(i)}
-                  className={`flex-shrink-0 group relative w-32 h-32 rounded-[2rem] overflow-hidden transition-all duration-700 border ${
-                    activeAngleIndex === i 
-                      ? 'glasswave-strong scale-105 shadow-[0_20px_40px_rgba(255,165,0,0.25)] border-orange-500' 
-                      : 'glasswave border-white/5 hover:border-white/20'
-                  }`}
-                >
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent z-10" />
-                  <div className="relative z-20 w-full h-full flex items-center justify-center p-4">
-                    <img 
-                      src={angle.image_url} 
-                      alt={angle.name} 
-                      className={`w-full h-full object-cover rounded-xl transition-all duration-700 ${
-                        activeAngleIndex === i ? 'scale-110' : 'opacity-40 grayscale group-hover:opacity-100 group-hover:grayscale-0'
+          {/* Category Index */}
+          <div className="glasswave-strong p-6 rounded-3xl border border-white/5 backdrop-blur-2xl space-y-6">
+            <h3 className="text-[10px] font-black tracking-[0.4em] text-white/30 uppercase flex items-center gap-3">
+              <Sliders size={14} className="text-orange-500" /> CATEGORY INDEX
+            </h3>
+            <div className="flex flex-col gap-3">
+              {[
+                { name: 'Controllers', icon: Gamepad, glow: 'rgba(0, 240, 255, 0.2)', color: '#00f0ff' },
+                { name: 'Mechanical Keyboards', icon: Keyboard, glow: 'rgba(255, 140, 0, 0.25)', color: '#ff8c00' },
+                { name: 'Gaming Mouse', icon: MousePointer, glow: 'rgba(168, 85, 247, 0.2)', color: '#a855f7' },
+                { name: 'Headsets', icon: Headphones, glow: 'rgba(34, 197, 94, 0.2)', color: '#22c55e' },
+                { name: 'Consoles', icon: Tv, glow: 'rgba(239, 68, 68, 0.2)', color: '#ef4444' },
+                { name: 'Accessories', icon: Sparkles, glow: 'rgba(255, 255, 255, 0.1)', color: '#ffffff' }
+              ].map((cat) => {
+                const Icon = cat.icon;
+                const isActive = cat.name === 'Mechanical Keyboards';
+                return (
+                  <button
+                    key={cat.name}
+                    onClick={() => handleCategoryClick(cat.name)}
+                    className={`w-full py-3.5 px-5 rounded-2xl text-[10px] font-black tracking-widest uppercase transition-all duration-300 border flex items-center justify-between group ${
+                      isActive
+                        ? 'bg-gradient-to-r from-orange-500/10 to-amber-500/10 border-orange-500/50 text-orange-500 shadow-[0_0_20px_rgba(249,115,22,0.15)]'
+                        : 'glasswave border-white/5 text-white/40 hover:text-white hover:border-white/20'
+                    }`}
+                  >
+                    <span className="flex items-center gap-3">
+                      <Icon size={14} className={isActive ? 'text-orange-500' : 'text-white/40 group-hover:text-white transition-colors'} />
+                      {cat.name}
+                    </span>
+                    <div 
+                      className={`w-1.5 h-1.5 rounded-full transition-all duration-300 ${
+                        isActive ? 'scale-125 bg-orange-500' : 'scale-0 group-hover:scale-100 bg-white/30'
                       }`}
                     />
-                  </div>
-                  <div className="absolute bottom-3 left-0 right-0 z-30 text-center">
-                    <span className={`text-[7px] font-black tracking-widest uppercase transition-all ${
-                      activeAngleIndex === i ? 'text-white' : 'text-white/30 group-hover:text-white/60'
-                    }`}>
-                      {angle.name.replace(' RGB View', '').replace(' View', '').replace(' Angle', '')}
-                    </span>
-                  </div>
-                </button>
-              ))}
+                  </button>
+                );
+              })}
             </div>
+          </div>
+
+          {/* Brand Index */}
+          <div className="glasswave-strong p-6 rounded-3xl border border-white/5 backdrop-blur-2xl space-y-4">
+            <h3 className="text-[10px] font-black tracking-[0.4em] text-white/30 uppercase flex items-center gap-3">
+              <Sparkles size={14} className="text-orange-500" /> BRANDS
+            </h3>
+            <div className="grid grid-cols-2 gap-2">
+              {['Redragon', 'Logitech', 'HyperX', 'Sony', 'SteelSeries', 'Xbox'].map((b) => {
+                const isActive = b.toLowerCase() === (product.brand || 'redragon').toLowerCase();
+                return (
+                  <button
+                    key={b}
+                    onClick={() => handleBrandClick(b)}
+                    className={`py-3 rounded-xl text-[8px] font-black tracking-widest uppercase transition-all duration-300 text-center border ${
+                      isActive
+                        ? 'bg-white text-black border-white font-black shadow-lg'
+                        : 'glasswave border-white/5 text-white/40 hover:text-white hover:border-white/10'
+                    }`}
+                  >
+                    {b}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+        </div>
+
+        {/* ==================================================
+            CENTER SHOWCASE: SPACIOUS KEYBOARD VIEWER & GALLERY
+           ================================================== */}
+        <div className="flex-1 flex flex-col xl:flex-row items-center justify-center gap-8 relative min-h-[500px] lg:min-h-[680px] z-30">
+          
+          {/* Angle Gallery - Vertical track on Desktop, horizontal on Mobile */}
+          <div className="flex xl:flex-col flex-row gap-4 justify-center z-40 shrink-0 w-full xl:w-24 order-2 xl:order-1">
+            {KEYBOARD_ANGLES.map((angle, idx) => (
+              <button
+                key={angle.id}
+                onClick={() => setActiveAngleIndex(idx)}
+                className={`relative w-16 h-16 sm:w-20 sm:h-20 rounded-2xl glasswave overflow-hidden transition-all duration-500 group flex items-center justify-center p-2 border ${
+                  activeAngleIndex === idx 
+                    ? 'border-orange-500 scale-110 shadow-[0_0_25px_rgba(249,115,22,0.25)]' 
+                    : 'border-white/5 hover:border-white/20 opacity-50 hover:opacity-100 hover:scale-105'
+                }`}
+              >
+                <img 
+                  src={angle.image_url} 
+                  alt={angle.name}
+                  loading="lazy"
+                  className={`w-full h-full object-contain transition-all duration-500 ${
+                    activeAngleIndex === idx ? 'scale-110' : 'scale-100'
+                  }`}
+                />
+              </button>
+            ))}
+          </div>
+
+          {/* Main Showcase Stage */}
+          <div className="flex-1 w-full h-full flex flex-col items-center justify-center relative min-h-[400px] order-1 xl:order-2">
+            
+            {/* Center Orange Subtle Spot Glow */}
+            {!isLowEnd && (
+              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] rounded-full blur-[120px] bg-orange-500/10 pointer-events-none z-0 animate-pulse duration-[5000ms]" />
+            )}
+            
+            {/* Main Stage Screen Container */}
+            <div className="relative w-full h-[400px] sm:h-[480px] lg:h-[550px] flex items-center justify-center z-10 select-none">
+              
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={product.id + '-' + activeAngleIndex}
+                  initial={isLowEnd ? { opacity: 0 } : { opacity: 0, scale: 0.9, y: 15, rotateX: 5 }}
+                  animate={{ opacity: 1, scale: 1, y: 0, rotateX: 0 }}
+                  exit={isLowEnd ? { opacity: 0 } : { opacity: 0, scale: 1.05, y: -15, rotateX: -5 }}
+                  transition={{ duration: isLowEnd ? 0.3 : 0.8, ease: [0.16, 1, 0.3, 1] }}
+                  className="relative z-20 w-full h-full flex flex-col items-center justify-center perspective-2000"
+                >
+                  {/* Floating Keyboard Card */}
+                  <motion.div 
+                    animate={isLowEnd ? { y: 0 } : { y: [0, -12, 0] }}
+                    transition={isLowEnd ? {} : { duration: 5, repeat: Infinity, ease: "easeInOut" }}
+                    className="relative preserve-3d w-full h-full flex items-center justify-center"
+                  >
+                    <div ref={keyboardRef} className="relative transition-transform duration-700 ease-out preserve-3d w-full h-full flex items-center justify-center">
+                      <motion.img 
+                        src={activeAngle.image_url} 
+                        alt={product.name}
+                        animate={isLowEnd ? {} : {
+                          rotateX: activeAngle.rotateX,
+                          rotateY: activeAngle.rotateY,
+                          scale: activeAngle.scale * 1.05
+                        }}
+                        transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
+                        className={isLowEnd 
+                          ? "max-h-[350px] sm:max-h-[420px] lg:max-h-[480px] w-full object-contain z-20 relative"
+                          : "max-h-[350px] sm:max-h-[420px] lg:max-h-[480px] w-full object-contain drop-shadow-[0_45px_70px_rgba(0,0,0,0.85)] z-20 relative transition-all duration-700"}
+                      />
+                      
+                      {/* Floating shadow */}
+                      {!isLowEnd && (
+                        <div className="absolute bottom-5 left-1/2 -translate-x-1/2 w-[85%] h-12 bg-black/70 blur-[40px] rounded-full pointer-events-none z-10 animate-pulse duration-[3000ms]" />
+                      )}
+                      
+                      {/* Category Ambient Floor Glow */}
+                      {!isLowEnd && (
+                        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 w-2/3 h-4 bg-orange-500/10 blur-[30px] rounded-full pointer-events-none z-10" />
+                      )}
+                    </div>
+                  </motion.div>
+                </motion.div>
+              </AnimatePresence>
+
+            </div>
+
+            {/* Ambient Spotlight following the mouse */}
+            {!isLowEnd && (
+              <motion.div 
+                style={{ 
+                  left: springX, 
+                  top: springY,
+                  background: `radial-gradient(400px circle at center, rgba(251,146,60,0.08), transparent 70%)`
+                }}
+                className="absolute pointer-events-none w-[800px] h-[800px] -translate-x-1/2 -translate-y-1/2 z-0 opacity-40 blur-[80px]"
+              />
+            )}
+
           </div>
         </div>
 
-        {/* Right: Interaction Console */}
-        <div className="xl:w-[550px] 2xl:w-[650px] shrink-0 space-y-16 bg-midnight/20 p-10 rounded-[3rem] backdrop-blur-3xl border border-white/5">
-          <div className="space-y-8">
-            <div className="flex items-center gap-6">
-              <span className="text-[11px] font-black tracking-[0.5em] text-orange-500 uppercase">{product.brand || 'Redragon'} Core Series</span>
-              <div className="h-[2px] flex-1 bg-gradient-to-r from-orange-500/20 to-transparent" />
-            </div>
+        {/* ==================================================
+            RIGHT PRODUCT PANEL: PRODUCT ARCHITECTURE & CONSOLE
+           ================================================== */}
+        <div className="w-full lg:w-[420px] shrink-0 z-30">
+          <div className="glasswave-strong p-8 lg:p-10 rounded-[3rem] border border-white/5 backdrop-blur-3xl shadow-2xl flex flex-col justify-between space-y-8 h-full relative overflow-hidden">
             
-            <h1 className="font-heading text-6xl lg:text-7xl font-black text-white leading-[0.85] tracking-tighter">
-              {product.name}
-            </h1>
-            
-            <p className="text-white/40 text-sm leading-relaxed font-medium max-w-lg">
-              {product.description}
-            </p>
-          </div>
+            {/* Very subtle background light */}
+            <div className="absolute -top-12 -right-12 w-48 h-48 rounded-full bg-orange-500/5 blur-[50px] pointer-events-none" />
 
-          {/* Dynamic Keyboard Features */}
-          <div className="grid grid-cols-2 gap-6">
-            <div className="glasswave rounded-3xl p-8 border border-white/5 space-y-3 group hover:bg-white/5 transition-all">
-              <Zap size={20} className="text-orange-500/60 group-hover:scale-110 transition-transform" />
-              <div>
-                <p className="text-[8px] font-black text-white/20 uppercase tracking-[0.3em] mb-1">Response Time</p>
-                <p className="text-xs font-black text-white uppercase tracking-widest">1ms Wireless</p>
+            {/* Core Info */}
+            <div className="space-y-6 relative z-10">
+              <div className="flex items-center justify-between">
+                <span className="text-[9px] font-black tracking-[0.4em] text-orange-500 uppercase flex items-center gap-2">
+                  <Sparkles size={12} /> {product.badge || 'ELITE GRADE'}
+                </span>
+                <div className="flex items-center gap-1 bg-white/5 border border-white/10 px-3 py-1 rounded-full text-[10px] font-black text-white uppercase tracking-wider">
+                  ★ {product.rating || 4.8}
+                </div>
+              </div>
+              
+              <div className="space-y-2">
+                <h1 className="font-heading text-4xl sm:text-5xl font-black text-white leading-none tracking-tighter uppercase">
+                  {product.name}
+                </h1>
+                <p className="text-[10px] font-black tracking-widest text-white/40 uppercase">
+                  BY {product.brand || 'REDRAGON'} • {product.genre || 'MECHANICAL KEYBOARD'}
+                </p>
+              </div>
+
+              <p className="text-white/60 text-xs sm:text-sm leading-relaxed font-medium">
+                {product.description}
+              </p>
+            </div>
+
+            {/* Variants Selector */}
+            {variants.length > 0 && (
+              <div className="space-y-3 pt-6 border-t border-white/5 relative z-10">
+                <div className="flex justify-between items-center text-[10px] font-black tracking-[0.2em] text-white/40 uppercase">
+                  <span>SELECT EDITION</span>
+                  <span className="text-white">{variants[variantIndex].name}</span>
+                </div>
+                <div className="flex gap-3">
+                  {variants.map((v, i) => (
+                    <button
+                      key={v.id}
+                      onClick={() => setVariantIndex(i)}
+                      className={`w-10 h-10 rounded-full transition-all duration-300 border flex items-center justify-center ${
+                        variantIndex === i 
+                          ? 'border-white scale-110 shadow-md' 
+                          : 'border-white/10 hover:border-white/30 hover:scale-105'
+                      }`}
+                      style={{ backgroundColor: v.color || '#ff8c00', boxShadow: variantIndex === i ? `0 0 15px ${v.glow || 'rgba(255,140,0,0.3)'}` : 'none' }}
+                      title={v.name}
+                    >
+                      {variantIndex === i && <Check size={14} className="text-black" />}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Specifications Grid */}
+            <div className="grid grid-cols-2 gap-4 pt-6 border-t border-white/5 relative z-10">
+              <div className="glasswave p-4 rounded-2xl flex flex-col gap-2 group hover:bg-white/5 transition-all duration-300 border border-white/5">
+                <Zap size={16} className="text-orange-500/70 group-hover:scale-115 transition-transform" />
+                <div>
+                  <p className="text-[8px] font-black text-white/20 uppercase tracking-widest mb-1">Response Time</p>
+                  <p className="text-xs font-black text-white uppercase tracking-widest">1ms Tri-Mode</p>
+                </div>
+              </div>
+              <div className="glasswave p-4 rounded-2xl flex flex-col gap-2 group hover:bg-white/5 transition-all duration-300 border border-white/5">
+                <Layers size={16} className="text-orange-500/70 group-hover:scale-115 transition-transform" />
+                <div>
+                  <p className="text-[8px] font-black text-white/20 uppercase tracking-widest mb-1">Acoustic Class</p>
+                  <p className="text-xs font-black text-white uppercase tracking-widest">Gasket Mount</p>
+                </div>
+              </div>
+              <div className="glasswave p-4 rounded-2xl flex flex-col gap-2 group hover:bg-white/5 transition-all duration-300 border border-white/5">
+                <Sliders size={16} className="text-orange-500/70 group-hover:scale-115 transition-transform" />
+                <div>
+                  <p className="text-[8px] font-black text-white/20 uppercase tracking-widest mb-1">Switch System</p>
+                  <p className="text-xs font-black text-white uppercase tracking-widest">Hot-Swappable</p>
+                </div>
+              </div>
+              <div className="glasswave p-4 rounded-2xl flex flex-col gap-2 group hover:bg-white/5 transition-all duration-300 border border-white/5">
+                <Sparkles size={16} className="text-orange-500/70 group-hover:scale-115 transition-transform" />
+                <div>
+                  <p className="text-[8px] font-black text-white/20 uppercase tracking-widest mb-1">Lighting</p>
+                  <p className="text-xs font-black text-white uppercase tracking-widest">Aura RGB</p>
+                </div>
               </div>
             </div>
-            <div className="glasswave rounded-3xl p-8 border border-white/5 space-y-3 group hover:bg-white/5 transition-all">
-              <Sparkles size={20} className="text-orange-500/60 group-hover:scale-110 transition-transform" />
-              <div>
-                <p className="text-[8px] font-black text-white/20 uppercase tracking-[0.3em] mb-1">Lighting</p>
-                <p className="text-xs font-black text-white uppercase tracking-widest">Aura RGB</p>
-              </div>
-            </div>
-          </div>
 
-          {/* Purchase Controller */}
-          <div className="glasswave-strong rounded-[4rem] p-12 border border-white/5 relative overflow-hidden group/panel">
-            <div className="absolute inset-0 bg-gradient-to-br from-orange-500/[0.07] to-transparent opacity-0 group-hover/panel:opacity-100 transition-opacity duration-1000" />
-            
-            <div className="relative z-10 space-y-10">
+            {/* Checkout Actions */}
+            <div className="space-y-6 pt-6 border-t border-white/5 relative z-10">
+              
+              {/* Pricing & Quantity Row */}
               <div className="flex items-end justify-between">
-                <div className="space-y-3">
-                  <p className="text-[10px] font-black tracking-[0.4em] text-white/20 uppercase">Acquisition Value</p>
-                  <p className="text-5xl font-black text-white tracking-tighter">
+                <div className="space-y-2">
+                  <p className="text-[8px] font-black text-white/30 uppercase tracking-[0.2em]">Acquisition Value</p>
+                  <span className="text-4xl font-black text-white tracking-tighter">
                     {formatPHP(product.price * quantity)}
-                  </p>
+                  </span>
                 </div>
-                <div className="flex flex-col items-end gap-2">
-                  <div className="flex items-center gap-3 glasswave px-4 py-2 rounded-full border-white/5">
-                    <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
-                    <span className="text-[10px] font-black text-white/60 tracking-widest uppercase">Live Stock</span>
-                  </div>
-                </div>
-              </div>
-
-              {/* Quantity and Actions */}
-              <div className="space-y-6">
-                <div className="flex items-center glasswave rounded-[2rem] h-20 px-4 border-white/5 justify-between">
-                  <span className="text-[10px] font-black text-white/40 tracking-widest uppercase ml-4">Select Quantity</span>
-                  <div className="flex items-center">
-                    <button onClick={() => setQuantity(q => Math.max(1, q - 1))} className="w-12 h-full flex items-center justify-center text-white/30 hover:text-white transition-colors"><Minus size={18} /></button>
-                    <span className="px-6 font-black text-2xl text-white min-w-[60px] text-center tabular-nums">{quantity}</span>
-                    <button onClick={() => setQuantity(q => Math.min(99, q + 1))} className="w-12 h-full flex items-center justify-center text-white/30 hover:text-white transition-colors"><Plus size={18} /></button>
-                  </div>
-                </div>
-
-                <div className="flex flex-col sm:flex-row items-stretch gap-4">
-                  <motion.button
-                    onMouseMove={handleMagneticMove}
-                    onMouseLeave={handleMagneticLeave}
-                    style={{ x: btnSpringX, y: btnSpringY }}
-                    onClick={handleAddToCart}
-                    disabled={adding}
-                    className={`relative flex-1 h-20 rounded-[2rem] font-black text-[10px] tracking-[0.4em] uppercase transition-all duration-700 flex items-center justify-center gap-4 ${
-                      added ? 'bg-green-500 text-black shadow-[0_0_50px_rgba(34,197,94,0.4)]' : 'glasswave text-white border border-white/10 hover:bg-white/10 hover:border-white/20 active:scale-95'
-                    }`}
+                
+                {/* Quantity Control */}
+                <div className="flex items-center glasswave rounded-2xl h-14 px-2 border border-white/10 shrink-0">
+                  <button 
+                    onClick={() => setQuantity(q => Math.max(1, q - 1))}
+                    className="w-10 h-full flex items-center justify-center text-white/30 hover:text-white transition-colors hover:bg-white/5 rounded-xl"
                   >
-                    <AnimatePresence mode="wait">
-                      {adding ? (
-                        <motion.div key="l" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex items-center gap-3"><Loader2 size={18} className="animate-spin text-orange-500" /> SYNCING</motion.div>
-                      ) : added ? (
-                        <motion.div key="a" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex items-center gap-3"><Check size={18} /> ACQUIRED</motion.div>
-                      ) : (
-                        <span className="flex items-center gap-3">ADD TO CART <ShoppingCart size={14} className="text-orange-500" /></span>
-                      )}
-                    </AnimatePresence>
-                  </motion.button>
-
-                  <button
-                    onClick={handleBuyNow}
-                    className="flex-1 h-20 rounded-[2rem] bg-white text-black font-black text-[10px] tracking-[0.4em] uppercase hover:scale-105 active:scale-95 transition-all duration-500 shadow-[0_20px_40px_rgba(255,255,255,0.05)]"
+                    <Minus size={14} />
+                  </button>
+                  <span className="px-4 font-black text-lg text-white min-w-[40px] text-center tabular-nums">{quantity}</span>
+                  <button 
+                    onClick={() => setQuantity(q => Math.min(99, q + 1))}
+                    className="w-10 h-full flex items-center justify-center text-white/30 hover:text-white transition-colors hover:bg-white/5 rounded-xl"
                   >
-                    BUY NOW
+                    <Plus size={14} />
                   </button>
                 </div>
               </div>
 
-              {/* Verified Badge Row */}
-              <div className="grid grid-cols-3 gap-6 pt-6 border-t border-white/5">
-                <div className="flex flex-col items-center gap-2 text-center">
-                  <ShieldCheck size={18} className="text-orange-500/60" />
-                  <span className="text-[7px] font-black uppercase text-white/20 tracking-widest">Secure Build</span>
-                </div>
-                <div className="flex flex-col items-center gap-2 text-center">
-                  <Zap size={18} className="text-orange-500/60" />
-                  <span className="text-[7px] font-black uppercase text-white/20 tracking-widest">Instant Sync</span>
-                </div>
-                <div className="flex flex-col items-center gap-2 text-center">
-                  <Sparkles size={18} className="text-orange-500/60" />
-                  <span className="text-[7px] font-black uppercase text-white/20 tracking-widest">Elite Grade</span>
-                </div>
+              {/* Action Buttons */}
+              <div className="flex flex-col sm:flex-row items-stretch gap-4">
+                <motion.button
+                  onMouseMove={handleMagneticMove}
+                  onMouseLeave={handleMagneticLeave}
+                  style={{ x: btnSpringX, y: btnSpringY }}
+                  onClick={handleAddToCart}
+                  disabled={adding}
+                  className={`flex-1 h-16 rounded-2xl font-black text-[10px] tracking-[0.3em] uppercase transition-all duration-500 flex items-center justify-center gap-3 border shadow-lg ${
+                    added 
+                      ? 'bg-green-500 text-black border-green-500 shadow-[0_0_30px_rgba(34,197,94,0.3)]' 
+                      : 'bg-gradient-to-r from-orange-500 to-amber-500 text-black border-transparent hover:scale-[1.02] active:scale-[0.98] shadow-[0_0_25px_rgba(249,115,22,0.2)]'
+                  }`}
+                >
+                  <AnimatePresence mode="wait">
+                    {adding ? (
+                      <motion.div key="adding" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex items-center gap-2">
+                        <Loader2 size={16} className="animate-spin text-black" /> SYNCING
+                      </motion.div>
+                    ) : added ? (
+                      <motion.div key="added" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex items-center gap-2">
+                        <Check size={16} /> ACQUIRED
+                      </motion.div>
+                    ) : (
+                      <span className="flex items-center gap-2">
+                        ADD TO CART <ShoppingCart size={14} className="text-black" />
+                      </span>
+                    )}
+                  </AnimatePresence>
+                </motion.button>
+
+                <button
+                  onClick={handleBuyNow}
+                  className="flex-1 h-16 rounded-2xl bg-white text-black font-black text-[10px] tracking-[0.3em] uppercase hover:scale-[1.02] active:scale-[0.98] transition-all duration-500 shadow-md"
+                >
+                  BUY NOW
+                </button>
               </div>
+
             </div>
+
           </div>
         </div>
+
       </div>
     </div>
   );

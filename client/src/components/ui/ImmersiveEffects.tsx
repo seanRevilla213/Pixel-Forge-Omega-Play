@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import { motion, useSpring, useMotionValue } from 'framer-motion';
+import { usePerformance } from '../../context/PerformanceContext';
 
 export const AuroraBackground = () => {
   return (
@@ -21,6 +22,7 @@ export const AuroraBackground = () => {
 };
 
 export const AmbientGlow = () => {
+  const { isLowEnd } = usePerformance();
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
 
@@ -29,13 +31,16 @@ export const AmbientGlow = () => {
   const y = useSpring(mouseY, springConfig);
 
   useEffect(() => {
+    if (isLowEnd) return;
     const handleMouseMove = (e: MouseEvent) => {
       mouseX.set(e.clientX);
       mouseY.set(e.clientY);
     };
     window.addEventListener('mousemove', handleMouseMove);
     return () => window.removeEventListener('mousemove', handleMouseMove);
-  }, [mouseX, mouseY]);
+  }, [mouseX, mouseY, isLowEnd]);
+
+  if (isLowEnd) return null;
 
   return (
     <motion.div
@@ -50,10 +55,15 @@ export const AmbientGlow = () => {
     />
   );
 };
+
 export const FloatingParticles = () => {
+  const { isLowEnd } = usePerformance();
+
+  if (isLowEnd) return null;
+
   return (
     <div className="fixed inset-0 pointer-events-none z-0">
-      {[...Array(20)].map((_, i) => (
+      {[...Array(12)].map((_, i) => (
         <motion.div
           key={i}
           initial={{ 
@@ -77,3 +87,4 @@ export const FloatingParticles = () => {
     </div>
   );
 };
+

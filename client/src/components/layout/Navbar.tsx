@@ -1,9 +1,10 @@
 import { useState, useEffect, useCallback } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ShoppingCart, User, Menu, X, LogOut, LayoutGrid, Home, MessageSquare, Search } from 'lucide-react';
+import { ShoppingCart, User, Menu, X, LogOut, LayoutGrid, Home, MessageSquare, Search, Cpu } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { useCart } from '../../context/CartContext';
+import { usePerformance } from '../../context/PerformanceContext';
 import { ResponsiveShow } from './ResponsiveWrapper';
 import { CartSidebar } from './CartSidebar';
 
@@ -15,6 +16,7 @@ const Navbar = () => {
   const [isCartOpen, setIsCartOpen] = useState(false);
   const { user, isAuthenticated, logout } = useAuth();
   const { itemCount } = useCart();
+  const { performanceMode, setPerformanceMode } = usePerformance();
   const location = useLocation();
 
   const handleScroll = useCallback(() => {
@@ -91,6 +93,35 @@ const Navbar = () => {
 
           {/* Actions */}
           <div className="flex items-center gap-6">
+            {/* System Performance Mode Switcher */}
+            <button 
+              onClick={() => {
+                const nextMode = performanceMode === 'premium' 
+                  ? 'performance' 
+                  : performanceMode === 'performance' 
+                    ? 'auto' 
+                    : 'premium';
+                setPerformanceMode(nextMode);
+              }}
+              className={`flex items-center gap-2 px-3.5 py-1.5 rounded-full border transition-all duration-300 text-[9px] font-black tracking-widest uppercase cursor-pointer hover:scale-105 active:scale-95 select-none ${
+                performanceMode === 'performance' 
+                  ? 'bg-red-500/10 border-red-500/30 text-red-400' 
+                  : performanceMode === 'premium'
+                    ? 'bg-green-500/10 border-green-500/30 text-green-400'
+                    : 'bg-blue-500/10 border-blue-500/30 text-blue-400'
+              }`}
+              title="Toggle system visuals to save RAM and processor overhead"
+            >
+              <Cpu size={12} className={performanceMode === 'performance' ? 'animate-pulse' : ''} />
+              <span className="hidden sm:inline">
+                {performanceMode === 'performance' 
+                  ? 'SYSTEM: LITE' 
+                  : performanceMode === 'premium'
+                    ? 'SYSTEM: ULTRA'
+                    : 'SYSTEM: AUTO'}
+              </span>
+            </button>
+
             <button className="hidden sm:block text-text-secondary hover:text-white transition-colors">
               <Search size={18} />
             </button>
@@ -151,7 +182,7 @@ const Navbar = () => {
             className="fixed inset-0 z-[60] bg-matte-black/40 flex flex-col items-center justify-center p-12"
           >
             <button onClick={() => setIsMobileOpen(false)} className="absolute top-10 right-10 p-4 glasswave rounded-full text-white">✕</button>
-            <div className="space-y-12 text-center">
+            <div className="space-y-12 text-center w-full max-w-sm">
               {navLinks.map((link) => (
                 <Link 
                   key={link.to} 
@@ -162,11 +193,31 @@ const Navbar = () => {
                   {link.label}
                 </Link>
               ))}
-              <div className="pt-12 border-t border-white/10">
+
+              <div className="py-6 px-6 glasswave rounded-3xl border border-white/10 flex flex-col items-center gap-4">
+                <span className="text-[9px] font-black tracking-widest text-text-muted uppercase">SYSTEM PREFERENCE</span>
+                <div className="flex gap-2">
+                  {(['premium', 'performance', 'auto'] as const).map((mode) => (
+                    <button
+                      key={mode}
+                      onClick={() => setPerformanceMode(mode)}
+                      className={`px-4 py-2 rounded-xl text-[9px] font-black tracking-widest uppercase transition-all ${
+                        performanceMode === mode 
+                          ? 'bg-white text-black font-black' 
+                          : 'bg-white/5 border border-white/10 text-white/60 hover:text-white'
+                      }`}
+                    >
+                      {mode}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div className="pt-6 border-t border-white/10">
                 {isAuthenticated ? (
-                  <button onClick={() => { logout(); setIsMobileOpen(false); }} className="text-2xl text-red-400 font-bold tracking-widest uppercase">TERMINATE SESSION</button>
+                  <button onClick={() => { logout(); setIsMobileOpen(false); }} className="text-xl text-red-400 font-bold tracking-widest uppercase">TERMINATE SESSION</button>
                 ) : (
-                  <Link to="/login" className="text-2xl text-luxury-cyan font-bold tracking-[0.2em] uppercase">SYSTEM AUTH</Link>
+                  <Link to="/login" className="text-xl text-luxury-cyan font-bold tracking-[0.2em] uppercase">SYSTEM AUTH</Link>
                 )}
               </div>
             </div>

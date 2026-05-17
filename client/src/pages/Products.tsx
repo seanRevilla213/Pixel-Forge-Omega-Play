@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Search, Filter, Sparkles } from 'lucide-react';
 import PageTransition from '../components/layout/PageTransition';
@@ -23,10 +24,38 @@ const Products = () => {
   ];
   const [brands, setBrands] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
-  const [search, setSearch] = useState('');
-  const [category, setCategory] = useState('');
-  const [brand, setBrand] = useState('');
-  const [page, setPage] = useState(1);
+
+  const [searchParams, setSearchParams] = useSearchParams();
+  const search = searchParams.get('search') || '';
+  const category = searchParams.get('category') || '';
+  const brand = searchParams.get('brand') || '';
+  const page = parseInt(searchParams.get('page') || '1', 10);
+
+  const setSearch = (val: string) => {
+    const next = new URLSearchParams(searchParams);
+    if (val) next.set('search', val); else next.delete('search');
+    next.set('page', '1');
+    setSearchParams(next);
+  };
+  const setCategory = (val: string) => {
+    const next = new URLSearchParams(searchParams);
+    if (val) next.set('category', val); else next.delete('category');
+    next.delete('brand');
+    next.set('page', '1');
+    setSearchParams(next);
+  };
+  const setBrand = (val: string) => {
+    const next = new URLSearchParams(searchParams);
+    if (val) next.set('brand', val); else next.delete('brand');
+    next.set('page', '1');
+    setSearchParams(next);
+  };
+  const setPage = (val: number) => {
+    const next = new URLSearchParams(searchParams);
+    next.set('page', val.toString());
+    setSearchParams(next);
+  };
+
   const [showMobileFilters, setShowMobileFilters] = useState(false);
   
   const { device } = useResponsive();

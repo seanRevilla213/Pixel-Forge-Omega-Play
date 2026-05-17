@@ -4,6 +4,7 @@ import { AnimatePresence } from 'framer-motion';
 import { Toaster } from 'react-hot-toast';
 import { AuthProvider } from './context/AuthContext';
 import { CartProvider } from './context/CartContext';
+import { PerformanceProvider } from './context/PerformanceContext';
 import Navbar from './components/layout/Navbar';
 import Footer from './components/layout/Footer';
 import { AuthGuard, AdminGuard, GuestGuard } from './components/guards/Guards';
@@ -35,10 +36,11 @@ const PageLoader = () => (
 function App() {
   return (
     <BrowserRouter>
-      <AuthProvider>
-        <CartProvider>
-          <div className="min-h-screen bg-matte-black text-text-primary flex flex-col">
-            <Navbar />
+      <PerformanceProvider>
+        <AuthProvider>
+          <CartProvider>
+            <div className="min-h-screen bg-matte-black text-text-primary flex flex-col">
+              <Navbar />
             <main className="flex-1">
               <Suspense fallback={<PageLoader />}>
                 <ErrorBoundary>
@@ -96,7 +98,8 @@ function App() {
           />
         </CartProvider>
       </AuthProvider>
-    </BrowserRouter>
+    </PerformanceProvider>
+  </BrowserRouter>
   );
 }
 

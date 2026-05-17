@@ -197,3 +197,89 @@ body {
 ::-webkit-scrollbar-thumb:hover {
   background: rgba(255, 255, 255, 0.2);
 }
+
+/* ==================================================
+   ⚡ SUPER LOW-END DEVICE PERFORMANCE OVERRIDES
+   ================================================== */
+.performance-mode {
+  /* Remove GPU-heavy backdrop filters and saturation layers */
+  .glasswave, 
+  .glasswave-strong, 
+  .glasswave-card {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    background: #0d0d12 !important; /* Semi-opaque fallback */
+    border: 1px solid rgba(255, 255, 255, 0.05) !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4) !important;
+  }
+
+  /* Make strong glasswave even more opaque and darker for contrast */
+  .glasswave-strong {
+    background: #111118 !important;
+  }
+
+  /* Optimize glasswave card hover transitions to prevent paint thrashing */
+  .glasswave-card {
+    transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.2s ease !important;
+    
+    &:hover {
+      background: #161622 !important;
+      transform: translateY(-4px) !important; /* Simplified transform */
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5) !important;
+    }
+  }
+
+  /* Completely turn off heavy filter blurs (e.g. 100px aurora spheres) */
+  .aurora-sphere {
+    display: none !important; 
+  }
+
+  .aurora-bg {
+    background: #050508 !important; /* Solid sleek matte background */
+  }
+
+  /* Simplify button hover states and reduce 3D transforms */
+  .luxury-btn {
+    transition: transform 0.15s ease, background-color 0.15s ease !important;
+    
+    &::before {
+      display: none !important; /* Disable gradient hover animation overlay */
+    }
+
+    &:hover {
+      background: var(--color-luxury-violet) !important;
+      transform: translateY(-2px) !important;
+      box-shadow: 0 6px 15px rgba(124, 58, 237, 0.3) !important;
+    }
+  }
+
+  /* Simplify inputs */
+  .luxury-input {
+    transition: border-color 0.15s ease, background-color 0.15s ease !important;
+    
+    &:focus {
+      background: #12121c !important;
+      border-color: var(--color-luxury-violet) !important;
+    }
+  }
+
+  .liquid-focus {
+    display: none !important; /* Disable glow animation */
+  }
+
+  /* Optimize page transitions and overall animation overhead */
+  .animate-spin {
+    animation-duration: 1.2s !important;
+  }
+  
+  .animate-pulse {
+    animation-duration: 2.5s !important;
+  }
+
+  /* General elements with active animation tags or classes */
+  * {
+    /* Lower transitions to snappy levels */
+    transition-duration: 0.15s !important;
+  }
+}
+

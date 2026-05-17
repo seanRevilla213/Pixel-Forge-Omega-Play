@@ -4,6 +4,7 @@ import { ChevronRight, ChevronLeft, Star, Zap } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import type { Product } from '../../types';
 import { useCart } from '../../context/CartContext';
+import { usePerformance } from '../../context/PerformanceContext';
 import { LuxuryCartButton } from './LuxuryCartButton';
 import gsap from 'gsap';
 
@@ -14,6 +15,7 @@ interface ProductCardProps {
 
 export const ProductCard: React.FC<ProductCardProps> = ({ product, index }) => {
   const { formatPHP } = useCart();
+  const { isLowEnd } = usePerformance();
   const [currentVariant, setCurrentVariant] = useState(0);
   const [isRotating, setIsRotating] = useState(false);
   
@@ -24,13 +26,13 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, index }) => {
   const mouseX = useSpring(x, { stiffness: 150, damping: 20 });
   const mouseY = useSpring(y, { stiffness: 150, damping: 20 });
 
-  const rotateX = useTransform(mouseY, [-0.5, 0.5], [10, -10]);
-  const rotateY = useTransform(mouseX, [-0.5, 0.5], [-10, 10]);
+  const rotateX = useTransform(mouseY, [-0.5, 0.5], isLowEnd ? [0, 0] : [10, -10]);
+  const rotateY = useTransform(mouseX, [-0.5, 0.5], isLowEnd ? [0, 0] : [-10, 10]);
 
   const variants = product.variants ? JSON.parse(product.variants) : [{ name: 'Default', image_url: product.image_url }];
   
   const handleMouseMove = (e: React.MouseEvent<HTMLAnchorElement>) => {
-    if (!cardRef.current) return;
+    if (isLowEnd || !cardRef.current) return;
     const rect = cardRef.current.getBoundingClientRect();
     const width = rect.width;
     const height = rect.height;
@@ -57,6 +59,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, index }) => {
   };
 
   const handleMouseLeave = () => {
+    if (isLowEnd) return;
     x.set(0);
     y.set(0);
     const spotlight = cardRef.current?.querySelector('.card-spotlight') as HTMLElement;
@@ -97,36 +100,43 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, index }) => {
         initial={{ opacity: 0, y: 50 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
-        transition={{ delay: index * 0.1, duration: 0.8 }}
-        style={{ rotateX, rotateY, transformStyle: "preserve-3d" }}
+        transition={{ delay: index * 0.05, duration: isLowEnd ? 0.4 : 0.8 }}
+        style={isLowEnd ? {} : { rotateX, rotateY, transformStyle: "preserve-3d" }}
         className="w-full h-full flex flex-col"
       >
       {/* Spotlight Effect */}
-      <div className="card-spotlight absolute pointer-events-none opacity-0 w-64 h-64 -translate-x-1/2 -translate-y-1/2 bg-luxury-cyan blur-[80px] z-0 rounded-full" />
+      {!isLowEnd && (
+        <div className="card-spotlight absolute pointer-events-none opacity-0 w-64 h-64 -translate-x-1/2 -translate-y-1/2 bg-luxury-cyan blur-[80px] z-0 rounded-full" />
+      )}
 
       <div className="relative aspect-video rounded-[2.5rem] overflow-hidden bg-white/[0.03] mb-10 flex items-center justify-center border border-white/5 shadow-inner">
         <AnimatePresence mode="wait">
           <motion.div
             key={`${product.id}-${currentVariant}`}
-            animate={{ y: [0, -8, 0] }}
-            transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
+            animate={isLowEnd ? { y: 0 } : { y: [0, -8, 0] }}
+            transition={isLowEnd ? {} : { duration: 5, repeat: Infinity, ease: "easeInOut" }}
             className="w-full h-full p-2 flex items-center justify-center relative z-10"
           >
             <motion.img
-              initial={{ opacity: 0, scale: 0.8 }}
+              initial={isLowEnd ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.8 }}
               animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.8 }}
-              whileHover={{ scale: 1.1, rotate: 2 }}
-              transition={{ duration: 0.8, ease: [0.23, 1, 0.32, 1] }}
+              exit={isLowEnd ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.8 }}
+              whileHover={isLowEnd ? {} : { scale: 1.05 }}
+              transition={isLowEnd ? { duration: 0.2 } : { duration: 0.8, ease: [0.23, 1, 0.32, 1] }}
               src={variants[currentVariant].image_url}
               alt={`${product.name} - ${variants[currentVariant].name}`}
-              className="w-full h-full object-contain drop-shadow-[0_40px_60px_rgba(0,0,0,0.6)] group-hover:drop-shadow-[0_50px_80px_rgba(0,240,255,0.3)] transition-all duration-700"
+              loading="lazy"
+              className={isLowEnd 
+                ? "w-full h-full object-contain" 
+                : "w-full h-full object-contain drop-shadow-[0_40px_60px_rgba(0,0,0,0.6)] group-hover:drop-shadow-[0_50px_80px_rgba(0,240,255,0.3)] transition-all duration-700"}
             />
           </motion.div>
         </AnimatePresence>
         
         {/* Cinematic Floor Reflection */}
-        <div className="absolute bottom-6 left-1/2 -translate-x-1/2 w-3/4 h-[2px] bg-luxury-cyan/30 blur-[20px] rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
+        {!isLowEnd && (
+          <div className="absolute bottom-6 left-1/2 -translate-x-1/2 w-3/4 h-[2px] bg-luxury-cyan/30 blur-[20px] rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
+        )}
         
         <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent pointer-events-none" />
         
