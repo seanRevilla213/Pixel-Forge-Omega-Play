@@ -11,12 +11,10 @@ interface PremiumKeyboardShowcaseProps {
 }
 
 const KEYBOARD_ANGLES = [
-  { id: 'front', name: 'Front View', rotateX: 0, rotateY: 0, scale: 1.1 },
-  { id: 'perspective', name: 'Perspective', rotateX: 15, rotateY: -25, scale: 1.2 },
-  { id: 'side', name: 'Side Profile', rotateX: 0, rotateY: -80, scale: 1.3 },
-  { id: 'top', name: 'Top Down', rotateX: 55, rotateY: 0, scale: 1.0 },
-  { id: 'rgb', name: 'RGB Side Lighting', rotateX: 5, rotateY: 45, scale: 1.4 },
-  { id: 'detail', name: 'Close-up Detail', rotateX: 10, rotateY: -10, scale: 1.8 }
+  { id: 'front', name: 'Front RGB Keyboard View', rotateX: 2, rotateY: -2, scale: 1.05, image_url: '/products/keyboard-front.jpg' },
+  { id: 'top', name: 'Top Angle Keyboard View', rotateX: 8, rotateY: 0, scale: 1.0, image_url: '/products/keyboard-top.jpg' },
+  { id: 'perspective', name: 'Perspective Side Angle', rotateX: 5, rotateY: -5, scale: 1.1, image_url: '/products/keyboard-perspective.jpg' },
+  { id: 'side', name: 'Side Profile Keyboard View', rotateX: 0, rotateY: -8, scale: 1.15, image_url: '/products/keyboard-side.jpg' }
 ];
 
 export const PremiumKeyboardShowcase: React.FC<PremiumKeyboardShowcaseProps> = ({ product: initialProduct }) => {
@@ -128,7 +126,7 @@ export const PremiumKeyboardShowcase: React.FC<PremiumKeyboardShowcaseProps> = (
             >
               <div ref={keyboardRef} className="relative preserve-3d group/keyboard">
                 <motion.img 
-                  src={currentProduct.image_url} 
+                  src={activeAngle.image_url} 
                   alt={currentProduct.name}
                   animate={{
                     rotateX: activeAngle.rotateX,
@@ -136,7 +134,7 @@ export const PremiumKeyboardShowcase: React.FC<PremiumKeyboardShowcaseProps> = (
                     scale: activeAngle.scale
                   }}
                   transition={{ duration: 1.5, ease: [0.16, 1, 0.3, 1] }}
-                  className="w-full h-full object-contain drop-shadow-[0_120px_150px_rgba(0,0,0,0.9)] select-none z-20 relative"
+                  className="w-full h-full object-contain drop-shadow-[0_80px_100px_rgba(0,0,0,0.8)] select-none z-20 relative"
                 />
                 
                 {/* Cinematic Floating Shadow */}
@@ -181,21 +179,18 @@ export const PremiumKeyboardShowcase: React.FC<PremiumKeyboardShowcaseProps> = (
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent z-10" />
                   <div className="relative z-20 w-full h-full flex items-center justify-center p-4">
                     <img 
-                      src={currentProduct.image_url} 
+                      src={angle.image_url} 
                       alt={angle.name} 
-                      className={`w-full h-full object-contain transition-all duration-700 ${
+                      className={`w-full h-full object-cover transition-all duration-700 ${
                         activeAngleIndex === i ? 'scale-110' : 'opacity-40 grayscale group-hover:opacity-100 group-hover:grayscale-0'
                       }`}
-                      style={{ 
-                        transform: `rotateX(${angle.rotateX}deg) rotateY(${angle.rotateY}deg) scale(${angle.scale * 0.7})` 
-                      }}
                     />
                   </div>
                   <div className="absolute bottom-3 left-0 right-0 z-30 text-center">
-                    <span className={`text-[8px] font-black tracking-widest uppercase transition-all ${
+                    <span className={`text-[7px] font-black tracking-widest uppercase transition-all ${
                       activeAngleIndex === i ? 'text-white' : 'text-white/20 group-hover:text-white/60'
                     }`}>
-                      {angle.name.split(' ')[0]}
+                      {angle.name.replace(' Keyboard View', '').replace(' Angle', '')}
                     </span>
                   </div>
                 </button>
