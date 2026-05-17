@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Star, Plus, Minus, ShieldCheck, Zap, Box, Info } from 'lucide-react';
 import { useCart } from '../../context/CartContext';
-import { useResponsive } from '../../hooks/useResponsive';
 import { LuxuryCartButton } from '../ui/LuxuryCartButton';
 
 interface PremiumHardwareShowcaseProps {

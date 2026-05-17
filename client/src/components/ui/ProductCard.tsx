@@ -17,7 +17,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, index }) => {
   const [currentVariant, setCurrentVariant] = useState(0);
   const [isRotating, setIsRotating] = useState(false);
   
-  const cardRef = useRef<HTMLDivElement>(null);
+  const cardRef = useRef<HTMLAnchorElement>(null);
   const x = useMotionValue(0);
   const y = useMotionValue(0);
 
@@ -29,7 +29,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, index }) => {
 
   const variants = product.variants ? JSON.parse(product.variants) : [{ name: 'Default', image_url: product.image_url }];
   
-  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+  const handleMouseMove = (e: React.MouseEvent<HTMLAnchorElement>) => {
     if (!cardRef.current) return;
     const rect = cardRef.current.getBoundingClientRect();
     const width = rect.width;

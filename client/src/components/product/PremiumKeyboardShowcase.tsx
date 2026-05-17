@@ -1,10 +1,9 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useRef } from 'react';
 import { motion, AnimatePresence, useSpring, useMotionValue } from 'framer-motion';
 import { Plus, Minus, Loader2, Check, Sparkles, Eye, ShieldCheck, Zap } from 'lucide-react';
 import type { Product } from '../../types';
 import { useCart } from '../../context/CartContext';
 import { AuroraBackground } from '../ui/ImmersiveEffects';
-import api from '../../api/axiosInstance';
 import gsap from 'gsap';
 
 interface PremiumKeyboardShowcaseProps {
@@ -27,7 +26,6 @@ export const PremiumKeyboardShowcase: React.FC<PremiumKeyboardShowcaseProps> = (
   const [quantity, setQuantity] = useState(1);
   const [adding, setAdding] = useState(false);
   const [added, setAdded] = useState(false);
-  const [loading, setLoading] = useState(false);
   
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
@@ -41,11 +39,6 @@ export const PremiumKeyboardShowcase: React.FC<PremiumKeyboardShowcaseProps> = (
 
   const containerRef = useRef<HTMLDivElement>(null);
   const keyboardRef = useRef<HTMLDivElement>(null);
-
-  const brands = [
-    'Redragon', 'Razer', 'Logitech', 'Keychron', 
-    'Royal Kludge', 'Corsair', 'SteelSeries', 'HyperX'
-  ];
 
   const activeAngle = KEYBOARD_ANGLES[activeAngleIndex];
 
