@@ -37,6 +37,12 @@ export const initDatabase = async (): Promise<any> => {
 };
 
 const createTables = () => {
+  db.run(`DROP TABLE IF EXISTS refresh_tokens;`);
+  db.run(`DROP TABLE IF EXISTS order_items;`);
+  db.run(`DROP TABLE IF EXISTS orders;`);
+  db.run(`DROP TABLE IF EXISTS products;`);
+  db.run(`DROP TABLE IF EXISTS users;`);
+
   db.run(`
     CREATE TABLE IF NOT EXISTS users (
       id TEXT PRIMARY KEY,
@@ -83,6 +89,7 @@ const createTables = () => {
       featured INTEGER NOT NULL DEFAULT 0,
       platform TEXT,
       genre TEXT,
+      brand TEXT,
       created_at TEXT NOT NULL DEFAULT (datetime('now')),
       updated_at TEXT NOT NULL DEFAULT (datetime('now'))
     )
@@ -175,7 +182,7 @@ const seedData = async () => {
           { id: 'v5', name: 'Pink', image_url: '/products/glow-pink.jpg', color: '#ff00ff', glow: 'rgba(255, 0, 255, 0.6)' }
         ]),
         badge: 'CLASSIC', rating: 4.9, review_count: 5120,
-        in_stock: 1, featured: 1, platform: 'PC, Xbox 360', genre: 'Input Device'
+        in_stock: 1, featured: 1, platform: 'PC, Xbox 360', genre: 'Input Device', brand: 'Xbox'
       },
       {
         id: uuidv4(), name: 'Redragon K670 Argo', slug: 'redragon-k670-argo',
@@ -186,7 +193,7 @@ const seedData = async () => {
           { id: 'v1', name: 'Argo Edition', image_url: 'https://redragonshop.com/cdn/shop/products/ArgoK670_1_800x.png', color: '#ff8c00', glow: 'rgba(255, 140, 0, 0.4)' }
         ]),
         badge: 'NEW', rating: 4.8, review_count: 850,
-        in_stock: 1, featured: 1, platform: 'PC, Mac', genre: 'Keyboard'
+        in_stock: 1, featured: 1, platform: 'PC, Mac', genre: 'Keyboard', brand: 'Redragon'
       },
       {
         id: uuidv4(), name: 'Logitech G Pro X Superlight', slug: 'logitech-g-pro-x-superlight',
@@ -194,7 +201,7 @@ const seedData = async () => {
         price: 149.99, original_price: null, category: 'Gaming Mouse',
         image_url: 'https://resource.logitechg.com/w_692,c_limit,q_auto,f_auto,dpr_1.0/d_transparent.gif/content/dam/gaming/en/products/pro-x-superlight/pro-x-superlight-black-gallery-1.png?v=1',
         badge: 'ELITE', rating: 4.9, review_count: 12400,
-        in_stock: 1, featured: 1, platform: 'PC', genre: 'Mouse'
+        in_stock: 1, featured: 1, platform: 'PC', genre: 'Mouse', brand: 'Logitech'
       },
       {
         id: uuidv4(), name: 'HyperX Cloud Alpha', slug: 'hyperx-cloud-alpha',
@@ -202,7 +209,7 @@ const seedData = async () => {
         price: 99.99, original_price: null, category: 'Headsets',
         image_url: 'https://hyperx.com/cdn/shop/products/hyperx_cloud_alpha_1_800x.png',
         badge: 'PRO CHOICE', rating: 4.8, review_count: 8500,
-        in_stock: 1, featured: 1, platform: 'PC, PS5, Xbox, Switch', genre: 'Audio'
+        in_stock: 1, featured: 1, platform: 'PC, PS5, Xbox, Switch', genre: 'Audio', brand: 'HyperX'
       },
       {
         id: uuidv4(), name: 'PlayStation 5 Console', slug: 'playstation-5',
@@ -210,25 +217,25 @@ const seedData = async () => {
         price: 499.99, original_price: null, category: 'Consoles',
         image_url: 'https://gmedia.playstation.com/is/image/SIEPDC/ps5-product-thumbnail-01-en-14sep21?$facebook$',
         badge: 'NEXT GEN', rating: 4.9, review_count: 45000,
-        in_stock: 1, featured: 0, platform: 'PS5', genre: 'Console'
+        in_stock: 1, featured: 0, platform: 'PS5', genre: 'Console', brand: 'Sony'
       },
       {
-        id: uuidv4(), name: 'SteelSeries QcK Prism', slug: 'steelseries-qck-prism',
+        id: uuidv4(), name: 'SteelSeries Gaming Mouse Pad', slug: 'steelseries-gaming-mouse-pad',
         description: 'Elite cloth gaming mousepad with dynamic 2-zone RGB backlighting. The choice of esports pros for precision and control.',
         price: 59.99, original_price: null, category: 'Accessories',
         image_url: 'https://media.steelseriescdn.com/thumbs/catalog/items/63391/798402f12255476a80436d4df6c5478d.png.350x280_q100_crop-fit_optimize.png',
         badge: 'RGB ELITE', rating: 4.9, review_count: 12000,
-        in_stock: 1, featured: 1, platform: 'Desktop', genre: 'Surface'
+        in_stock: 1, featured: 1, platform: 'Desktop', genre: 'Surface', brand: 'SteelSeries'
       }
     ];
 
-    const stmt = `INSERT INTO products (id, name, slug, description, price, original_price, category, image_url, variants, badge, rating, review_count, in_stock, featured, platform, genre) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+    const stmt = `INSERT INTO products (id, name, slug, description, price, original_price, category, image_url, variants, badge, rating, review_count, in_stock, featured, platform, genre, brand) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
 
     for (const p of products) {
       db.run(stmt, [
         p.id, p.name, p.slug, p.description, p.price, p.original_price,
         p.category, p.image_url, (p as any).variants || null, p.badge, p.rating, p.review_count,
-        p.in_stock, p.featured, p.platform, p.genre,
+        p.in_stock, p.featured, p.platform, p.genre, p.brand,
       ]);
     }
     logger.info(`Seeded ${products.length} products`);
