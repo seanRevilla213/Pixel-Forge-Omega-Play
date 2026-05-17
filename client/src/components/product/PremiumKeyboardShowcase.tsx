@@ -33,6 +33,7 @@ import keyboardProfile from '../../assets/keyboard-profile.jpg';
 
 interface PremiumKeyboardShowcaseProps {
   product: Product;
+  hideSidebar?: boolean;
 }
 
 const KEYBOARD_ANGLES = [
@@ -42,7 +43,7 @@ const KEYBOARD_ANGLES = [
   { id: 'profile', name: 'Side Profile View', rotateX: 0, rotateY: -8, scale: 1.2, image_url: keyboardProfile }
 ];
 
-export const PremiumKeyboardShowcase: React.FC<PremiumKeyboardShowcaseProps> = ({ product }) => {
+export const PremiumKeyboardShowcase: React.FC<PremiumKeyboardShowcaseProps> = ({ product, hideSidebar = false }) => {
   const { addItem, formatPHP } = useCart();
   const { isLowEnd } = usePerformance();
   const navigate = useNavigate();
@@ -183,94 +184,96 @@ export const PremiumKeyboardShowcase: React.FC<PremiumKeyboardShowcaseProps> = (
         {/* ==================================================
             LEFT SIDEBAR: CATEGORY, SEARCH & BRAND FILTERS
            ================================================== */}
-        <div className="w-full lg:w-[260px] shrink-0 flex flex-col gap-8 z-30">
-          
-          {/* Catalog Search */}
-          <div className="glasswave-strong p-6 rounded-3xl border border-white/5 backdrop-blur-2xl space-y-4">
-            <h3 className="text-[10px] font-black tracking-[0.4em] text-white/30 uppercase flex items-center gap-3">
-              <Search size={14} className="text-orange-500" /> catalog search
-            </h3>
-            <form onSubmit={handleSearchSubmit} className="relative">
-              <input
-                type="text"
-                value={localSearch}
-                onChange={(e) => setLocalSearch(e.target.value)}
-                placeholder="Search products..."
-                className="w-full bg-white/5 border border-white/10 rounded-2xl py-3.5 px-4 text-white text-[10px] font-bold tracking-widest focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500/30 transition-all placeholder:text-white/20 uppercase"
-              />
-              <button type="submit" className="absolute right-4 top-1/2 -translate-y-1/2 text-white/40 hover:text-orange-500 transition-colors">
-                <ArrowRight size={14} />
-              </button>
-            </form>
-          </div>
+        {!hideSidebar && (
+          <div className="w-full lg:w-[260px] shrink-0 flex flex-col gap-8 z-30">
+            
+            {/* Catalog Search */}
+            <div className="glasswave-strong p-6 rounded-3xl border border-white/5 backdrop-blur-2xl space-y-4">
+              <h3 className="text-[10px] font-black tracking-[0.4em] text-white/30 uppercase flex items-center gap-3">
+                <Search size={14} className="text-orange-500" /> catalog search
+              </h3>
+              <form onSubmit={handleSearchSubmit} className="relative">
+                <input
+                  type="text"
+                  value={localSearch}
+                  onChange={(e) => setLocalSearch(e.target.value)}
+                  placeholder="Search products..."
+                  className="w-full bg-white/5 border border-white/10 rounded-2xl py-3.5 px-4 text-white text-[10px] font-bold tracking-widest focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500/30 transition-all placeholder:text-white/20 uppercase"
+                />
+                <button type="submit" className="absolute right-4 top-1/2 -translate-y-1/2 text-white/40 hover:text-orange-500 transition-colors">
+                  <ArrowRight size={14} />
+                </button>
+              </form>
+            </div>
 
-          {/* Category Index */}
-          <div className="glasswave-strong p-6 rounded-3xl border border-white/5 backdrop-blur-2xl space-y-6">
-            <h3 className="text-[10px] font-black tracking-[0.4em] text-white/30 uppercase flex items-center gap-3">
-              <Sliders size={14} className="text-orange-500" /> CATEGORY INDEX
-            </h3>
-            <div className="flex flex-col gap-3">
-              {[
-                { name: 'Controllers', icon: Gamepad, glow: 'rgba(0, 240, 255, 0.2)', color: '#00f0ff' },
-                { name: 'Mechanical Keyboards', icon: Keyboard, glow: 'rgba(255, 140, 0, 0.25)', color: '#ff8c00' },
-                { name: 'Gaming Mouse', icon: MousePointer, glow: 'rgba(168, 85, 247, 0.2)', color: '#a855f7' },
-                { name: 'Headsets', icon: Headphones, glow: 'rgba(34, 197, 94, 0.2)', color: '#22c55e' },
-                { name: 'Consoles', icon: Tv, glow: 'rgba(239, 68, 68, 0.2)', color: '#ef4444' },
-                { name: 'Accessories', icon: Sparkles, glow: 'rgba(255, 255, 255, 0.1)', color: '#ffffff' }
-              ].map((cat) => {
-                const Icon = cat.icon;
-                const isActive = cat.name === 'Mechanical Keyboards';
-                return (
-                  <button
-                    key={cat.name}
-                    onClick={() => handleCategoryClick(cat.name)}
-                    className={`w-full py-3.5 px-5 rounded-2xl text-[10px] font-black tracking-widest uppercase transition-all duration-300 border flex items-center justify-between group ${
-                      isActive
-                        ? 'bg-gradient-to-r from-orange-500/10 to-amber-500/10 border-orange-500/50 text-orange-500 shadow-[0_0_20px_rgba(249,115,22,0.15)]'
-                        : 'glasswave border-white/5 text-white/40 hover:text-white hover:border-white/20'
-                    }`}
-                  >
-                    <span className="flex items-center gap-3">
-                      <Icon size={14} className={isActive ? 'text-orange-500' : 'text-white/40 group-hover:text-white transition-colors'} />
-                      {cat.name}
-                    </span>
-                    <div 
-                      className={`w-1.5 h-1.5 rounded-full transition-all duration-300 ${
-                        isActive ? 'scale-125 bg-orange-500' : 'scale-0 group-hover:scale-100 bg-white/30'
+            {/* Category Index */}
+            <div className="glasswave-strong p-6 rounded-3xl border border-white/5 backdrop-blur-2xl space-y-6">
+              <h3 className="text-[10px] font-black tracking-[0.4em] text-white/30 uppercase flex items-center gap-3">
+                <Sliders size={14} className="text-orange-500" /> CATEGORY INDEX
+              </h3>
+              <div className="flex flex-col gap-3">
+                {[
+                  { name: 'Controllers', icon: Gamepad, glow: 'rgba(0, 240, 255, 0.2)', color: '#00f0ff' },
+                  { name: 'Mechanical Keyboards', icon: Keyboard, glow: 'rgba(255, 140, 0, 0.25)', color: '#ff8c00' },
+                  { name: 'Gaming Mouse', icon: MousePointer, glow: 'rgba(168, 85, 247, 0.2)', color: '#a855f7' },
+                  { name: 'Headsets', icon: Headphones, glow: 'rgba(34, 197, 94, 0.2)', color: '#22c55e' },
+                  { name: 'Consoles', icon: Tv, glow: 'rgba(239, 68, 68, 0.2)', color: '#ef4444' },
+                  { name: 'Accessories', icon: Sparkles, glow: 'rgba(255, 255, 255, 0.1)', color: '#ffffff' }
+                ].map((cat) => {
+                  const Icon = cat.icon;
+                  const isActive = cat.name === 'Mechanical Keyboards';
+                  return (
+                    <button
+                      key={cat.name}
+                      onClick={() => handleCategoryClick(cat.name)}
+                      className={`w-full py-3.5 px-5 rounded-2xl text-[10px] font-black tracking-widest uppercase transition-all duration-300 border flex items-center justify-between group ${
+                        isActive
+                          ? 'bg-gradient-to-r from-orange-500/10 to-amber-500/10 border-orange-500/50 text-orange-500 shadow-[0_0_20px_rgba(249,115,22,0.15)]'
+                          : 'glasswave border-white/5 text-white/40 hover:text-white hover:border-white/20'
                       }`}
-                    />
-                  </button>
-                );
-              })}
+                    >
+                      <span className="flex items-center gap-3">
+                        <Icon size={14} className={isActive ? 'text-orange-500' : 'text-white/40 group-hover:text-white transition-colors'} />
+                        {cat.name}
+                      </span>
+                      <div 
+                        className={`w-1.5 h-1.5 rounded-full transition-all duration-300 ${
+                          isActive ? 'scale-125 bg-orange-500' : 'scale-0 group-hover:scale-100 bg-white/30'
+                        }`}
+                      />
+                    </button>
+                  );
+                })}
+              </div>
             </div>
-          </div>
 
-          {/* Brand Index */}
-          <div className="glasswave-strong p-6 rounded-3xl border border-white/5 backdrop-blur-2xl space-y-4">
-            <h3 className="text-[10px] font-black tracking-[0.4em] text-white/30 uppercase flex items-center gap-3">
-              <Sparkles size={14} className="text-orange-500" /> BRANDS
-            </h3>
-            <div className="grid grid-cols-2 gap-2">
-              {['Redragon', 'Logitech', 'HyperX', 'Sony', 'SteelSeries', 'Xbox'].map((b) => {
-                const isActive = b.toLowerCase() === (product.brand || 'redragon').toLowerCase();
-                return (
-                  <button
-                    key={b}
-                    onClick={() => handleBrandClick(b)}
-                    className={`py-3 rounded-xl text-[8px] font-black tracking-widest uppercase transition-all duration-300 text-center border ${
-                      isActive
-                        ? 'bg-white text-black border-white font-black shadow-lg'
-                        : 'glasswave border-white/5 text-white/40 hover:text-white hover:border-white/10'
-                    }`}
-                  >
-                    {b}
-                  </button>
-                );
-              })}
+            {/* Brand Index */}
+            <div className="glasswave-strong p-6 rounded-3xl border border-white/5 backdrop-blur-2xl space-y-4">
+              <h3 className="text-[10px] font-black tracking-[0.4em] text-white/30 uppercase flex items-center gap-3">
+                <Sparkles size={14} className="text-orange-500" /> BRANDS
+              </h3>
+              <div className="grid grid-cols-2 gap-2">
+                {['Redragon', 'Logitech', 'HyperX', 'Sony', 'SteelSeries', 'Xbox'].map((b) => {
+                  const isActive = b.toLowerCase() === (product.brand || 'redragon').toLowerCase();
+                  return (
+                    <button
+                      key={b}
+                      onClick={() => handleBrandClick(b)}
+                      className={`py-3 rounded-xl text-[8px] font-black tracking-widest uppercase transition-all duration-300 text-center border ${
+                        isActive
+                          ? 'bg-white text-black border-white font-black shadow-lg'
+                          : 'glasswave border-white/5 text-white/40 hover:text-white hover:border-white/10'
+                      }`}
+                    >
+                      {b}
+                    </button>
+                  );
+                })}
+              </div>
             </div>
-          </div>
 
-        </div>
+          </div>
+        )}
 
         {/* ==================================================
             CENTER SHOWCASE: SPACIOUS KEYBOARD VIEWER & GALLERY
@@ -407,32 +410,29 @@ export const PremiumKeyboardShowcase: React.FC<PremiumKeyboardShowcaseProps> = (
               </p>
             </div>
 
-            {/* Variants Selector */}
-            {variants.length > 0 && (
-              <div className="space-y-3 pt-6 border-t border-white/5 relative z-10">
-                <div className="flex justify-between items-center text-[10px] font-black tracking-[0.2em] text-white/40 uppercase">
-                  <span>SELECT EDITION</span>
-                  <span className="text-white">{variants[variantIndex].name}</span>
-                </div>
-                <div className="flex gap-3">
-                  {variants.map((v, i) => (
-                    <button
-                      key={v.id}
-                      onClick={() => setVariantIndex(i)}
-                      className={`w-10 h-10 rounded-full transition-all duration-300 border flex items-center justify-center ${
-                        variantIndex === i 
-                          ? 'border-white scale-110 shadow-md' 
-                          : 'border-white/10 hover:border-white/30 hover:scale-105'
-                      }`}
-                      style={{ backgroundColor: v.color || '#ff8c00', boxShadow: variantIndex === i ? `0 0 15px ${v.glow || 'rgba(255,140,0,0.3)'}` : 'none' }}
-                      title={v.name}
-                    >
-                      {variantIndex === i && <Check size={14} className="text-black" />}
-                    </button>
-                  ))}
-                </div>
+            {/* View Other Angles Section */}
+            <div className="space-y-4 pt-6 border-t border-white/5 relative z-10">
+              <div className="flex justify-between items-center text-[10px] font-black tracking-[0.2em] text-white/40 uppercase">
+                <span>VIEW OTHER ANGLES</span>
+                <span className="text-orange-500">{KEYBOARD_ANGLES[activeAngleIndex].name}</span>
               </div>
-            )}
+              <div className="flex gap-3">
+                {KEYBOARD_ANGLES.map((angle, idx) => (
+                  <button
+                    key={angle.id}
+                    onClick={() => setActiveAngleIndex(idx)}
+                    className={`w-10 h-10 rounded-full transition-all duration-300 border flex items-center justify-center overflow-hidden bg-white/5 ${
+                      activeAngleIndex === idx 
+                        ? 'border-orange-500 scale-115 shadow-md shadow-orange-500/20' 
+                        : 'border-white/10 hover:border-white/30 hover:scale-105'
+                    }`}
+                    title={angle.name}
+                  >
+                    <img src={angle.image_url} alt={angle.name} className="w-full h-full object-contain p-1" />
+                  </button>
+                ))}
+              </div>
+            </div>
 
             {/* Specifications Grid */}
             <div className="grid grid-cols-2 gap-4 pt-6 border-t border-white/5 relative z-10">

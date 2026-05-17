@@ -28,18 +28,25 @@ const Products = () => {
   const [loading, setLoading] = useState(true);
 
   const [searchParams, setSearchParams] = useSearchParams();
-  const search = searchParams.get('search') || '';
-  const category = searchParams.get('category') || '';
-  const brand = searchParams.get('brand') || '';
-  const page = parseInt(searchParams.get('page') || '1', 10);
+  
+  // Local states for instant, bulletproof UI updates
+  const [search, setSearchLocal] = useState(searchParams.get('search') || '');
+  const [category, setCategoryLocal] = useState(searchParams.get('category') || '');
+  const [brand, setBrandLocal] = useState(searchParams.get('brand') || '');
+  const [page, setPageLocal] = useState(parseInt(searchParams.get('page') || '1', 10));
 
   const setSearch = (val: string) => {
+    setSearchLocal(val);
+    setPageLocal(1);
     const next = new URLSearchParams(searchParams);
     if (val) next.set('search', val); else next.delete('search');
     next.set('page', '1');
     setSearchParams(next);
   };
   const setCategory = (val: string) => {
+    setCategoryLocal(val);
+    setBrandLocal('');
+    setPageLocal(1);
     const next = new URLSearchParams(searchParams);
     if (val) next.set('category', val); else next.delete('category');
     next.delete('brand');
@@ -47,12 +54,15 @@ const Products = () => {
     setSearchParams(next);
   };
   const setBrand = (val: string) => {
+    setBrandLocal(val);
+    setPageLocal(1);
     const next = new URLSearchParams(searchParams);
     if (val) next.set('brand', val); else next.delete('brand');
     next.set('page', '1');
     setSearchParams(next);
   };
   const setPage = (val: number) => {
+    setPageLocal(val);
     const next = new URLSearchParams(searchParams);
     next.set('page', val.toString());
     setSearchParams(next);
@@ -348,7 +358,7 @@ const Products = () => {
                     {products[0].category === 'Controllers' ? (
                       <PremiumControllerShowcase product={products[0]} />
                     ) : products[0].category === 'Mechanical Keyboards' ? (
-                      <PremiumKeyboardShowcase product={products[0]} />
+                      <PremiumKeyboardShowcase product={products[0]} hideSidebar={true} />
                     ) : (
                       <PremiumHardwareShowcase product={products[0]} />
                     )}
