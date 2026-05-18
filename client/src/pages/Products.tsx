@@ -11,6 +11,7 @@ import { PremiumControllerShowcase } from '../components/product/PremiumControll
 import { PremiumKeyboardShowcase } from '../components/product/PremiumKeyboardShowcase';
 import { PremiumMouseShowcase } from '../components/product/PremiumMouseShowcase';
 import { PremiumHeadsetShowcase } from '../components/product/PremiumHeadsetShowcase';
+import { PremiumAccessoryShowcase } from '../components/product/PremiumAccessoryShowcase';
 import { PremiumHardwareShowcase } from '../components/product/PremiumHardwareShowcase';
 import api from '../api/axiosInstance';
 import gsap from 'gsap';
@@ -365,6 +366,8 @@ const Products = () => {
                       <PremiumMouseShowcase product={products[0]} hideSidebar={true} />
                     ) : products[0].category === 'Headsets' ? (
                       <PremiumHeadsetShowcase product={products[0]} hideSidebar={true} />
+                    ) : products[0].category === 'Accessories' ? (
+                      <PremiumAccessoryShowcase product={products[0]} hideSidebar={true} />
                     ) : (
                       <PremiumHardwareShowcase product={products[0]} />
                     )}
