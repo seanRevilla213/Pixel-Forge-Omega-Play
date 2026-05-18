@@ -9,6 +9,7 @@ import { usePerformance } from '../context/PerformanceContext';
 import { AuroraBackground, AmbientGlow } from '../components/ui/ImmersiveEffects';
 import { PremiumControllerShowcase } from '../components/product/PremiumControllerShowcase';
 import { PremiumKeyboardShowcase } from '../components/product/PremiumKeyboardShowcase';
+import { PremiumMouseShowcase } from '../components/product/PremiumMouseShowcase';
 import { PremiumHardwareShowcase } from '../components/product/PremiumHardwareShowcase';
 import api from '../api/axiosInstance';
 import gsap from 'gsap';
@@ -359,6 +360,8 @@ const Products = () => {
                       <PremiumControllerShowcase product={products[0]} />
                     ) : products[0].category === 'Mechanical Keyboards' ? (
                       <PremiumKeyboardShowcase product={products[0]} hideSidebar={true} />
+                    ) : products[0].category === 'Gaming Mouse' ? (
+                      <PremiumMouseShowcase product={products[0]} hideSidebar={true} />
                     ) : (
                       <PremiumHardwareShowcase product={products[0]} />
                     )}
