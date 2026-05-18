@@ -34,7 +34,7 @@ interface PremiumMouseShowcaseProps {
 
 const MOUSE_ANGLES = [
   { id: 'top', name: 'Top Base View', rotateX: 0, rotateY: 0, scale: 1.0, image_url: 'https://resource.logitechg.com/w_692,c_limit,q_auto,f_auto,dpr_1.0/d_transparent.gif/content/dam/gaming/en/products/pro-x-superlight/pro-x-superlight-black-gallery-1.png?v=1' },
-  { id: 'angled', name: 'Angled Front View', rotateX: 5, rotateY: -5, scale: 1.1, image_url: 'https://resource.logitechg.com/w_692,c_limit,q_auto,f_auto,dpr_1.0/d_transparent.gif/content/dam/gaming/en/products/pro-x-superlight/pro-x-superlight-black-gallery-2.png?v=1' },
+  { id: 'angled', name: 'Angled Front View', rotateX: 5, rotateY: -5, scale: 1.1, image_url: 'https://resource.logitechg.com/w_692,c_limit,q_auto,f_auto,dpr_1.0/d_transparent.gif/content/dam/gaming/en/products/pro-x-superlight/pro-x-superlight-black-gallery-6.png?v=1' },
   { id: 'side', name: 'Left Profile View', rotateX: 0, rotateY: 5, scale: 1.15, image_url: 'https://resource.logitechg.com/w_692,c_limit,q_auto,f_auto,dpr_1.0/d_transparent.gif/content/dam/gaming/en/products/pro-x-superlight/pro-x-superlight-black-gallery-3.png?v=1' },
   { id: 'perspective', name: 'Perspective Profile', rotateX: -5, rotateY: -10, scale: 1.2, image_url: 'https://resource.logitechg.com/w_692,c_limit,q_auto,f_auto,dpr_1.0/d_transparent.gif/content/dam/gaming/en/products/pro-x-superlight/pro-x-superlight-black-gallery-4.png?v=1' }
 ];
