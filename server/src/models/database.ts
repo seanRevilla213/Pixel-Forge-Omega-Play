@@ -204,6 +204,14 @@ const seedData = async () => {
         in_stock: 1, featured: 1, platform: 'PC', genre: 'Mouse', brand: 'Logitech'
       },
       {
+        id: uuidv4(), name: 'CS2 Dragon Lore Wireless Mouse', slug: 'cs2-dragon-lore-wireless-mouse',
+        description: 'Premium wireless gaming mouse featuring the legendary CS2 Dragon Lore skin design. Equipped with an ultra-low latency wireless connection and precision gaming sensor.',
+        price: 189.99, original_price: null, category: 'Gaming Mouse',
+        image_url: 'https://media.steelseriescdn.com/thumbs/catalog/items/63391/798402f12255476a80436d4df6c5478d.png.350x280_q100_crop-fit_optimize.png',
+        badge: 'DRAGON LORE', rating: 4.9, review_count: 8900,
+        in_stock: 1, featured: 1, platform: 'PC, Mac, Linux', genre: 'Mouse', brand: 'SteelSeries'
+      },
+      {
         id: uuidv4(), name: 'HyperX Cloud Alpha', slug: 'hyperx-cloud-alpha',
         description: 'Durable aluminum frame, detachable cable, and dual chamber drivers for more distinction and less distortion. Designed for pro-level gaming comfort.',
         price: 99.99, original_price: null, category: 'Headsets',
