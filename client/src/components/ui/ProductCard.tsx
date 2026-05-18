@@ -8,10 +8,27 @@ import { usePerformance } from '../../context/PerformanceContext';
 import { LuxuryCartButton } from './LuxuryCartButton';
 import gsap from 'gsap';
 
+// Local High-Resolution Asset Fallbacks
+import hyperxMain from '../../assets/hyperx_cloud_alpha_black_1_main.png';
+import qckMain from '../../assets/qck_xxl_cs2_dragon_lore_pdp_img_buy_01.png';
+import dragonLoreMouseMain from '../../assets/wireless_mouse_cs2_dragon_lore_pdp_img_buy_01.png';
+import redragonMain from '../../assets/keyboard-top.jpg';
+import logitechMain from '../../assets/pro-x-superlight-gallery-2.png';
+
 interface ProductCardProps {
   product: Product;
   index: number;
 }
+
+const getLocalImageUrl = (url: string, slug?: string, name?: string) => {
+  const targetStr = `${url} ${slug} ${name}`.toLowerCase();
+  if (targetStr.includes('hyperx') || targetStr.includes('cloud-alpha')) return hyperxMain;
+  if (targetStr.includes('cs2-dragon-lore-wireless-mouse') || targetStr.includes('dragon lore wireless') || targetStr.includes('cs2 dragon lore')) return dragonLoreMouseMain;
+  if (targetStr.includes('steelseries') || targetStr.includes('mouse-pad') || targetStr.includes('qck')) return qckMain;
+  if (targetStr.includes('redragon') || targetStr.includes('k670')) return redragonMain;
+  if (targetStr.includes('logitech') || targetStr.includes('superlight')) return logitechMain;
+  return url;
+};
 
 export const ProductCard: React.FC<ProductCardProps> = ({ product, index }) => {
   const { formatPHP } = useCart();
@@ -29,7 +46,11 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, index }) => {
   const rotateX = useTransform(mouseY, [-0.5, 0.5], isLowEnd ? [0, 0] : [10, -10]);
   const rotateY = useTransform(mouseX, [-0.5, 0.5], isLowEnd ? [0, 0] : [-10, 10]);
 
-  const variants = product.variants ? JSON.parse(product.variants) : [{ name: 'Default', image_url: product.image_url }];
+  const rawVariants = product.variants ? JSON.parse(product.variants) : [{ name: 'Default', image_url: product.image_url }];
+  const variants = rawVariants.map((v: any) => ({
+    ...v,
+    image_url: getLocalImageUrl(v.image_url, product.slug, product.name)
+  }));
   
   const handleMouseMove = (e: React.MouseEvent<HTMLAnchorElement>) => {
     if (isLowEnd || !cardRef.current) return;
