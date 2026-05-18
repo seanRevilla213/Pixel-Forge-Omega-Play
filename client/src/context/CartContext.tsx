@@ -40,25 +40,32 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
 
   const addItem = useCallback((product: Product, selectedVariant?: ProductVariant) => {
     setItems((prev) => {
-      const existing = prev.find((i) => 
-        i.product.id === product.id && 
-        i.selectedVariant?.id === selectedVariant?.id
-      );
+      const existing = prev.find((i) => {
+        const matchProduct = String(i.product.id) === String(product.id);
+        const matchVariant = (!i.selectedVariant?.id && !selectedVariant?.id) || (String(i.selectedVariant?.id) === String(selectedVariant?.id));
+        return matchProduct && matchVariant;
+      });
+      
       if (existing) {
-        return prev.map((i) =>
-          (i.product.id === product.id && i.selectedVariant?.id === selectedVariant?.id)
-            ? { ...i, quantity: Math.min(i.quantity + 1, 99) }
-            : i
-        );
+        return prev.map((i) => {
+          const matchProduct = String(i.product.id) === String(product.id);
+          const matchVariant = (!i.selectedVariant?.id && !selectedVariant?.id) || (String(i.selectedVariant?.id) === String(selectedVariant?.id));
+          if (matchProduct && matchVariant) {
+            return { ...i, quantity: Math.min(i.quantity + 1, 99) };
+          }
+          return i;
+        });
       }
       return [...prev, { product, quantity: 1, selectedVariant }];
     });
   }, []);
 
   const removeItem = useCallback((productId: string, variantId?: string) => {
-    setItems((prev) => prev.filter((i) => 
-      !(i.product.id === productId && i.selectedVariant?.id === variantId)
-    ));
+    setItems((prev) => prev.filter((i) => {
+      const matchProduct = String(i.product.id) === String(productId);
+      const matchVariant = (!i.selectedVariant?.id && !variantId) || (String(i.selectedVariant?.id) === String(variantId));
+      return !(matchProduct && matchVariant);
+    }));
   }, []);
 
   const updateQuantity = useCallback((productId: string, quantity: number, variantId?: string) => {
@@ -67,11 +74,14 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
       return;
     }
     setItems((prev) =>
-      prev.map((i) =>
-        (i.product.id === productId && i.selectedVariant?.id === variantId) 
-          ? { ...i, quantity: Math.min(quantity, 99) } 
-          : i
-      )
+      prev.map((i) => {
+        const matchProduct = String(i.product.id) === String(productId);
+        const matchVariant = (!i.selectedVariant?.id && !variantId) || (String(i.selectedVariant?.id) === String(variantId));
+        if (matchProduct && matchVariant) {
+          return { ...i, quantity: Math.min(quantity, 99) };
+        }
+        return i;
+      }).filter(i => i.quantity > 0)
     );
   }, [removeItem]);
 

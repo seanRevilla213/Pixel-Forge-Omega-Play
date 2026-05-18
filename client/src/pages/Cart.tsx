@@ -58,35 +58,42 @@ const Cart = () => {
               </h1>
               <p className="text-text-muted font-bold tracking-[0.4em] uppercase text-[9px] opacity-60">Session active // {itemCount} premium units</p>
             </div>
-            <button onClick={clearCart} className="text-[10px] font-black text-text-muted hover:text-white transition-all uppercase tracking-[0.4em] px-8 py-4 glasswave rounded-2xl border-white/5">
+            <button onClick={clearCart} className="text-[10px] font-black text-text-muted hover:text-white transition-all uppercase tracking-[0.4em] px-8 py-4 glasswave rounded-2xl border-white/5 hover:border-white/20 active:scale-95 shadow-lg">
               CLEAR SELECTION
             </button>
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-16 items-start">
-            {/* Minimal Item List */}
+            {/* Premium Item List */}
             <div className="lg:col-span-2 space-y-8">
               <AnimatePresence mode="popLayout">
                 {items.map((item) => (
                   <motion.div
                     key={`${item.product.id}-${item.selectedVariant?.id || 'none'}`}
                     layout
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, x: -100 }}
-                    className="glasswave rounded-[3rem] p-8 flex gap-10 group relative transition-all duration-500 hover:bg-white/[0.04]"
+                    initial={{ opacity: 0, scale: 0.95, y: 20 }}
+                    animate={{ opacity: 1, scale: 1, y: 0 }}
+                    exit={{ opacity: 0, scale: 0.9, x: -100 }}
+                    transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+                    className="glasswave rounded-[3rem] p-6 sm:p-8 flex flex-col sm:flex-row gap-6 sm:gap-10 group relative transition-all duration-500 hover:bg-white/[0.04] border border-white/5 hover:border-white/10 shadow-xl"
                   >
-                    <div className="relative w-28 h-28 sm:w-44 sm:h-44 rounded-[2rem] overflow-hidden flex-shrink-0 bg-white/5">
-                      <img src={item.selectedVariant?.image_url || item.product.image_url} alt={item.product.name} className="w-full h-full object-contain grayscale group-hover:grayscale-0 transition-all duration-700" />
+                    <div className="relative w-full sm:w-44 h-40 sm:h-44 rounded-[2rem] overflow-hidden flex-shrink-0 bg-white/5 flex items-center justify-center p-4">
+                      <img src={item.selectedVariant?.image_url || item.product.image_url} alt={item.product.name} className="w-full h-full object-contain grayscale group-hover:grayscale-0 transition-all duration-700 hover:scale-105" />
                     </div>
                     <div className="flex-1 flex flex-col justify-between py-2">
                       <div className="space-y-4">
                         <div className="flex justify-between items-start gap-4">
-                          <Link to={`/products/${item.product.slug}`} className="font-heading text-xl sm:text-2xl font-black text-white hover:text-luxury-cyan transition-colors tracking-tight leading-tight line-clamp-1">
+                          <Link to={`/products/${item.product.slug}`} className="font-heading text-xl sm:text-2xl font-black text-white hover:text-luxury-cyan transition-colors tracking-tight leading-tight line-clamp-2">
                             {item.product.name}
                           </Link>
-                          <button onClick={() => removeItem(item.product.id, item.selectedVariant?.id)} className="p-3 text-text-muted hover:text-red-400 transition-all">
-                            <Trash2 size={20} />
+                          
+                          {/* Premium Glassmorphism Remove Button */}
+                          <button 
+                            onClick={() => removeItem(item.product.id, item.selectedVariant?.id)} 
+                            aria-label="Remove item"
+                            className="w-12 h-12 rounded-2xl glasswave border border-white/10 flex items-center justify-center text-text-muted hover:text-red-500 hover:border-red-500/50 hover:bg-red-500/10 transition-all duration-300 hover:scale-110 hover:shadow-[0_0_20px_rgba(239,68,68,0.3)] group/btn active:scale-95 shrink-0 shadow-md"
+                          >
+                            <Trash2 size={18} className="group-hover/btn:animate-pulse" />
                           </button>
                         </div>
                         <div className="flex flex-wrap items-center gap-3">
@@ -104,13 +111,13 @@ const Cart = () => {
                         </div>
                       </div>
                       
-                      <div className="flex items-center justify-between mt-8">
-                        <div className="flex items-center glasswave rounded-2xl h-12 border-white/5">
-                          <button onClick={() => updateQuantity(item.product.id, item.quantity - 1, item.selectedVariant?.id)} className="w-12 h-full flex items-center justify-center text-text-muted hover:text-white transition-colors"><Minus size={16} /></button>
-                          <span className="px-6 font-black text-lg text-white min-w-[50px] text-center">{item.quantity}</span>
-                          <button onClick={() => updateQuantity(item.product.id, item.quantity + 1, item.selectedVariant?.id)} className="w-12 h-full flex items-center justify-center text-text-muted hover:text-white transition-colors"><Plus size={16} /></button>
+                      <div className="flex flex-wrap items-center justify-between mt-8 gap-4">
+                        <div className="flex items-center glasswave rounded-2xl h-12 border-white/5 shadow-inner">
+                          <button onClick={() => updateQuantity(item.product.id, item.quantity - 1, item.selectedVariant?.id)} className="w-12 h-full flex items-center justify-center text-text-muted hover:text-white transition-colors hover:bg-white/5 rounded-l-2xl"><Minus size={16} /></button>
+                          <span className="px-6 font-black text-lg text-white min-w-[50px] text-center tabular-nums">{item.quantity}</span>
+                          <button onClick={() => updateQuantity(item.product.id, item.quantity + 1, item.selectedVariant?.id)} className="w-12 h-full flex items-center justify-center text-text-muted hover:text-white transition-colors hover:bg-white/5 rounded-r-2xl"><Plus size={16} /></button>
                         </div>
-                        <span className="font-heading text-3xl font-black text-white tracking-tighter opacity-80">{formatPHP(item.product.price * item.quantity)}</span>
+                        <span className="font-heading text-2xl sm:text-3xl font-black text-white tracking-tighter opacity-80 tabular-nums">{formatPHP(item.product.price * item.quantity)}</span>
                       </div>
                     </div>
                   </motion.div>
@@ -120,7 +127,7 @@ const Cart = () => {
 
             {/* Summary Panel */}
             <div className="lg:col-span-1">
-              <div className={`glasswave-strong rounded-[4rem] p-12 border border-white/5 shadow-2xl space-y-12 ${isMobile ? '' : 'sticky top-40'}`}>
+              <div className={`glasswave-strong rounded-[4rem] p-8 sm:p-12 border border-white/5 shadow-2xl space-y-12 ${isMobile ? '' : 'sticky top-40'}`}>
                 <div className="space-y-2 text-center">
                   <h3 className="font-heading text-2xl font-black text-white tracking-tighter uppercase">Total Valuation</h3>
                   <p className="text-[9px] text-text-muted font-black tracking-[0.4em] uppercase opacity-40">Order Manifest Finalized</p>
@@ -129,7 +136,7 @@ const Cart = () => {
                 <div className="space-y-6 border-y border-white/5 py-10">
                   <div className="flex justify-between items-center text-[10px]">
                     <span className="text-text-muted font-black tracking-widest uppercase">Units Subtotal</span>
-                    <span className="text-white font-black">{formatPHP(total)}</span>
+                    <span className="text-white font-black tabular-nums">{formatPHP(total)}</span>
                   </div>
                   <div className="flex justify-between items-center text-[10px]">
                     <span className="text-text-muted font-black tracking-widest uppercase">Protocol Allocation</span>
@@ -138,14 +145,14 @@ const Cart = () => {
                   <div className="pt-6 flex justify-between items-end">
                     <div className="space-y-1">
                       <span className="text-[8px] text-text-muted font-black tracking-[0.5em] uppercase opacity-40">Credits Total</span>
-                      <p className="font-heading text-5xl font-black text-white tracking-tighter">{formatPHP(total)}</p>
+                      <p className="font-heading text-4xl sm:text-5xl font-black text-white tracking-tighter tabular-nums">{formatPHP(total)}</p>
                     </div>
                   </div>
                 </div>
                 
                 <div className="space-y-6">
-                  <Link to="/checkout" className="luxury-btn w-full text-sm tracking-[0.3em] shadow-2xl py-6 text-center">
-                    PROCEED TO ACQUISITION <ArrowRight size={20} />
+                  <Link to="/checkout" className="luxury-btn w-full text-xs sm:text-sm tracking-[0.3em] shadow-2xl py-6 text-center block">
+                    PROCEED TO ACQUISITION <ArrowRight size={20} className="inline ml-2" />
                   </Link>
                   <div className="flex items-center justify-center gap-3 text-[9px] font-black text-text-muted tracking-widest uppercase opacity-40">
                     <ShieldCheck size={14} className="text-luxury-cyan" /> Encrypted Transmission Channel
