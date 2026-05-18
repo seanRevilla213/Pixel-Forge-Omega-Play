@@ -6,8 +6,8 @@ interface CartContextType {
   itemCount: number;
   total: number;
   addItem: (product: Product, variant?: ProductVariant) => void;
-  removeItem: (productId: string, variantId?: string) => void;
-  updateQuantity: (productId: string, quantity: number, variantId?: string) => void;
+  removeItem: (id: string) => void;
+  updateQuantity: (id: string, quantity: number) => void;
   clearCart: () => void;
   formatPHP: (amount: number) => string;
 }
@@ -27,7 +27,15 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   const [items, setItems] = useState<CartItem[]>(() => {
     try {
       const saved = localStorage.getItem(CART_KEY);
-      return saved ? JSON.parse(saved) : [];
+      if (saved) {
+        const parsed: CartItem[] = JSON.parse(saved);
+        // Ensure legacy items have a unique top-level id
+        return parsed.map(item => ({
+          ...item,
+          id: item.id || `${item.product.id}-${item.selectedVariant?.id || 'default'}`
+        }));
+      }
+      return [];
     } catch {
       return [];
     }
@@ -40,48 +48,33 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
 
   const addItem = useCallback((product: Product, selectedVariant?: ProductVariant) => {
     setItems((prev) => {
-      const existing = prev.find((i) => {
-        const matchProduct = String(i.product.id) === String(product.id);
-        const matchVariant = (!i.selectedVariant?.id && !selectedVariant?.id) || (String(i.selectedVariant?.id) === String(selectedVariant?.id));
-        return matchProduct && matchVariant;
-      });
+      const targetId = `${product.id}-${selectedVariant?.id || 'default'}`;
+      const existing = prev.find((i) => i.id === targetId);
       
       if (existing) {
-        return prev.map((i) => {
-          const matchProduct = String(i.product.id) === String(product.id);
-          const matchVariant = (!i.selectedVariant?.id && !selectedVariant?.id) || (String(i.selectedVariant?.id) === String(selectedVariant?.id));
-          if (matchProduct && matchVariant) {
-            return { ...i, quantity: Math.min(i.quantity + 1, 99) };
-          }
-          return i;
-        });
+        return prev.map((i) =>
+          i.id === targetId
+            ? { ...i, quantity: Math.min(i.quantity + 1, 99) }
+            : i
+        );
       }
-      return [...prev, { product, quantity: 1, selectedVariant }];
+      return [...prev, { id: targetId, product, quantity: 1, selectedVariant }];
     });
   }, []);
 
-  const removeItem = useCallback((productId: string, variantId?: string) => {
-    setItems((prev) => prev.filter((i) => {
-      const matchProduct = String(i.product.id) === String(productId);
-      const matchVariant = (!i.selectedVariant?.id && !variantId) || (String(i.selectedVariant?.id) === String(variantId));
-      return !(matchProduct && matchVariant);
-    }));
+  const removeItem = useCallback((id: string) => {
+    setItems((prev) => prev.filter((item) => item.id !== id));
   }, []);
 
-  const updateQuantity = useCallback((productId: string, quantity: number, variantId?: string) => {
+  const updateQuantity = useCallback((id: string, quantity: number) => {
     if (quantity <= 0) {
-      removeItem(productId, variantId);
+      removeItem(id);
       return;
     }
     setItems((prev) =>
-      prev.map((i) => {
-        const matchProduct = String(i.product.id) === String(productId);
-        const matchVariant = (!i.selectedVariant?.id && !variantId) || (String(i.selectedVariant?.id) === String(variantId));
-        if (matchProduct && matchVariant) {
-          return { ...i, quantity: Math.min(quantity, 99) };
-        }
-        return i;
-      }).filter(i => i.quantity > 0)
+      prev
+        .map((item) => (item.id === id ? { ...item, quantity: Math.min(quantity, 99) } : item))
+        .filter((item) => item.quantity > 0)
     );
   }, [removeItem]);
 

@@ -69,7 +69,7 @@ const Cart = () => {
               <AnimatePresence mode="popLayout">
                 {items.map((item) => (
                   <motion.div
-                    key={`${item.product.id}-${item.selectedVariant?.id || 'none'}`}
+                    key={item.id}
                     layout
                     initial={{ opacity: 0, scale: 0.95, y: 20 }}
                     animate={{ opacity: 1, scale: 1, y: 0 }}
@@ -89,7 +89,7 @@ const Cart = () => {
                           
                           {/* Premium Glassmorphism Remove Button */}
                           <button 
-                            onClick={() => removeItem(item.product.id, item.selectedVariant?.id)} 
+                            onClick={() => removeItem(item.id)} 
                             aria-label="Remove item"
                             className="w-12 h-12 rounded-2xl glasswave border border-white/10 flex items-center justify-center text-text-muted hover:text-red-500 hover:border-red-500/50 hover:bg-red-500/10 transition-all duration-300 hover:scale-110 hover:shadow-[0_0_20px_rgba(239,68,68,0.3)] group/btn active:scale-95 shrink-0 shadow-md"
                           >
@@ -113,9 +113,9 @@ const Cart = () => {
                       
                       <div className="flex flex-wrap items-center justify-between mt-8 gap-4">
                         <div className="flex items-center glasswave rounded-2xl h-12 border-white/5 shadow-inner">
-                          <button onClick={() => updateQuantity(item.product.id, item.quantity - 1, item.selectedVariant?.id)} className="w-12 h-full flex items-center justify-center text-text-muted hover:text-white transition-colors hover:bg-white/5 rounded-l-2xl"><Minus size={16} /></button>
+                          <button onClick={() => updateQuantity(item.id, item.quantity - 1)} className="w-12 h-full flex items-center justify-center text-text-muted hover:text-white transition-colors hover:bg-white/5 rounded-l-2xl"><Minus size={16} /></button>
                           <span className="px-6 font-black text-lg text-white min-w-[50px] text-center tabular-nums">{item.quantity}</span>
-                          <button onClick={() => updateQuantity(item.product.id, item.quantity + 1, item.selectedVariant?.id)} className="w-12 h-full flex items-center justify-center text-text-muted hover:text-white transition-colors hover:bg-white/5 rounded-r-2xl"><Plus size={16} /></button>
+                          <button onClick={() => updateQuantity(item.id, item.quantity + 1)} className="w-12 h-full flex items-center justify-center text-text-muted hover:text-white transition-colors hover:bg-white/5 rounded-r-2xl"><Plus size={16} /></button>
                         </div>
                         <span className="font-heading text-2xl sm:text-3xl font-black text-white tracking-tighter opacity-80 tabular-nums">{formatPHP(item.product.price * item.quantity)}</span>
                       </div>
