@@ -159,7 +159,7 @@ const Navbar = () => {
                 </div>
               ) : (
                 <Link to="/login" className="px-8 py-2.5 bg-white text-matte-black hover:bg-opacity-90 rounded-2xl text-[10px] font-black tracking-widest transition-all uppercase text-center">
-                  ENTER
+                  LOGIN
                 </Link>
               )}
             </ResponsiveShow>
@@ -218,7 +218,7 @@ const Navbar = () => {
                 {isAuthenticated ? (
                   <button onClick={() => { logout(); setIsMobileOpen(false); }} className="text-xl text-red-400 font-bold tracking-widest uppercase">TERMINATE SESSION</button>
                 ) : (
-                  <Link to="/login" className="text-xl text-luxury-cyan font-bold tracking-[0.2em] uppercase">SYSTEM AUTH</Link>
+                  <Link to="/login" className="text-xl text-luxury-cyan font-bold tracking-[0.2em] uppercase">LOGIN</Link>
                 )}
               </div>
             </div>
