@@ -7,8 +7,8 @@ export const AuthGuard = ({ children }: { children: React.ReactNode }) => {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-dark-900">
-        <div className="w-12 h-12 border-2 border-neon-cyan border-t-transparent rounded-full animate-spin" />
+      <div className="min-h-screen flex items-center justify-center bg-matte-black">
+        <div className="w-12 h-12 border-2 border-luxury-cyan border-t-transparent rounded-full animate-spin" />
       </div>
     );
   }
@@ -26,8 +26,8 @@ export const AdminGuard = ({ children }: { children: React.ReactNode }) => {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-dark-900">
-        <div className="w-12 h-12 border-2 border-neon-magenta border-t-transparent rounded-full animate-spin" />
+      <div className="min-h-screen flex items-center justify-center bg-matte-black">
+        <div className="w-12 h-12 border-2 border-luxury-violet border-t-transparent rounded-full animate-spin" />
       </div>
     );
   }
@@ -44,8 +44,8 @@ export const GuestGuard = ({ children }: { children: React.ReactNode }) => {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-dark-900">
-        <div className="w-12 h-12 border-2 border-neon-cyan border-t-transparent rounded-full animate-spin" />
+      <div className="min-h-screen flex items-center justify-center bg-matte-black">
+        <div className="w-12 h-12 border-2 border-luxury-cyan border-t-transparent rounded-full animate-spin" />
       </div>
     );
   }

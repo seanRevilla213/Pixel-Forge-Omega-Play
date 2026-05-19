@@ -33,55 +33,87 @@ const Login = () => {
 
   return (
     <PageTransition>
-      <div className="min-h-screen pt-20 pb-16 flex items-center justify-center relative">
-        <div className="absolute inset-0">
-          <div className="absolute top-1/3 left-1/3 w-96 h-96 bg-neon-cyan/5 rounded-full blur-[120px]" />
-          <div className="absolute bottom-1/3 right-1/3 w-96 h-96 bg-neon-magenta/5 rounded-full blur-[120px]" />
+      <div className="min-h-screen pt-20 pb-16 flex items-center justify-center relative bg-matte-black">
+        {/* Ambient glows */}
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute top-1/3 left-1/3 w-96 h-96 bg-luxury-cyan/5 rounded-full blur-[120px]" />
+          <div className="absolute bottom-1/3 right-1/3 w-96 h-96 bg-luxury-violet/5 rounded-full blur-[120px]" />
         </div>
 
-        <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} className="w-full max-w-md mx-4 relative z-10">
-          <div className="glass-strong rounded-3xl p-8 md:p-10">
-            <div className="text-center mb-8">
-              <div className="w-14 h-14 mx-auto mb-4 rounded-xl bg-gradient-to-br from-neon-cyan to-neon-magenta flex items-center justify-center">
-                <span className="font-heading font-bold text-dark-900 text-xl">P</span>
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+          className="w-full max-w-md mx-4 relative z-10"
+        >
+          <div className="glasswave-strong rounded-[3rem] p-8 md:p-10 border border-white/8 shadow-2xl">
+            {/* Header */}
+            <div className="text-center mb-10">
+              <div className="w-16 h-16 mx-auto mb-5 rounded-3xl bg-gradient-to-br from-luxury-violet to-luxury-cyan flex items-center justify-center shadow-[0_0_30px_rgba(124,58,237,0.3)]">
+                <span className="font-heading font-black text-white text-2xl">P</span>
               </div>
-              <h1 className="font-heading text-2xl font-bold text-text-primary mb-1">Welcome Back</h1>
-              <p className="text-text-secondary text-sm">Sign in to your account</p>
+              <h1 className="font-heading text-3xl font-black text-white tracking-tighter uppercase mb-1">Welcome Back</h1>
+              <p className="text-text-secondary text-sm font-medium opacity-60">Sign in to your account</p>
             </div>
 
-            <form onSubmit={handleSubmit} className="space-y-5">
-              <div>
-                <label className="block text-xs text-text-secondary mb-2 uppercase tracking-wider">Email</label>
+            <form onSubmit={handleSubmit} className="space-y-6">
+              {/* Email */}
+              <div className="space-y-2">
+                <label className="block text-[10px] text-text-muted font-black uppercase tracking-[0.3em]">Email</label>
                 <div className="relative">
                   <FiMail className="absolute left-4 top-1/2 -translate-y-1/2 text-text-muted" size={16} />
-                  <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required maxLength={255}
-                    className="w-full pl-11 pr-4 py-3.5 bg-dark-700/50 border border-glass-border rounded-xl text-text-primary text-sm focus:outline-none focus:border-neon-cyan/50 transition-colors"
-                    placeholder="your@email.com" autoComplete="email" />
+                  <input
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    required
+                    maxLength={255}
+                    className="luxury-input pl-11"
+                    placeholder="your@email.com"
+                    autoComplete="email"
+                  />
                 </div>
               </div>
 
-              <div>
-                <label className="block text-xs text-text-secondary mb-2 uppercase tracking-wider">Password</label>
+              {/* Password */}
+              <div className="space-y-2">
+                <label className="block text-[10px] text-text-muted font-black uppercase tracking-[0.3em]">Password</label>
                 <div className="relative">
                   <FiLock className="absolute left-4 top-1/2 -translate-y-1/2 text-text-muted" size={16} />
-                  <input type={showPw ? 'text' : 'password'} value={password} onChange={(e) => setPassword(e.target.value)} required maxLength={128}
-                    className="w-full pl-11 pr-11 py-3.5 bg-dark-700/50 border border-glass-border rounded-xl text-text-primary text-sm focus:outline-none focus:border-neon-cyan/50 transition-colors"
-                    placeholder="••••••••" autoComplete="current-password" />
-                  <button type="button" onClick={() => setShowPw(!showPw)} className="absolute right-4 top-1/2 -translate-y-1/2 text-text-muted hover:text-text-primary transition-colors">
+                  <input
+                    type={showPw ? 'text' : 'password'}
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    required
+                    maxLength={128}
+                    className="luxury-input pl-11 pr-12"
+                    placeholder="••••••••"
+                    autoComplete="current-password"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPw(!showPw)}
+                    className="absolute right-4 top-1/2 -translate-y-1/2 text-text-muted hover:text-white transition-colors"
+                  >
                     {showPw ? <FiEyeOff size={16} /> : <FiEye size={16} />}
                   </button>
                 </div>
               </div>
 
-              <button type="submit" disabled={loading}
-                className="w-full py-4 bg-gradient-to-r from-neon-cyan to-neon-magenta rounded-xl text-dark-900 font-bold text-sm btn-hover-lift disabled:opacity-50">
+              <button
+                type="submit"
+                disabled={loading}
+                className="luxury-btn w-full py-5 text-xs tracking-[0.3em] bg-gradient-to-r from-luxury-violet to-luxury-cyan border-transparent disabled:opacity-40 disabled:cursor-not-allowed"
+              >
                 {loading ? 'Signing in...' : 'Sign In'}
               </button>
             </form>
 
-            <p className="text-center text-sm text-text-secondary mt-6">
+            <p className="text-center text-sm text-text-secondary mt-8 opacity-60">
               Don't have an account?{' '}
-              <Link to="/register" className="text-neon-cyan hover:text-neon-magenta transition-colors font-medium">Sign Up</Link>
+              <Link to="/register" className="text-luxury-cyan hover:text-luxury-violet transition-colors font-bold">
+                Sign Up
+              </Link>
             </p>
           </div>
         </motion.div>
@@ -118,72 +150,125 @@ const Register = () => {
 
   return (
     <PageTransition>
-      <div className="min-h-screen pt-20 pb-16 flex items-center justify-center relative">
-        <div className="absolute inset-0">
-          <div className="absolute top-1/3 right-1/3 w-96 h-96 bg-neon-magenta/5 rounded-full blur-[120px]" />
-          <div className="absolute bottom-1/3 left-1/3 w-96 h-96 bg-neon-purple/5 rounded-full blur-[120px]" />
+      <div className="min-h-screen pt-20 pb-16 flex items-center justify-center relative bg-matte-black">
+        {/* Ambient glows */}
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute top-1/3 right-1/3 w-96 h-96 bg-luxury-violet/5 rounded-full blur-[120px]" />
+          <div className="absolute bottom-1/3 left-1/3 w-96 h-96 bg-luxury-cyan/5 rounded-full blur-[120px]" />
         </div>
 
-        <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} className="w-full max-w-md mx-4 relative z-10">
-          <div className="glass-strong rounded-3xl p-8 md:p-10">
-            <div className="text-center mb-8">
-              <div className="w-14 h-14 mx-auto mb-4 rounded-xl bg-gradient-to-br from-neon-magenta to-neon-purple flex items-center justify-center">
-                <FiUser className="text-white" size={24} />
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+          className="w-full max-w-md mx-4 relative z-10"
+        >
+          <div className="glasswave-strong rounded-[3rem] p-8 md:p-10 border border-white/8 shadow-2xl">
+            {/* Header */}
+            <div className="text-center mb-10">
+              <div className="w-16 h-16 mx-auto mb-5 rounded-3xl bg-gradient-to-br from-luxury-cyan to-luxury-violet flex items-center justify-center shadow-[0_0_30px_rgba(6,182,212,0.3)]">
+                <FiUser className="text-white" size={26} />
               </div>
-              <h1 className="font-heading text-2xl font-bold text-text-primary mb-1">Create Account</h1>
-              <p className="text-text-secondary text-sm">Join the Pixel Forge community</p>
+              <h1 className="font-heading text-3xl font-black text-white tracking-tighter uppercase mb-1">Create Account</h1>
+              <p className="text-text-secondary text-sm font-medium opacity-60">Join the Pixel Forge community</p>
             </div>
 
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div>
-                <label className="block text-xs text-text-secondary mb-2 uppercase tracking-wider">Username</label>
+            <form onSubmit={handleSubmit} className="space-y-5">
+              {/* Username */}
+              <div className="space-y-2">
+                <label className="block text-[10px] text-text-muted font-black uppercase tracking-[0.3em]">Username</label>
                 <div className="relative">
                   <FiUser className="absolute left-4 top-1/2 -translate-y-1/2 text-text-muted" size={16} />
-                  <input type="text" value={form.username} onChange={(e) => setForm(f => ({ ...f, username: e.target.value }))} required minLength={3} maxLength={30} pattern="^[a-zA-Z0-9_]+$"
-                    className="w-full pl-11 pr-4 py-3.5 bg-dark-700/50 border border-glass-border rounded-xl text-text-primary text-sm focus:outline-none focus:border-neon-cyan/50 transition-colors"
-                    placeholder="username" autoComplete="username" />
+                  <input
+                    type="text"
+                    value={form.username}
+                    onChange={(e) => setForm(f => ({ ...f, username: e.target.value }))}
+                    required
+                    minLength={3}
+                    maxLength={30}
+                    pattern="^[a-zA-Z0-9_]+$"
+                    className="luxury-input pl-11"
+                    placeholder="username"
+                    autoComplete="username"
+                  />
                 </div>
               </div>
-              <div>
-                <label className="block text-xs text-text-secondary mb-2 uppercase tracking-wider">Email</label>
+
+              {/* Email */}
+              <div className="space-y-2">
+                <label className="block text-[10px] text-text-muted font-black uppercase tracking-[0.3em]">Email</label>
                 <div className="relative">
                   <FiMail className="absolute left-4 top-1/2 -translate-y-1/2 text-text-muted" size={16} />
-                  <input type="email" value={form.email} onChange={(e) => setForm(f => ({ ...f, email: e.target.value }))} required maxLength={255}
-                    className="w-full pl-11 pr-4 py-3.5 bg-dark-700/50 border border-glass-border rounded-xl text-text-primary text-sm focus:outline-none focus:border-neon-cyan/50 transition-colors"
-                    placeholder="your@email.com" autoComplete="email" />
+                  <input
+                    type="email"
+                    value={form.email}
+                    onChange={(e) => setForm(f => ({ ...f, email: e.target.value }))}
+                    required
+                    maxLength={255}
+                    className="luxury-input pl-11"
+                    placeholder="your@email.com"
+                    autoComplete="email"
+                  />
                 </div>
               </div>
-              <div>
-                <label className="block text-xs text-text-secondary mb-2 uppercase tracking-wider">Password</label>
+
+              {/* Password */}
+              <div className="space-y-2">
+                <label className="block text-[10px] text-text-muted font-black uppercase tracking-[0.3em]">Password</label>
                 <div className="relative">
                   <FiLock className="absolute left-4 top-1/2 -translate-y-1/2 text-text-muted" size={16} />
-                  <input type={showPw ? 'text' : 'password'} value={form.password} onChange={(e) => setForm(f => ({ ...f, password: e.target.value }))} required minLength={8} maxLength={128}
-                    className="w-full pl-11 pr-11 py-3.5 bg-dark-700/50 border border-glass-border rounded-xl text-text-primary text-sm focus:outline-none focus:border-neon-cyan/50 transition-colors"
-                    placeholder="Min. 8 chars, upper, special" autoComplete="new-password" />
-                  <button type="button" onClick={() => setShowPw(!showPw)} className="absolute right-4 top-1/2 -translate-y-1/2 text-text-muted hover:text-text-primary transition-colors">
+                  <input
+                    type={showPw ? 'text' : 'password'}
+                    value={form.password}
+                    onChange={(e) => setForm(f => ({ ...f, password: e.target.value }))}
+                    required
+                    minLength={8}
+                    maxLength={128}
+                    className="luxury-input pl-11 pr-12"
+                    placeholder="Min. 8 chars, upper, special"
+                    autoComplete="new-password"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPw(!showPw)}
+                    className="absolute right-4 top-1/2 -translate-y-1/2 text-text-muted hover:text-white transition-colors"
+                  >
                     {showPw ? <FiEyeOff size={16} /> : <FiEye size={16} />}
                   </button>
                 </div>
               </div>
-              <div>
-                <label className="block text-xs text-text-secondary mb-2 uppercase tracking-wider">Confirm Password</label>
+
+              {/* Confirm Password */}
+              <div className="space-y-2">
+                <label className="block text-[10px] text-text-muted font-black uppercase tracking-[0.3em]">Confirm Password</label>
                 <div className="relative">
                   <FiLock className="absolute left-4 top-1/2 -translate-y-1/2 text-text-muted" size={16} />
-                  <input type="password" value={form.confirmPassword} onChange={(e) => setForm(f => ({ ...f, confirmPassword: e.target.value }))} required
-                    className="w-full pl-11 pr-4 py-3.5 bg-dark-700/50 border border-glass-border rounded-xl text-text-primary text-sm focus:outline-none focus:border-neon-cyan/50 transition-colors"
-                    placeholder="••••••••" autoComplete="new-password" />
+                  <input
+                    type="password"
+                    value={form.confirmPassword}
+                    onChange={(e) => setForm(f => ({ ...f, confirmPassword: e.target.value }))}
+                    required
+                    className="luxury-input pl-11"
+                    placeholder="••••••••"
+                    autoComplete="new-password"
+                  />
                 </div>
               </div>
 
-              <button type="submit" disabled={loading}
-                className="w-full py-4 bg-gradient-to-r from-neon-magenta to-neon-purple rounded-xl text-white font-bold text-sm btn-hover-lift disabled:opacity-50 mt-2">
+              <button
+                type="submit"
+                disabled={loading}
+                className="luxury-btn w-full py-5 text-xs tracking-[0.3em] bg-gradient-to-r from-luxury-cyan to-luxury-violet border-transparent disabled:opacity-40 disabled:cursor-not-allowed mt-2"
+              >
                 {loading ? 'Creating account...' : 'Create Account'}
               </button>
             </form>
 
-            <p className="text-center text-sm text-text-secondary mt-6">
+            <p className="text-center text-sm text-text-secondary mt-8 opacity-60">
               Already have an account?{' '}
-              <Link to="/login" className="text-neon-cyan hover:text-neon-magenta transition-colors font-medium">Sign In</Link>
+              <Link to="/login" className="text-luxury-cyan hover:text-luxury-violet transition-colors font-bold">
+                Sign In
+              </Link>
             </p>
           </div>
         </motion.div>

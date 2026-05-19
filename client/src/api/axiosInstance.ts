@@ -99,7 +99,11 @@ function handleMockFallback(config: any): any {
   }
 
   if (cleanUrl.startsWith('/products/')) {
-    const slug = cleanUrl.replace('/products/', '');
+    // Support both /products/:slug and /products/slug/:slug (legacy)
+    let slug = cleanUrl.replace('/products/', '');
+    if (slug.startsWith('slug/')) {
+      slug = slug.replace('slug/', '');
+    }
     const product = mockProducts.find(p => p.slug === slug);
     if (product) {
       return {

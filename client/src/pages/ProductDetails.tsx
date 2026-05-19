@@ -28,7 +28,7 @@ const ProductDetails = () => {
   const contentRef = useRef(null);
 
   useEffect(() => {
-    api.get(`/products/slug/${slug}`).then(({ data }) => {
+    api.get(`/products/${slug}`).then(({ data }) => {
       setProduct(data.product);
       setLoading(false);
     }).catch(() => {

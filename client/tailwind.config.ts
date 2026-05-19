@@ -35,7 +35,10 @@ export default {
         'fluid-h1': 'clamp(3.5rem, 10vw, 8.5rem)',
         'fluid-h2': 'clamp(2.5rem, 7vw, 4rem)',
         'fluid-body': 'clamp(0.9rem, 2vw, 1.15rem)',
-      }
+      },
+      scale: {
+        '115': '1.15',
+      },
     },
   },
   plugins: [],

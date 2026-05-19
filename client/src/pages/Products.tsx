@@ -372,7 +372,7 @@ const Products = () => {
                   <motion.div
                     key={products[0]?.id || 'unknown'}
                     initial={isLowEnd ? { opacity: 0 } : { opacity: 0, scale: 0.8, rotateY: -20 }}
-                    animate={{ opacity: 1, scale: 1.1, rotateY: 0 }}
+                    animate={{ opacity: 1, scale: 1, rotateY: 0 }}
                     exit={isLowEnd ? { opacity: 0 } : { opacity: 0, scale: 1.2, rotateY: 20 }}
                     transition={{ duration: isLowEnd ? 0.35 : 1, ease: [0.16, 1, 0.3, 1] }}
                     className="w-full"

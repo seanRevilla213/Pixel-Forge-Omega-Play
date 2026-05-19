@@ -33,11 +33,11 @@ const Checkout = () => {
 
   const [emailStatus, setEmailStatus] = useState<'idle' | 'valid' | 'invalid'>('idle');
 
-  // Real-time Gmail Detection
+  // Real-time Email Validation (accepts any valid email, not Gmail-only)
   useEffect(() => {
-    const gmailRegex = /^[a-z0-9](\.?[a-z0-9]){5,}@gmail\.com$/;
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!form.email) setEmailStatus('idle');
-    else if (gmailRegex.test(form.email.toLowerCase())) setEmailStatus('valid');
+    else if (emailRegex.test(form.email.toLowerCase())) setEmailStatus('valid');
     else setEmailStatus('invalid');
   }, [form.email]);
 
@@ -177,33 +177,33 @@ const Checkout = () => {
                 {currentStep === 0 && (
                   <div className="space-y-8 animate-in fade-in slide-in-from-right-4 duration-500">
                     <div className="relative group">
-                      <label className="absolute left-6 top-4 text-[10px] font-black uppercase tracking-widest text-text-muted transition-all group-focus-within:text-luxury-cyan">Gmail Authorization</label>
-                      <input 
-                        type="email" 
-                        value={form.email} 
-                        onChange={(e) => setForm(f => ({ ...f, email: e.target.value }))} 
+                      <label className="absolute left-6 top-4 text-[10px] font-black uppercase tracking-widest text-text-muted transition-all group-focus-within:text-luxury-cyan">Contact Email</label>
+                      <input
+                        type="email"
+                        value={form.email}
+                        onChange={(e) => setForm(f => ({ ...f, email: e.target.value }))}
                         className={`luxury-input pt-10 ${emailStatus === 'valid' ? 'border-green-500/30' : emailStatus === 'invalid' ? 'border-red-500/30' : ''}`}
-                        placeholder="ENTER GMAIL ACCOUNT"
+                        placeholder="ENTER YOUR EMAIL ADDRESS"
                       />
                       <div className="liquid-focus" />
                       <div className="absolute right-6 top-1/2 -translate-y-1/2 flex items-center gap-3">
                         <AnimatePresence>
                           {emailStatus === 'valid' && (
                             <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} className="flex items-center gap-2">
-                              <span className="text-[9px] font-black text-green-500 uppercase tracking-widest hidden sm:block">Verified Account</span>
+                              <span className="text-[9px] font-black text-green-500 uppercase tracking-widest hidden sm:block">Valid Email</span>
                               <CheckCircle2 className="text-green-500" size={18} />
                             </motion.div>
                           )}
                           {emailStatus === 'invalid' && form.email && (
                             <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} className="flex items-center gap-2">
-                              <span className="text-[9px] font-black text-red-500 uppercase tracking-widest hidden sm:block">Invalid Gmail</span>
+                              <span className="text-[9px] font-black text-red-500 uppercase tracking-widest hidden sm:block">Invalid Email</span>
                               <AlertCircle className="text-red-500" size={18} />
                             </motion.div>
                           )}
                         </AnimatePresence>
                       </div>
                     </div>
-                    <p className="text-[10px] text-text-muted font-medium italic opacity-60">* Confirmation manifest and digital keys will be transmitted to this address.</p>
+                    <p className="text-[10px] text-text-muted font-medium italic opacity-60">* Order confirmation will be sent to this address.</p>
                   </div>
                 )}
 
