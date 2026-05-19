@@ -25,6 +25,12 @@ import { usePerformance } from '../../context/PerformanceContext';
 import { AuroraBackground } from '../ui/ImmersiveEffects';
 import gsap from 'gsap';
 
+// Import local Redragon K670 Argo specific gallery assets
+import keyboardFront from '../../assets/redragon-k670-argo-1.jpg';
+import keyboardTop from '../../assets/redragon-k670-argo-2.jpg';
+import keyboardSide from '../../assets/redragon-k670-argo-3.jpg';
+import keyboardProfile from '../../assets/redragon-k670-argo-4.jpg';
+
 interface PremiumKeyboardShowcaseProps {
   product: Product;
   hideSidebar?: boolean;
@@ -83,10 +89,14 @@ export const PremiumKeyboardShowcase: React.FC<PremiumKeyboardShowcaseProps> = (
     setVariantIndex(0);
   }, [product.id]);
 
+  // Use specific gallery images if the product is the Redragon K670 Argo, otherwise fallback to the main product image
+  const redragonImages = [keyboardFront, keyboardTop, keyboardSide, keyboardProfile];
+  const isArgo = product.name.toLowerCase().includes('k670');
+
   // Build angle array from the real product images (fallback to product image if no specific URL defined)
-  const keyboardAngles = KEYBOARD_ANGLE_DEFS.map(def => ({
+  const keyboardAngles = KEYBOARD_ANGLE_DEFS.map((def, idx) => ({
     ...def,
-    image_url: def.image_url || product.image_url,
+    image_url: isArgo ? redragonImages[idx] : product.image_url,
   }));
 
   const activeAngle = keyboardAngles[activeAngleIndex];
