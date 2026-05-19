@@ -20,7 +20,6 @@ const CART_KEY = 'pixel_forge_luxury_cart';
 const phpFormatter = new Intl.NumberFormat('en-PH', {
   style: 'currency',
   currency: 'PHP',
-  minimumFractionDigits: 0,
 });
 
 export const CartProvider = ({ children }: { children: ReactNode }) => {

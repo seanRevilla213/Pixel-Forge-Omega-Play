@@ -172,7 +172,7 @@ const seedData = async () => {
       {
         id: uuidv4(), name: 'Xbox 360 Wireless Controller', slug: 'xbox-360-wireless-controller',
         description: 'The iconic Xbox 360 Wireless Controller offers precision, comfort, and control. Featuring integrated 2.4 GHz high-performance wireless technology and a sleek ergonomic design.',
-        price: 29.99, original_price: 39.99, category: 'Controllers',
+        price: 2000, original_price: null, category: 'Controllers',
         image_url: '/products/xbox-360-controller.jpg',
         variants: JSON.stringify([
           { id: 'v1', name: 'Carbon Black', image_url: '/products/xbox-360-controller.jpg', color: '#080808', glow: 'rgba(255, 255, 255, 0.15)' },
@@ -187,7 +187,7 @@ const seedData = async () => {
       {
         id: uuidv4(), name: 'Redragon K670 Argo', slug: 'redragon-k670-argo',
         description: '75% Wireless Mechanical Keyboard with Gasket Mount and RGB lighting. Designed for the ultimate typing and gaming experience.',
-        price: 89.99, original_price: 119.99, category: 'Mechanical Keyboards',
+        price: 1695, original_price: null, category: 'Mechanical Keyboards',
         image_url: 'https://redragonshop.com/cdn/shop/products/ArgoK670_1_800x.png',
         variants: JSON.stringify([
           { id: 'v1', name: 'Argo Edition', image_url: 'https://redragonshop.com/cdn/shop/products/ArgoK670_1_800x.png', color: '#ff8c00', glow: 'rgba(255, 140, 0, 0.4)' }
@@ -198,7 +198,7 @@ const seedData = async () => {
       {
         id: uuidv4(), name: 'Logitech G Pro X Superlight', slug: 'logitech-g-pro-x-superlight',
         description: 'Ultra-lightweight wireless gaming mouse with HERO 25K sensor. Designed with top esports pros for maximum performance.',
-        price: 149.99, original_price: null, category: 'Gaming Mouse',
+        price: 6895, original_price: null, category: 'Gaming Mouse',
         image_url: 'https://resource.logitechg.com/w_692,c_limit,q_auto,f_auto,dpr_1.0/d_transparent.gif/content/dam/gaming/en/products/pro-x-superlight/pro-x-superlight-black-gallery-1.png?v=1',
         badge: 'ELITE', rating: 4.9, review_count: 12400,
         in_stock: 1, featured: 1, platform: 'PC', genre: 'Mouse', brand: 'Logitech'
@@ -206,7 +206,7 @@ const seedData = async () => {
       {
         id: uuidv4(), name: 'CS2 Dragon Lore Wireless Mouse', slug: 'cs2-dragon-lore-wireless-mouse',
         description: 'Premium wireless gaming mouse featuring the legendary CS2 Dragon Lore skin design. Equipped with an ultra-low latency wireless connection and precision gaming sensor.',
-        price: 189.99, original_price: null, category: 'Gaming Mouse',
+        price: 5123.11, original_price: null, category: 'Gaming Mouse',
         image_url: 'https://media.steelseriescdn.com/thumbs/catalog/items/63391/798402f12255476a80436d4df6c5478d.png.350x280_q100_crop-fit_optimize.png',
         badge: 'DRAGON LORE', rating: 4.9, review_count: 8900,
         in_stock: 1, featured: 1, platform: 'PC, Mac, Linux', genre: 'Mouse', brand: 'SteelSeries'
@@ -214,7 +214,7 @@ const seedData = async () => {
       {
         id: uuidv4(), name: 'HyperX Cloud Alpha', slug: 'hyperx-cloud-alpha',
         description: 'Durable aluminum frame, detachable cable, and dual chamber drivers for more distinction and less distortion. Designed for pro-level gaming comfort.',
-        price: 99.99, original_price: null, category: 'Headsets',
+        price: 4395, original_price: null, category: 'Headsets',
         image_url: 'https://hyperx.com/cdn/shop/products/hyperx_cloud_alpha_1_800x.png',
         badge: 'PRO CHOICE', rating: 4.8, review_count: 8500,
         in_stock: 1, featured: 1, platform: 'PC, PS5, Xbox, Switch', genre: 'Audio', brand: 'HyperX'
@@ -222,7 +222,7 @@ const seedData = async () => {
       {
         id: uuidv4(), name: 'PlayStation 5 Console', slug: 'playstation-5',
         description: 'Experience lightning-fast loading with an ultra-high speed SSD, deeper immersion with support for haptic feedback, adaptive triggers, and 3D Audio.',
-        price: 499.99, original_price: null, category: 'Consoles',
+        price: 40032, original_price: null, category: 'Consoles',
         image_url: 'https://gmedia.playstation.com/is/image/SIEPDC/ps5-product-thumbnail-01-en-14sep21?$facebook$',
         badge: 'NEXT GEN', rating: 4.9, review_count: 45000,
         in_stock: 1, featured: 0, platform: 'PS5', genre: 'Console', brand: 'Sony'
@@ -230,7 +230,7 @@ const seedData = async () => {
       {
         id: uuidv4(), name: 'SteelSeries Gaming Mouse Pad', slug: 'steelseries-gaming-mouse-pad',
         description: 'Elite cloth gaming mousepad with dynamic 2-zone RGB backlighting. The choice of esports pros for precision and control.',
-        price: 59.99, original_price: null, category: 'Accessories',
+        price: 3085.96, original_price: null, category: 'Accessories',
         image_url: 'https://media.steelseriescdn.com/thumbs/catalog/items/63391/798402f12255476a80436d4df6c5478d.png.350x280_q100_crop-fit_optimize.png',
         badge: 'RGB ELITE', rating: 4.9, review_count: 12000,
         in_stock: 1, featured: 1, platform: 'Desktop', genre: 'Surface', brand: 'SteelSeries'
