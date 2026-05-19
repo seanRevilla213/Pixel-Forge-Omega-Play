@@ -28,7 +28,6 @@ const Products = () => {
     { id: 'consoles', name: 'Consoles', glow: 'rgba(239, 68, 68, 0.3)', color: '#ef4444' },
     { id: 'accessories', name: 'Accessories', glow: 'rgba(255, 255, 255, 0.2)', color: '#ffffff' }
   ];
-  const [brands, setBrands] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
 
   const [searchParams, setSearchParams] = useSearchParams();
@@ -87,7 +86,6 @@ const Products = () => {
 
     api.get(`/products?${params}`).then(({ data }) => {
       setProducts(data.products || []);
-      setBrands(data.brands || []);
       setLoading(false);
     }).catch(() => {
       // API failed, fallback to local static data
@@ -106,7 +104,6 @@ const Products = () => {
         filtered = filtered.filter(p => p.brand?.toLowerCase() === brand.toLowerCase());
       }
       setProducts(filtered);
-      setBrands(Array.from(new Set(productsData.map(p => p.brand).filter(Boolean))) as string[]);
       setLoading(false);
     });
   }, [search, category, brand, page, device]);
@@ -235,35 +232,7 @@ const Products = () => {
                 </div>
               </div>
 
-              {/* Dynamic Brand Filters */}
-              {brands.length > 0 && (
-                <motion.div 
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  className="space-y-6"
-                >
-                  <h3 className="text-[10px] font-black tracking-[0.3em] text-white opacity-40 uppercase flex items-center gap-3">
-                    <Sparkles size={14} /> Brands
-                  </h3>
-                  <div className="flex flex-wrap lg:flex-col gap-3">
-                    <button 
-                      onClick={() => { setBrand(''); setPage(1); }}
-                      className={`px-6 py-3 rounded-2xl text-[10px] font-black tracking-widest uppercase transition-all ${brand === '' ? 'bg-white/20 text-white shadow-xl' : 'glasswave text-text-secondary hover:text-white'}`}
-                    >
-                      All Brands
-                    </button>
-                    {brands.map((b) => (
-                      <button 
-                        key={b}
-                        onClick={() => { setBrand(b); setPage(1); }}
-                        className={`px-6 py-3 rounded-2xl text-[10px] font-black tracking-widest uppercase transition-all ${brand === b ? 'bg-white text-matte-black shadow-xl' : 'glasswave text-text-secondary hover:text-white'}`}
-                      >
-                        {b.toUpperCase()}
-                      </button>
-                    ))}
-                  </div>
-                </motion.div>
-              )}
+              {/* Brands section removed per user request */}
             </motion.div>
 
             {/* Mobile Filter Button */}

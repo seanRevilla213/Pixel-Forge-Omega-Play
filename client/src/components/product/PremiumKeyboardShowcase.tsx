@@ -25,22 +25,18 @@ import { usePerformance } from '../../context/PerformanceContext';
 import { AuroraBackground } from '../ui/ImmersiveEffects';
 import gsap from 'gsap';
 
-// Import local assets for correct Vite bundling
-import keyboardFront from '../../assets/keyboard-front.jpg';
-import keyboardTop from '../../assets/keyboard-top.jpg';
-import keyboardSide from '../../assets/keyboard-side.jpg';
-import keyboardProfile from '../../assets/keyboard-profile.jpg';
-
 interface PremiumKeyboardShowcaseProps {
   product: Product;
   hideSidebar?: boolean;
 }
 
-const KEYBOARD_ANGLES = [
-  { id: 'front', name: 'Front RGB View', rotateX: 2, rotateY: -2, scale: 1.05, image_url: keyboardFront },
-  { id: 'top', name: 'Top Angle View', rotateX: 8, rotateY: 0, scale: 1.0, image_url: keyboardTop },
-  { id: 'perspective', name: 'Perspective Side View', rotateX: 5, rotateY: -5, scale: 1.15, image_url: keyboardSide },
-  { id: 'profile', name: 'Side Profile View', rotateX: 0, rotateY: -8, scale: 1.2, image_url: keyboardProfile }
+// Gallery angle definitions — image_url is injected at runtime from product.image_url
+// so the correct Redragon K670 (or any future keyboard) CDN image is always used.
+const KEYBOARD_ANGLE_DEFS = [
+  { id: 'front',       name: 'Front RGB View',        rotateX: 2,  rotateY: -2, scale: 1.05 },
+  { id: 'top',         name: 'Top Angle View',         rotateX: 8,  rotateY:  0, scale: 1.00 },
+  { id: 'perspective', name: 'Perspective Side View',  rotateX: 5,  rotateY: -5, scale: 1.15 },
+  { id: 'profile',     name: 'Side Profile View',      rotateX: 0,  rotateY: -8, scale: 1.20 },
 ];
 
 export const PremiumKeyboardShowcase: React.FC<PremiumKeyboardShowcaseProps> = ({ product, hideSidebar = false }) => {
@@ -88,7 +84,13 @@ export const PremiumKeyboardShowcase: React.FC<PremiumKeyboardShowcaseProps> = (
     setVariantIndex(0);
   }, [product.id]);
 
-  const activeAngle = KEYBOARD_ANGLES[activeAngleIndex];
+  // Build angle array from the real product image so the gallery always matches the product
+  const keyboardAngles = KEYBOARD_ANGLE_DEFS.map(def => ({
+    ...def,
+    image_url: product.image_url,
+  }));
+
+  const activeAngle = keyboardAngles[activeAngleIndex];
   const activeVariant = variants?.[variantIndex] || null;
 
   const handleMouseMove = (e: React.MouseEvent) => {
@@ -156,10 +158,6 @@ export const PremiumKeyboardShowcase: React.FC<PremiumKeyboardShowcaseProps> = (
 
   const handleCategoryClick = (catName: string) => {
     navigate(`/products?category=${encodeURIComponent(catName)}`);
-  };
-
-  const handleBrandClick = (brandName: string) => {
-    navigate(`/products?brand=${encodeURIComponent(brandName)}`);
   };
 
   return (
@@ -247,30 +245,7 @@ export const PremiumKeyboardShowcase: React.FC<PremiumKeyboardShowcaseProps> = (
               </div>
             </div>
 
-            {/* Brand Index */}
-            <div className="glasswave-strong p-6 rounded-3xl border border-white/5 backdrop-blur-2xl space-y-4">
-              <h3 className="text-[10px] font-black tracking-[0.4em] text-white/30 uppercase flex items-center gap-3">
-                <Sparkles size={14} className="text-orange-500" /> BRANDS
-              </h3>
-              <div className="grid grid-cols-2 gap-2">
-                {['Redragon', 'Logitech', 'HyperX', 'Sony', 'SteelSeries', 'Xbox'].map((b) => {
-                  const isActive = b.toLowerCase() === (product.brand || 'redragon').toLowerCase();
-                  return (
-                    <button
-                      key={b}
-                      onClick={() => handleBrandClick(b)}
-                      className={`py-3 rounded-xl text-[8px] font-black tracking-widest uppercase transition-all duration-300 text-center border ${
-                        isActive
-                          ? 'bg-white text-black border-white font-black shadow-lg'
-                          : 'glasswave border-white/5 text-white/40 hover:text-white hover:border-white/10'
-                      }`}
-                    >
-                      {b}
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
+            {/* Brand Index removed per user request */}
 
           </div>
         )}
@@ -282,7 +257,7 @@ export const PremiumKeyboardShowcase: React.FC<PremiumKeyboardShowcaseProps> = (
           
           {/* Angle Gallery - Vertical track on Desktop, horizontal on Mobile */}
           <div className="flex xl:flex-col flex-row gap-4 justify-center z-40 shrink-0 w-full xl:w-24 order-2 xl:order-1">
-            {KEYBOARD_ANGLES.map((angle, idx) => (
+            {keyboardAngles.map((angle, idx) => (
               <button
                 key={angle.id}
                 onClick={() => setActiveAngleIndex(idx)}
@@ -414,10 +389,10 @@ export const PremiumKeyboardShowcase: React.FC<PremiumKeyboardShowcaseProps> = (
             <div className="space-y-4 pt-6 border-t border-white/5 relative z-10">
               <div className="flex justify-between items-center text-[10px] font-black tracking-[0.2em] text-white/40 uppercase">
                 <span>VIEW OTHER ANGLES</span>
-                <span className="text-orange-500">{KEYBOARD_ANGLES[activeAngleIndex].name}</span>
+                <span className="text-orange-500">{keyboardAngles[activeAngleIndex].name}</span>
               </div>
               <div className="flex gap-3">
-                {KEYBOARD_ANGLES.map((angle, idx) => (
+                {keyboardAngles.map((angle, idx) => (
                   <button
                     key={angle.id}
                     onClick={() => setActiveAngleIndex(idx)}
