@@ -46,10 +46,20 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, index }) => {
   const rotateX = useTransform(mouseY, [-0.5, 0.5], isLowEnd ? [0, 0] : [10, -10]);
   const rotateY = useTransform(mouseX, [-0.5, 0.5], isLowEnd ? [0, 0] : [-10, 10]);
 
-  const rawVariants = product.variants ? JSON.parse(product.variants) : [{ name: 'Default', image_url: product.image_url }];
+  let rawVariants: any[] = [];
+  try {
+    rawVariants = product.variants ? JSON.parse(product.variants) : [];
+  } catch (e) {
+    console.error("Failed to parse variants JSON:", e);
+  }
+  if (!Array.isArray(rawVariants) || rawVariants.length === 0) {
+    rawVariants = [{ name: 'Default', image_url: product.image_url }];
+  }
+
   const variants = rawVariants.map((v: any) => ({
     ...v,
-    image_url: getLocalImageUrl(v.image_url, product.slug, product.name)
+    image_url: getLocalImageUrl(v.image_url || product.image_url, product.slug, product.name),
+    name: v.name || 'Default'
   }));
   
   const handleMouseMove = (e: React.MouseEvent<HTMLAnchorElement>) => {
