@@ -9,6 +9,7 @@ import Navbar from './components/layout/Navbar';
 import Footer from './components/layout/Footer';
 import { AuthGuard, AdminGuard, GuestGuard } from './components/guards/Guards';
 import ErrorBoundary from './components/guards/ErrorBoundary';
+import pixelForgeLogo from './assets/logo-pixel-forge.png';
 
 // Lazy loaded pages for code splitting
 const Landing = lazy(() => import('./pages/Landing'));
@@ -25,10 +26,15 @@ const AuthPages = lazy(() => import('./pages/Auth').then(m => ({ default: m.Logi
 const RegisterPage = lazy(() => import('./pages/Auth').then(m => ({ default: m.Register })));
 
 const PageLoader = () => (
-  <div className="min-h-screen flex items-center justify-center bg-matte-black">
-    <div className="flex flex-col items-center gap-4">
-      <div className="w-12 h-12 border-2 border-luxury-cyan border-t-transparent rounded-full animate-spin" />
-      <p className="text-text-secondary text-sm animate-pulse">Loading...</p>
+  <div className="min-h-screen flex items-center justify-center bg-matte-black px-6">
+    <div className="flex flex-col items-center gap-8 relative z-10">
+      <div className="w-24 h-24 sm:w-32 sm:h-32 rounded-3xl bg-white/5 flex items-center justify-center border border-white/10 p-4 shadow-[0_0_50px_rgba(124,58,237,0.2)] animate-pulse overflow-hidden">
+        <img src={pixelForgeLogo} alt="Pixel Forge Logo" className="w-full h-full object-contain" />
+      </div>
+      <div className="flex flex-col items-center gap-3">
+        <div className="w-8 h-8 border-2 border-luxury-cyan border-t-transparent rounded-full animate-spin" />
+        <p className="text-text-secondary text-xs font-bold tracking-[0.4em] uppercase animate-pulse opacity-80">Loading Assets...</p>
+      </div>
     </div>
   </div>
 );

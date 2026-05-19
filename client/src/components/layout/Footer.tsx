@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import { FiGithub, FiTwitter, FiMail, FiHeart } from 'react-icons/fi';
+import pixelForgeLogo from '../../assets/logo-pixel-forge.png';
 
 const Footer = () => {
   return (
@@ -12,9 +13,9 @@ const Footer = () => {
             <div className="flex items-center gap-4 group">
               <div className="w-12 h-12 rounded-2xl bg-white/5 flex items-center justify-center border border-white/10 group-hover:border-luxury-cyan/50 group-hover:scale-105 transition-all duration-500 overflow-hidden shadow-lg flex-shrink-0">
                 <img 
-                  src="https://images.mirror.co.uk/mirror/xbox-360-controller.jpg" 
+                  src={pixelForgeLogo} 
                   alt="Pixel Forge Logo" 
-                  className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500" 
+                  className="w-full h-full object-contain group-hover:scale-105 transition-all duration-500" 
                 />
               </div>
               <div>

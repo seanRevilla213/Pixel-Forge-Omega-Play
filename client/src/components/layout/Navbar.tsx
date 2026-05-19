@@ -7,6 +7,7 @@ import { useCart } from '../../context/CartContext';
 import { usePerformance } from '../../context/PerformanceContext';
 import { ResponsiveShow } from './ResponsiveWrapper';
 import { CartSidebar } from './CartSidebar';
+import pixelForgeLogo from '../../assets/logo-pixel-forge.png';
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -57,9 +58,9 @@ const Navbar = () => {
           <Link to="/" className="flex items-center gap-4 group">
             <div className="w-10 h-10 rounded-2xl bg-white/5 flex items-center justify-center border border-white/10 group-hover:scale-110 group-hover:rotate-6 transition-all duration-500 overflow-hidden">
               <img 
-                src="https://images.mirror.co.uk/mirror/xbox-360-controller.jpg" 
+                src={pixelForgeLogo} 
                 alt="Pixel Forge Logo" 
-                className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500" 
+                className="w-full h-full object-contain group-hover:scale-105 transition-all duration-500" 
               />
             </div>
             <div className="hidden sm:block">
