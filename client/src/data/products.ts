@@ -1,24 +1,17 @@
-export interface Product {
-  id: string;
-  name: string;
-  slug: string;
-  description: string;
-  price: number;
-  original_price: number | null;
-  category: string;
-  image_url: string;
-  variants?: string; // JSON string of ProductVariant[]
-  badge: string | null;
-  rating: number;
-  review_count: number;
-  in_stock: number;
-  featured: number;
-  platform: string;
-  genre: string;
-  brand?: string;
-}
+import type { Product } from '../types';
+import xboxControllerImg from '../assets/xbox-360-controller.jpg';
+import glowCyanImg from '../assets/glow-cyan.jpg';
+import glowBlueImg from '../assets/glow-blue.jpg';
+import glowGreenImg from '../assets/glow-green.jpg';
+import glowPinkImg from '../assets/glow-pink.jpg';
+import keyboardFrontImg from '../assets/keyboard-front.jpg';
+import superlightGalleryImg from '../assets/pro-x-superlight-black-gallery-1.png';
+import cs2DragonLoreImg from '../assets/wireless_mouse_cs2_dragon_lore_pdp_img_buy_01.png';
+import hyperxAlphaImg from '../assets/hyperx_cloud_alpha_black_1_main.png';
+import ps5ConsoleImg from '../assets/ps5-product-thumbnail-01-en-14sep21.png';
+import mousepadImg from '../assets/qck_xxl_cs2_dragon_lore_pdp_img_buy_01.png';
 
-export const mockProducts: Product[] = [
+export const productsData: Product[] = [
   {
     id: 'p1',
     name: 'Xbox 360 Wireless Controller',
@@ -27,13 +20,13 @@ export const mockProducts: Product[] = [
     price: 29.99,
     original_price: 39.99,
     category: 'Controllers',
-    image_url: '/products/xbox-360-controller.jpg',
+    image_url: xboxControllerImg || '/products/xbox-360-controller.jpg',
     variants: JSON.stringify([
-      { id: 'v1', name: 'Carbon Black', image_url: '/products/xbox-360-controller.jpg', color: '#080808', glow: 'rgba(255, 255, 255, 0.15)' },
-      { id: 'v2', name: 'Cyan', image_url: '/products/glow-cyan.jpg', color: '#00f0ff', glow: 'rgba(0, 240, 255, 0.5)' },
-      { id: 'v3', name: 'Blue', image_url: '/products/glow-blue.jpg', color: '#0047AB', glow: 'rgba(0, 71, 171, 0.5)' },
-      { id: 'v4', name: 'Green', image_url: '/products/glow-green.jpg', color: '#00ff41', glow: 'rgba(0, 255, 65, 0.5)' },
-      { id: 'v5', name: 'Pink', image_url: '/products/glow-pink.jpg', color: '#ff00ff', glow: 'rgba(255, 0, 255, 0.6)' }
+      { id: 'v1', name: 'Carbon Black', image_url: xboxControllerImg || '/products/xbox-360-controller.jpg', color: '#080808', glow: 'rgba(255, 255, 255, 0.15)' },
+      { id: 'v2', name: 'Cyan', image_url: glowCyanImg || '/products/glow-cyan.jpg', color: '#00f0ff', glow: 'rgba(0, 240, 255, 0.5)' },
+      { id: 'v3', name: 'Blue', image_url: glowBlueImg || '/products/glow-blue.jpg', color: '#0047AB', glow: 'rgba(0, 71, 171, 0.5)' },
+      { id: 'v4', name: 'Green', image_url: glowGreenImg || '/products/glow-green.jpg', color: '#00ff41', glow: 'rgba(0, 255, 65, 0.5)' },
+      { id: 'v5', name: 'Pink', image_url: glowPinkImg || '/products/glow-pink.jpg', color: '#ff00ff', glow: 'rgba(255, 0, 255, 0.6)' }
     ]),
     badge: 'CLASSIC',
     rating: 4.9,
@@ -52,9 +45,9 @@ export const mockProducts: Product[] = [
     price: 89.99,
     original_price: 119.99,
     category: 'Mechanical Keyboards',
-    image_url: 'https://redragonshop.com/cdn/shop/products/ArgoK670_1_800x.png',
+    image_url: keyboardFrontImg || '/products/keyboard-front.jpg',
     variants: JSON.stringify([
-      { id: 'v1', name: 'Argo Edition', image_url: 'https://redragonshop.com/cdn/shop/products/ArgoK670_1_800x.png', color: '#ff8c00', glow: 'rgba(255, 140, 0, 0.4)' }
+      { id: 'v1', name: 'Argo Edition', image_url: keyboardFrontImg || '/products/keyboard-front.jpg', color: '#ff8c00', glow: 'rgba(255, 140, 0, 0.4)' }
     ]),
     badge: 'NEW',
     rating: 4.8,
@@ -73,9 +66,9 @@ export const mockProducts: Product[] = [
     price: 149.99,
     original_price: null,
     category: 'Gaming Mouse',
-    image_url: 'https://resource.logitechg.com/w_692,c_limit,q_auto,f_auto,dpr_1.0/d_transparent.gif/content/dam/gaming/en/products/pro-x-superlight/pro-x-superlight-black-gallery-1.png?v=1',
+    image_url: superlightGalleryImg || 'https://resource.logitechg.com/w_692,c_limit,q_auto,f_auto,dpr_1.0/d_transparent.gif/content/dam/gaming/en/products/pro-x-superlight/pro-x-superlight-black-gallery-1.png?v=1',
     variants: JSON.stringify([
-      { id: 'v1', name: 'Superlight Black', image_url: 'https://resource.logitechg.com/w_692,c_limit,q_auto,f_auto,dpr_1.0/d_transparent.gif/content/dam/gaming/en/products/pro-x-superlight/pro-x-superlight-black-gallery-1.png?v=1', color: '#0f0f0f', glow: 'rgba(255, 255, 255, 0.2)' }
+      { id: 'v1', name: 'Superlight Black', image_url: superlightGalleryImg || 'https://resource.logitechg.com/w_692,c_limit,q_auto,f_auto,dpr_1.0/d_transparent.gif/content/dam/gaming/en/products/pro-x-superlight/pro-x-superlight-black-gallery-1.png?v=1', color: '#0f0f0f', glow: 'rgba(255, 255, 255, 0.2)' }
     ]),
     badge: 'ELITE',
     rating: 4.9,
@@ -94,9 +87,9 @@ export const mockProducts: Product[] = [
     price: 189.99,
     original_price: null,
     category: 'Gaming Mouse',
-    image_url: 'https://media.steelseriescdn.com/thumbs/catalog/items/63391/798402f12255476a80436d4df6c5478d.png.350x280_q100_crop-fit_optimize.png',
-    badge: 'DRAGON LORE',
+    image_url: cs2DragonLoreImg || 'https://media.steelseriescdn.com/thumbs/catalog/items/63391/798402f12255476a80436d4df6c5478d.png.350x280_q100_crop-fit_optimize.png',
     variants: '[]',
+    badge: 'DRAGON LORE',
     rating: 4.9,
     review_count: 8900,
     in_stock: 1,
@@ -113,9 +106,9 @@ export const mockProducts: Product[] = [
     price: 99.99,
     original_price: null,
     category: 'Headsets',
-    image_url: 'https://hyperx.com/cdn/shop/products/hyperx_cloud_alpha_1_800x.png',
+    image_url: hyperxAlphaImg || 'https://hyperx.com/cdn/shop/products/hyperx_cloud_alpha_1_800x.png',
     variants: JSON.stringify([
-      { id: 'v1', name: 'Alpha Edition', image_url: 'https://hyperx.com/cdn/shop/products/hyperx_cloud_alpha_1_800x.png', color: '#ff3131', glow: 'rgba(255, 49, 49, 0.4)' }
+      { id: 'v1', name: 'Alpha Edition', image_url: hyperxAlphaImg || 'https://hyperx.com/cdn/shop/products/hyperx_cloud_alpha_1_800x.png', color: '#ff3131', glow: 'rgba(255, 49, 49, 0.4)' }
     ]),
     badge: 'PRO CHOICE',
     rating: 4.8,
@@ -134,9 +127,9 @@ export const mockProducts: Product[] = [
     price: 499.99,
     original_price: null,
     category: 'Consoles',
-    image_url: 'https://gmedia.playstation.com/is/image/SIEPDC/ps5-product-thumbnail-01-en-14sep21?$facebook$',
+    image_url: ps5ConsoleImg || 'https://gmedia.playstation.com/is/image/SIEPDC/ps5-product-thumbnail-01-en-14sep21?$facebook$',
     variants: JSON.stringify([
-      { id: 'v1', name: 'Standard Edition', image_url: 'https://gmedia.playstation.com/is/image/SIEPDC/ps5-product-thumbnail-01-en-14sep21?$facebook$', color: '#ffffff', glow: 'rgba(255, 255, 255, 0.5)' }
+      { id: 'v1', name: 'Standard Edition', image_url: ps5ConsoleImg || 'https://gmedia.playstation.com/is/image/SIEPDC/ps5-product-thumbnail-01-en-14sep21?$facebook$', color: '#ffffff', glow: 'rgba(255, 255, 255, 0.5)' }
     ]),
     badge: 'NEXT GEN',
     rating: 4.9,
@@ -155,9 +148,9 @@ export const mockProducts: Product[] = [
     price: 59.99,
     original_price: null,
     category: 'Accessories',
-    image_url: 'https://media.steelseriescdn.com/thumbs/catalog/items/63391/798402f12255476a80436d4df6c5478d.png.350x280_q100_crop-fit_optimize.png',
-    badge: 'RGB ELITE',
+    image_url: mousepadImg || 'https://media.steelseriescdn.com/thumbs/catalog/items/63391/798402f12255476a80436d4df6c5478d.png.350x280_q100_crop-fit_optimize.png',
     variants: '[]',
+    badge: 'RGB ELITE',
     rating: 4.9,
     review_count: 12000,
     in_stock: 1,

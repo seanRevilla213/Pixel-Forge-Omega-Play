@@ -7,6 +7,7 @@ import type { Product } from '../types';
 import { useCart } from '../context/CartContext';
 import { usePerformance } from '../context/PerformanceContext';
 import { AuroraBackground, AmbientGlow } from '../components/ui/ImmersiveEffects';
+import { productsData } from '../data/products';
 import api from '../api/axiosInstance';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -25,9 +26,13 @@ const Landing = () => {
 
   useEffect(() => {
     api.get('/products/featured').then(({ data }) => {
-      setFeatured(data.products);
+      setFeatured(data.products || []);
       setLoading(false);
-    }).catch(() => setLoading(false));
+    }).catch(() => {
+      console.warn("Featured products API call failed. Using local static fallback data.");
+      setFeatured(productsData.filter(p => p.featured === 1));
+      setLoading(false);
+    });
 
     // GSAP Hero Reveal
     if (!isLowEnd) {
@@ -116,9 +121,10 @@ const Landing = () => {
                   <div key={i} className="glasswave rounded-[3rem] h-[500px] animate-pulse" />
                 ))
               ) : (
-                featured?.map((product, i) => (
-                  <ProductCard key={product?.id || i} product={product} index={i} />
-                ))
+                featured?.map((product, i) => {
+                  if (!product) return null;
+                  return <ProductCard key={product.id || i} product={product} index={i} />;
+                })
               )}
             </div>
           </div>

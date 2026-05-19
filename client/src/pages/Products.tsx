@@ -13,6 +13,7 @@ import { PremiumMouseShowcase } from '../components/product/PremiumMouseShowcase
 import { PremiumHeadsetShowcase } from '../components/product/PremiumHeadsetShowcase';
 import { PremiumAccessoryShowcase } from '../components/product/PremiumAccessoryShowcase';
 import { PremiumHardwareShowcase } from '../components/product/PremiumHardwareShowcase';
+import { productsData } from '../data/products';
 import api from '../api/axiosInstance';
 import gsap from 'gsap';
 
@@ -85,10 +86,29 @@ const Products = () => {
     params.set('limit', device === 'ultrawide' ? '16' : '12');
 
     api.get(`/products?${params}`).then(({ data }) => {
-      setProducts(data.products);
+      setProducts(data.products || []);
       setBrands(data.brands || []);
       setLoading(false);
-    }).catch(() => setLoading(false));
+    }).catch(() => {
+      // API failed, fallback to local static data
+      console.warn("Products API call failed. Using local static fallback data.");
+      let filtered = [...productsData];
+      if (search) {
+        filtered = filtered.filter(p => 
+          p.name.toLowerCase().includes(search.toLowerCase()) || 
+          p.description.toLowerCase().includes(search.toLowerCase())
+        );
+      }
+      if (category) {
+        filtered = filtered.filter(p => p.category.toLowerCase() === category.toLowerCase());
+      }
+      if (brand) {
+        filtered = filtered.filter(p => p.brand?.toLowerCase() === brand.toLowerCase());
+      }
+      setProducts(filtered);
+      setBrands(Array.from(new Set(productsData.map(p => p.brand).filter(Boolean))) as string[]);
+      setLoading(false);
+    });
   }, [search, category, brand, page, device]);
 
   useEffect(() => {
@@ -338,7 +358,7 @@ const Products = () => {
                   >
                     <div className="w-16 h-16 border-4 border-luxury-cyan/20 border-t-luxury-cyan rounded-full animate-spin" />
                   </motion.div>
-                ) : products.length === 0 ? (
+                ) : (!products || products.length === 0) ? (
                   <motion.div 
                     key="empty"
                     initial={{ opacity: 0 }}
@@ -350,7 +370,7 @@ const Products = () => {
                   </motion.div>
                 ) : (
                   <motion.div
-                    key={products[0].id}
+                    key={products[0]?.id || 'unknown'}
                     initial={isLowEnd ? { opacity: 0 } : { opacity: 0, scale: 0.8, rotateY: -20 }}
                     animate={{ opacity: 1, scale: 1.1, rotateY: 0 }}
                     exit={isLowEnd ? { opacity: 0 } : { opacity: 0, scale: 1.2, rotateY: 20 }}
@@ -358,19 +378,19 @@ const Products = () => {
                     className="w-full"
                     style={isLowEnd ? {} : { perspective: '2000px' }}
                   >
-                    {products[0].category === 'Controllers' ? (
+                    {products[0]?.category === 'Controllers' ? (
                       <PremiumControllerShowcase product={products[0]} />
-                    ) : products[0].category === 'Mechanical Keyboards' ? (
+                    ) : products[0]?.category === 'Mechanical Keyboards' ? (
                       <PremiumKeyboardShowcase product={products[0]} hideSidebar={true} />
-                    ) : products[0].category === 'Gaming Mouse' ? (
+                    ) : products[0]?.category === 'Gaming Mouse' ? (
                       <PremiumMouseShowcase product={products[0]} hideSidebar={true} />
-                    ) : products[0].category === 'Headsets' ? (
+                    ) : products[0]?.category === 'Headsets' ? (
                       <PremiumHeadsetShowcase product={products[0]} hideSidebar={true} />
-                    ) : products[0].category === 'Accessories' ? (
+                    ) : products[0]?.category === 'Accessories' ? (
                       <PremiumAccessoryShowcase product={products[0]} hideSidebar={true} />
-                    ) : (
+                    ) : products[0] ? (
                       <PremiumHardwareShowcase product={products[0]} />
-                    )}
+                    ) : null}
                   </motion.div>
                 )}
               </AnimatePresence>

@@ -13,6 +13,8 @@ import gsap from 'gsap';
 import { PremiumControllerShowcase } from '../components/product/PremiumControllerShowcase';
 import { PremiumKeyboardShowcase } from '../components/product/PremiumKeyboardShowcase';
 
+import { productsData } from '../data/products';
+
 const ProductDetails = () => {
   const { slug } = useParams();
   const [product, setProduct] = useState<Product | null>(null);
@@ -29,7 +31,12 @@ const ProductDetails = () => {
     api.get(`/products/slug/${slug}`).then(({ data }) => {
       setProduct(data.product);
       setLoading(false);
-    }).catch(() => setLoading(false));
+    }).catch(() => {
+      console.warn("Product details API call failed. Using local static fallback data.");
+      const match = productsData.find(p => p.slug === slug);
+      setProduct(match || null);
+      setLoading(false);
+    });
   }, [slug]);
 
   useEffect(() => {

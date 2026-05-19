@@ -10,7 +10,7 @@ export const setAccessToken = (token: string | null) => {
 export const getAccessToken = () => accessToken;
 
 const api = axios.create({
-  baseURL: '/api',
+  baseURL: import.meta.env.VITE_API_URL || '/api',
   timeout: 10000,
   headers: { 'Content-Type': 'application/json' },
   withCredentials: true,
@@ -32,9 +32,25 @@ const isHtmlResponse = (response: any) => {
 
 function handleMockFallback(config: any): any {
   if (!config) return null;
-  const url = config.url || '';
-  const cleanUrl = url.replace('/api', '').split('?')[0];
-  const searchParams = new URL(url, 'http://localhost').searchParams;
+  const rawUrl = config.url || '';
+  
+  let parsedUrl;
+  try {
+    parsedUrl = new URL(rawUrl, 'http://localhost');
+  } catch (e) {
+    parsedUrl = new URL('/' + rawUrl.replace(/^\/+/, ''), 'http://localhost');
+  }
+
+  let pathname = parsedUrl.pathname;
+  if (pathname.startsWith('/api')) {
+    pathname = pathname.substring(4);
+  }
+  if (!pathname.startsWith('/')) {
+    pathname = '/' + pathname;
+  }
+
+  const cleanUrl = pathname;
+  const searchParams = parsedUrl.searchParams;
 
   console.warn(`[Axios Fallback] Server offline/unreachable. Serving mock data for: ${cleanUrl}`);
 
