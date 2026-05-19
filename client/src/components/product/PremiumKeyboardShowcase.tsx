@@ -30,13 +30,12 @@ interface PremiumKeyboardShowcaseProps {
   hideSidebar?: boolean;
 }
 
-// Gallery angle definitions — image_url is injected at runtime from product.image_url
-// so the correct Redragon K670 (or any future keyboard) CDN image is always used.
+// Gallery angle definitions using the provided product images
 const KEYBOARD_ANGLE_DEFS = [
-  { id: 'front',       name: 'Front RGB View',        rotateX: 2,  rotateY: -2, scale: 1.05 },
-  { id: 'top',         name: 'Top Angle View',         rotateX: 8,  rotateY:  0, scale: 1.00 },
-  { id: 'perspective', name: 'Perspective Side View',  rotateX: 5,  rotateY: -5, scale: 1.15 },
-  { id: 'profile',     name: 'Side Profile View',      rotateX: 0,  rotateY: -8, scale: 1.20 },
+  { id: 'front',       name: 'Front RGB View',        rotateX: 2,  rotateY: -2, scale: 1.05, image_url: 'https://m.media-amazon.com/images/I/71Yc0Y-K1NL._AC_SL1500_.jpg' },
+  { id: 'top',         name: 'Top Angle View',         rotateX: 8,  rotateY:  0, scale: 1.00, image_url: 'https://m.media-amazon.com/images/I/61k9B-wO8mL._AC_SL1500_.jpg' },
+  { id: 'perspective', name: 'Perspective Side View',  rotateX: 5,  rotateY: -5, scale: 1.15, image_url: 'https://m.media-amazon.com/images/I/71Z8Z4n+NCL._AC_SL1500_.jpg' },
+  { id: 'profile',     name: 'Side Profile View',      rotateX: 0,  rotateY: -8, scale: 1.20, image_url: 'https://m.media-amazon.com/images/I/71Yc0Y-K1NL._AC_SL1500_.jpg' },
 ];
 
 export const PremiumKeyboardShowcase: React.FC<PremiumKeyboardShowcaseProps> = ({ product, hideSidebar = false }) => {
@@ -84,10 +83,10 @@ export const PremiumKeyboardShowcase: React.FC<PremiumKeyboardShowcaseProps> = (
     setVariantIndex(0);
   }, [product.id]);
 
-  // Build angle array from the real product image so the gallery always matches the product
+  // Build angle array from the real product images (fallback to product image if no specific URL defined)
   const keyboardAngles = KEYBOARD_ANGLE_DEFS.map(def => ({
     ...def,
-    image_url: product.image_url,
+    image_url: def.image_url || product.image_url,
   }));
 
   const activeAngle = keyboardAngles[activeAngleIndex];

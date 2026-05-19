@@ -4,7 +4,7 @@ import glowCyanImg from '../assets/glow-cyan.jpg';
 import glowBlueImg from '../assets/glow-blue.jpg';
 import glowGreenImg from '../assets/glow-green.jpg';
 import glowPinkImg from '../assets/glow-pink.jpg';
-import keyboardFrontImg from '../assets/keyboard-front.jpg';
+
 import superlightGalleryImg from '../assets/pro-x-superlight-black-gallery-1.png';
 import cs2DragonLoreImg from '../assets/wireless_mouse_cs2_dragon_lore_pdp_img_buy_01.png';
 import hyperxAlphaImg from '../assets/hyperx_cloud_alpha_black_1_main.png';
@@ -45,9 +45,9 @@ export const productsData: Product[] = [
     price: 89.99,
     original_price: 119.99,
     category: 'Mechanical Keyboards',
-    image_url: keyboardFrontImg || '/products/keyboard-front.jpg',
+    image_url: 'https://m.media-amazon.com/images/I/71Yc0Y-K1NL._AC_SL1500_.jpg',
     variants: JSON.stringify([
-      { id: 'v1', name: 'Argo Edition', image_url: keyboardFrontImg || '/products/keyboard-front.jpg', color: '#ff8c00', glow: 'rgba(255, 140, 0, 0.4)' }
+      { id: 'v1', name: 'Argo Edition', image_url: 'https://m.media-amazon.com/images/I/71Yc0Y-K1NL._AC_SL1500_.jpg', color: '#ff8c00', glow: 'rgba(255, 140, 0, 0.4)' }
     ]),
     badge: 'NEW',
     rating: 4.8,
