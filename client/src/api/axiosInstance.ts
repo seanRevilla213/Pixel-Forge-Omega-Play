@@ -25,15 +25,15 @@ api.interceptors.request.use((config) => {
 });
 
 const isHtmlResponse = (response: any) => {
-  return response && 
-    typeof response.data === 'string' && 
+  return response &&
+    typeof response.data === 'string' &&
     (response.data.trim().toLowerCase().startsWith('<!doctype html') || response.data.trim().toLowerCase().startsWith('<!doctype'));
 };
 
 function handleMockFallback(config: any): any {
   if (!config) return null;
   const rawUrl = config.url || '';
-  
+
   let parsedUrl;
   try {
     parsedUrl = new URL(rawUrl, 'http://localhost');
@@ -75,8 +75,8 @@ function handleMockFallback(config: any): any {
 
     let filtered = [...mockProducts];
     if (search) {
-      filtered = filtered.filter(p => 
-        p.name.toLowerCase().includes(search) || 
+      filtered = filtered.filter(p =>
+        p.name.toLowerCase().includes(search) ||
         p.description.toLowerCase().includes(search)
       );
     }
