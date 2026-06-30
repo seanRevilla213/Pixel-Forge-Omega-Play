@@ -52,7 +52,9 @@ function handleMockFallback(config: any): any {
   const cleanUrl = pathname;
   const searchParams = parsedUrl.searchParams;
 
-  console.warn(`[Axios Fallback] Server offline/unreachable. Serving mock data for: ${cleanUrl}`);
+  if (!cleanUrl.startsWith('/auth')) {
+    console.warn(`[Axios Fallback] Server offline/unreachable. Serving mock data for: ${cleanUrl}`);
+  }
 
   if (cleanUrl === '/products/featured') {
     return {
@@ -197,12 +199,15 @@ api.interceptors.response.use(
       }
     }
 
-    // Server offline or returns 404, fallback to mock data dynamically
-    try {
-      const fallback = handleMockFallback(originalRequest);
-      if (fallback) return fallback;
-    } catch (fallbackError) {
-      console.error('Fallback generation failed', fallbackError);
+    const status = error.response?.status;
+    // Only fallback if server offline (no status) or 5xx/404 errors. Do not mock 401/403.
+    if (!status || status >= 500 || status === 404) {
+      try {
+        const fallback = handleMockFallback(originalRequest);
+        if (fallback) return fallback;
+      } catch (fallbackError) {
+        console.error('Fallback generation failed', fallbackError);
+      }
     }
 
     return Promise.reject(error);

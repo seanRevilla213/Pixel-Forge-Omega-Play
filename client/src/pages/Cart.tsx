@@ -65,7 +65,7 @@ const Cart = () => {
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-16 items-start">
             {/* Premium Item List */}
-            <div className="lg:col-span-2 space-y-8">
+            <div className="relative lg:col-span-2 space-y-8">
               <AnimatePresence mode="popLayout">
                 {items.map((item) => (
                   <motion.div

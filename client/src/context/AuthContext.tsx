@@ -20,11 +20,16 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const handleAuthResponse = useCallback((data: AuthResponse) => {
     setAccessToken(data.accessToken);
     setUser(data.user);
+    localStorage.setItem('hasSession', 'true');
   }, []);
 
   // Try to restore session on mount
   useEffect(() => {
     const restoreSession = async () => {
+      if (!localStorage.getItem('hasSession')) {
+        setIsLoading(false);
+        return;
+      }
       try {
         const { data } = await api.post('/auth/refresh');
         setAccessToken(data.accessToken);
@@ -44,6 +49,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const handleLogout = () => {
       setAccessToken(null);
       setUser(null);
+      localStorage.removeItem('hasSession');
     };
     window.addEventListener('auth:logout', handleLogout);
     return () => window.removeEventListener('auth:logout', handleLogout);
@@ -65,6 +71,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     } catch { /* ignore */ }
     setAccessToken(null);
     setUser(null);
+    localStorage.removeItem('hasSession');
   }, []);
 
   return (
