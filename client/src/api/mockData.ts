@@ -1,22 +1,4 @@
-export interface Product {
-  id: string;
-  name: string;
-  slug: string;
-  description: string;
-  price: number;
-  original_price: number | null;
-  category: string;
-  image_url: string;
-  variants?: string; // JSON string of ProductVariant[]
-  badge: string | null;
-  rating: number;
-  review_count: number;
-  in_stock: number;
-  featured: number;
-  platform: string;
-  genre: string;
-  brand?: string;
-}
+import type { Product } from '../types';
 
 export const mockProducts: Product[] = [
   {

@@ -17,17 +17,19 @@ import { productsData } from '../data/products';
 import api from '../api/axiosInstance';
 import gsap from 'gsap';
 
+// Module-level constant — not recreated on every render
+const FIXED_CATEGORIES = [
+  { id: 'controllers', name: 'Controllers', glow: 'rgba(0, 240, 255, 0.4)', color: '#00f0ff' },
+  { id: 'keyboards', name: 'Mechanical Keyboards', glow: 'rgba(255, 140, 0, 0.3)', color: '#ff8c00' },
+  { id: 'mice', name: 'Gaming Mouse', glow: 'rgba(168, 85, 247, 0.3)', color: '#a855f7' },
+  { id: 'headsets', name: 'Headsets', glow: 'rgba(34, 197, 94, 0.3)', color: '#22c55e' },
+  { id: 'consoles', name: 'Consoles', glow: 'rgba(239, 68, 68, 0.3)', color: '#ef4444' },
+  { id: 'accessories', name: 'Accessories', glow: 'rgba(255, 255, 255, 0.2)', color: '#ffffff' }
+];
+
 const Products = () => {
   const [products, setProducts] = useState<Product[]>([]);
   const { isLowEnd } = usePerformance();
-  const FIXED_CATEGORIES = [
-    { id: 'controllers', name: 'Controllers', glow: 'rgba(0, 240, 255, 0.4)', color: '#00f0ff' },
-    { id: 'keyboards', name: 'Mechanical Keyboards', glow: 'rgba(255, 140, 0, 0.3)', color: '#ff8c00' },
-    { id: 'mice', name: 'Gaming Mouse', glow: 'rgba(168, 85, 247, 0.3)', color: '#a855f7' },
-    { id: 'headsets', name: 'Headsets', glow: 'rgba(34, 197, 94, 0.3)', color: '#22c55e' },
-    { id: 'consoles', name: 'Consoles', glow: 'rgba(239, 68, 68, 0.3)', color: '#ef4444' },
-    { id: 'accessories', name: 'Accessories', glow: 'rgba(255, 255, 255, 0.2)', color: '#ffffff' }
-  ];
   const [loading, setLoading] = useState(true);
 
   const [searchParams, setSearchParams] = useSearchParams();
@@ -38,31 +40,29 @@ const Products = () => {
   const [brand, setBrandLocal] = useState(searchParams.get('brand') || '');
   const [page, setPageLocal] = useState(parseInt(searchParams.get('page') || '1', 10));
 
+  /** Single helper — updates local state AND syncs URL params */
+  const updateParams = (updates: Record<string, string | null>, resetPage = true) => {
+    const next = new URLSearchParams(searchParams);
+    Object.entries(updates).forEach(([key, value]) => {
+      if (value) next.set(key, value);
+      else next.delete(key);
+    });
+    if (resetPage) { next.set('page', '1'); setPageLocal(1); }
+    setSearchParams(next);
+  };
+
   const setSearch = (val: string) => {
     setSearchLocal(val);
-    setPageLocal(1);
-    const next = new URLSearchParams(searchParams);
-    if (val) next.set('search', val); else next.delete('search');
-    next.set('page', '1');
-    setSearchParams(next);
+    updateParams({ search: val || null });
   };
   const setCategory = (val: string) => {
     setCategoryLocal(val);
     setBrandLocal('');
-    setPageLocal(1);
-    const next = new URLSearchParams(searchParams);
-    if (val) next.set('category', val); else next.delete('category');
-    next.delete('brand');
-    next.set('page', '1');
-    setSearchParams(next);
+    updateParams({ category: val || null, brand: null });
   };
   const setBrand = (val: string) => {
     setBrandLocal(val);
-    setPageLocal(1);
-    const next = new URLSearchParams(searchParams);
-    if (val) next.set('brand', val); else next.delete('brand');
-    next.set('page', '1');
-    setSearchParams(next);
+    updateParams({ brand: val || null });
   };
   const setPage = (val: number) => {
     setPageLocal(val);

@@ -15,9 +15,13 @@ const UserDashboard = () => {
 
   useEffect(() => {
     Promise.all([
-      api.get('/orders/my-orders').then(r => setOrders(r.data.orders)),
-      api.get('/auth/sessions').then(r => setSessions(r.data.sessions)),
-    ]).finally(() => setLoading(false));
+      api.get('/orders/my-orders').then(r => setOrders(r.data.orders ?? [])),
+      api.get('/auth/sessions').then(r => setSessions(r.data.sessions ?? [])),
+    ]).catch(() => {
+      // API unreachable — show empty state instead of infinite spinner
+      setOrders([]);
+      setSessions([]);
+    }).finally(() => setLoading(false));
   }, []);
 
   const revokeSession = async (id: string) => {

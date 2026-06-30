@@ -7,12 +7,51 @@ import toast from 'react-hot-toast';
 
 interface Stats { totalUsers: number; totalOrders: number; totalProducts: number; totalRevenue: number; }
 
+interface AdminOrder {
+  id: string;
+  user_id: string;
+  username?: string;
+  email?: string;
+  total: number;
+  status: string;
+  shipping_address: string;
+  payment_method: string;
+  created_at: string;
+  items?: Array<{ id: string; product_id: string; quantity: number; price: number; name?: string; }>;
+}
+
+interface AdminUser {
+  id: string;
+  username: string;
+  email: string;
+  role: 'user' | 'admin';
+  is_locked: boolean;
+  created_at: string;
+}
+
+interface AuditLog {
+  id: string;
+  action: string;
+  resource: string;
+  ip_address: string;
+  created_at: string;
+}
+
+interface AdminContactMessage {
+  id: string;
+  name: string;
+  email: string;
+  subject: string;
+  message: string;
+  created_at: string;
+}
+
 const AdminDashboard = () => {
   const [stats, setStats] = useState<Stats | null>(null);
-  const [orders, setOrders] = useState<any[]>([]);
-  const [users, setUsers] = useState<any[]>([]);
-  const [logs, setLogs] = useState<any[]>([]);
-  const [messages, setMessages] = useState<any[]>([]);
+  const [orders, setOrders] = useState<AdminOrder[]>([]);
+  const [users, setUsers] = useState<AdminUser[]>([]);
+  const [logs, setLogs] = useState<AuditLog[]>([]);
+  const [messages, setMessages] = useState<AdminContactMessage[]>([]);
   const [tab, setTab] = useState<'overview' | 'orders' | 'users' | 'logs' | 'messages'>('overview');
   const [loading, setLoading] = useState(true);
 

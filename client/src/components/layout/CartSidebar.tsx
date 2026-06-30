@@ -66,7 +66,7 @@ export const CartSidebar = ({ isOpen, onClose }: CartSidebarProps) => {
                       className="flex gap-6 group relative p-4 rounded-2xl glasswave border border-white/5 hover:border-white/10 shadow-xl transition-all duration-300 hover:bg-white/[0.03]"
                     >
                       <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl overflow-hidden flex-shrink-0 bg-white/5 flex items-center justify-center p-2">
-                        <img src={item.selectedVariant?.image_url || item.product.image_url} alt={item.product.name} className="w-full h-full object-contain grayscale group-hover:grayscale-0 transition-all duration-500 hover:scale-105" />
+                        <img src={item.selectedVariant?.image_url || item.product.image_url} alt={item.product.name} loading="lazy" className="w-full h-full object-contain grayscale group-hover:grayscale-0 transition-all duration-500 hover:scale-105" />
                       </div>
                       <div className="flex-1 flex flex-col justify-between py-1">
                         <div>

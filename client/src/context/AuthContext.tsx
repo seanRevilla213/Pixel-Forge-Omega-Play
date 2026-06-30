@@ -17,10 +17,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  const handleAuthResponse = (data: AuthResponse) => {
+  const handleAuthResponse = useCallback((data: AuthResponse) => {
     setAccessToken(data.accessToken);
     setUser(data.user);
-  };
+  }, []);
 
   // Try to restore session on mount
   useEffect(() => {

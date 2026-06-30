@@ -2,7 +2,7 @@ import React, { useState, useRef } from 'react';
 import { motion, AnimatePresence, useMotionValue, useSpring, useTransform } from 'framer-motion';
 import { ChevronRight, ChevronLeft, Star, Zap } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import type { Product } from '../../types';
+import type { Product, ProductVariant } from '../../types';
 import { useCart } from '../../context/CartContext';
 import { usePerformance } from '../../context/PerformanceContext';
 import { LuxuryCartButton } from './LuxuryCartButton';
@@ -46,17 +46,17 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, index }) => {
   const rotateX = useTransform(mouseY, [-0.5, 0.5], isLowEnd ? [0, 0] : [10, -10]);
   const rotateY = useTransform(mouseX, [-0.5, 0.5], isLowEnd ? [0, 0] : [-10, 10]);
 
-  let rawVariants: any[] = [];
+  let rawVariants: ProductVariant[] = [];
   try {
     rawVariants = product.variants ? JSON.parse(product.variants) : [];
   } catch (e) {
     console.error("Failed to parse variants JSON:", e);
   }
   if (!Array.isArray(rawVariants) || rawVariants.length === 0) {
-    rawVariants = [{ name: 'Default', image_url: product.image_url }];
+    rawVariants = [{ id: 'default', name: 'Default', image_url: product.image_url, color: '#ffffff', glow: 'rgba(255,255,255,0.1)' }];
   }
 
-  const variants = rawVariants.map((v: any) => ({
+  const variants: ProductVariant[] = rawVariants.map((v) => ({
     ...v,
     image_url: getLocalImageUrl(v.image_url || product.image_url, product.slug, product.name),
     name: v.name || 'Default'
@@ -203,7 +203,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, index }) => {
         {/* Variant Color Selector (Bubbles) */}
         {variants.length > 1 && (
           <div className="absolute bottom-6 right-6 flex gap-2 z-30 opacity-0 group-hover:opacity-100 transition-opacity">
-            {variants.map((v: any, i: number) => (
+            {variants.map((v: ProductVariant, i: number) => (
               <button
                 key={v.name || i}
                 onClick={(e) => {

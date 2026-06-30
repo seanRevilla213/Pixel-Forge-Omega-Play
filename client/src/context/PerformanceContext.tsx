@@ -14,7 +14,8 @@ const PerformanceContext = createContext<PerformanceContextType | undefined>(und
 export const PerformanceProvider: FC<{ children: ReactNode }> = ({ children }) => {
   const [performanceMode, setPerformanceModeState] = useState<PerformanceMode>(() => {
     const saved = localStorage.getItem('pixel-forge-performance-mode');
-    return (saved as PerformanceMode) || 'auto';
+    const valid: PerformanceMode[] = ['premium', 'performance', 'auto'];
+    return valid.includes(saved as PerformanceMode) ? (saved as PerformanceMode) : 'auto';
   });
 
   const [isLowEnd, setIsLowEnd] = useState(false);

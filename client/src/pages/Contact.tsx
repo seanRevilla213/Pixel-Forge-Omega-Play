@@ -16,11 +16,11 @@ const Contact = () => {
   const formRef = useRef<HTMLFormElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
-  // Real-time Gmail Detection
+  // Real-time Email Validation (accepts any valid email)
   useEffect(() => {
-    const gmailRegex = /^[a-z0-9](\.?[a-z0-9]){5,}@gmail\.com$/;
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!form.email) setEmailStatus('idle');
-    else if (gmailRegex.test(form.email.toLowerCase())) setEmailStatus('valid');
+    else if (emailRegex.test(form.email.toLowerCase())) setEmailStatus('valid');
     else setEmailStatus('invalid');
   }, [form.email]);
 
@@ -47,7 +47,7 @@ const Contact = () => {
     if (emailStatus !== 'valid') return;
     setLoading(true);
     try {
-      await api.post('/orders/contact', {
+      await api.post('/contact', {
         name: sanitizeInput(form.name),
         email: sanitizeInput(form.email),
         subject: sanitizeInput(form.subject),
@@ -135,20 +135,20 @@ const Contact = () => {
                       onChange={(e) => setForm(f => ({ ...f, email: e.target.value }))} 
                       required 
                       className={`luxury-input pt-10 ${emailStatus === 'valid' ? 'border-green-500/30' : emailStatus === 'invalid' ? 'border-red-500/30' : ''}`} 
-                      placeholder="GMAIL ACCOUNT"
+                      placeholder="YOUR@EMAIL.COM"
                     />
                     <div className="liquid-focus" />
                     <div className="absolute right-6 top-1/2 -translate-y-1/2 flex items-center gap-2">
                       <AnimatePresence>
                         {emailStatus === 'valid' && (
                           <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} className="flex items-center gap-2">
-                            <span className="text-[9px] font-black text-green-500 uppercase tracking-widest hidden sm:block">Verified Gmail</span>
+                            <span className="text-[9px] font-black text-green-500 uppercase tracking-widest hidden sm:block">Valid Email</span>
                             <CheckCircle2 className="text-green-500" size={18} />
                           </motion.div>
                         )}
                         {emailStatus === 'invalid' && form.email && (
                           <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} className="flex items-center gap-2">
-                            <span className="text-[9px] font-black text-red-500 uppercase tracking-widest hidden sm:block">Invalid Gmail</span>
+                            <span className="text-[9px] font-black text-red-500 uppercase tracking-widest hidden sm:block">Invalid Email</span>
                             <AlertCircle className="text-red-500" size={18} />
                           </motion.div>
                         )}

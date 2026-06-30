@@ -242,14 +242,16 @@ const Checkout = () => {
                   </div>
                 )}
 
+                <form onSubmit={handleSubmit}>
                 <div className="flex items-center gap-6 pt-8">
                   {currentStep > 0 && (
-                    <button onClick={handleBack} className="p-5 glasswave rounded-2xl text-white hover:bg-white/10 transition-all">
+                    <button onClick={handleBack} type="button" className="p-5 glasswave rounded-2xl text-white hover:bg-white/10 transition-all">
                       <ArrowLeft size={20} />
                     </button>
                   )}
                   {currentStep < steps.length - 1 ? (
                     <button 
+                      type="button"
                       onClick={handleNext}
                       disabled={currentStep === 0 && emailStatus !== 'valid'}
                       className="luxury-btn flex-1 py-5 disabled:opacity-30 disabled:grayscale"
@@ -258,7 +260,7 @@ const Checkout = () => {
                     </button>
                   ) : (
                     <button 
-                      onClick={handleSubmit} 
+                      type="submit"
                       disabled={loading}
                       className="luxury-btn flex-1 py-5 shadow-[0_0_50px_rgba(124,58,237,0.3)]"
                     >
@@ -270,6 +272,7 @@ const Checkout = () => {
                     </button>
                   )}
                 </div>
+                </form>
               </motion.div>
             </div>
 
@@ -286,7 +289,7 @@ const Checkout = () => {
                     <div key={item.product.id} className="flex justify-between items-center gap-4 group">
                       <div className="flex items-center gap-4">
                         <div className="w-12 h-12 rounded-xl bg-white/5 overflow-hidden">
-                          <img src={item.product.image_url} alt={item.product.name} className="w-full h-full object-cover grayscale opacity-50 group-hover:grayscale-0 group-hover:opacity-100 transition-all" />
+                          <img src={item.product.image_url} alt={item.product.name} loading="lazy" className="w-full h-full object-cover grayscale opacity-50 group-hover:grayscale-0 group-hover:opacity-100 transition-all" />
                         </div>
                         <div className="flex flex-col">
                           <span className="text-[10px] font-black text-white uppercase tracking-tight line-clamp-1">{item.product.name}</span>

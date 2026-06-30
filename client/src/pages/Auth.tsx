@@ -179,10 +179,11 @@ const Register = () => {
             <form onSubmit={handleSubmit} className="space-y-5">
               {/* Username */}
               <div className="space-y-2">
-                <label className="block text-[10px] text-text-muted font-black uppercase tracking-[0.3em]">Username</label>
+                <label htmlFor="reg-username" className="block text-[10px] text-text-muted font-black uppercase tracking-[0.3em]">Username</label>
                 <div className="relative">
-                  <FiUser className="absolute left-4 top-1/2 -translate-y-1/2 text-text-muted" size={16} />
+                  <FiUser className="absolute left-4 top-1/2 -translate-y-1/2 text-text-muted" size={16} aria-hidden="true" />
                   <input
+                    id="reg-username"
                     type="text"
                     value={form.username}
                     onChange={(e) => setForm(f => ({ ...f, username: e.target.value }))}
@@ -199,10 +200,11 @@ const Register = () => {
 
               {/* Email */}
               <div className="space-y-2">
-                <label className="block text-[10px] text-text-muted font-black uppercase tracking-[0.3em]">Email</label>
+                <label htmlFor="reg-email" className="block text-[10px] text-text-muted font-black uppercase tracking-[0.3em]">Email</label>
                 <div className="relative">
-                  <FiMail className="absolute left-4 top-1/2 -translate-y-1/2 text-text-muted" size={16} />
+                  <FiMail className="absolute left-4 top-1/2 -translate-y-1/2 text-text-muted" size={16} aria-hidden="true" />
                   <input
+                    id="reg-email"
                     type="email"
                     value={form.email}
                     onChange={(e) => setForm(f => ({ ...f, email: e.target.value }))}
@@ -245,10 +247,11 @@ const Register = () => {
 
               {/* Confirm Password */}
               <div className="space-y-2">
-                <label className="block text-[10px] text-text-muted font-black uppercase tracking-[0.3em]">Confirm Password</label>
+                <label htmlFor="reg-confirm-password" className="block text-[10px] text-text-muted font-black uppercase tracking-[0.3em]">Confirm Password</label>
                 <div className="relative">
-                  <FiLock className="absolute left-4 top-1/2 -translate-y-1/2 text-text-muted" size={16} />
+                  <FiLock className="absolute left-4 top-1/2 -translate-y-1/2 text-text-muted" size={16} aria-hidden="true" />
                   <input
+                    id="reg-confirm-password"
                     type="password"
                     value={form.confirmPassword}
                     onChange={(e) => setForm(f => ({ ...f, confirmPassword: e.target.value }))}
