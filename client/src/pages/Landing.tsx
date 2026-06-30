@@ -4,7 +4,6 @@ import { motion, useScroll, useTransform } from 'framer-motion';
 import { ArrowRight, ShieldCheck, Zap, Star, Layout, Globe, Cpu } from 'lucide-react';
 import PageTransition from '../components/layout/PageTransition';
 import type { Product } from '../types';
-import { useCart } from '../context/CartContext';
 import { usePerformance } from '../context/PerformanceContext';
 import { AuroraBackground, AmbientGlow } from '../components/ui/ImmersiveEffects';
 import { productsData } from '../data/products';
@@ -18,7 +17,6 @@ gsap.registerPlugin(ScrollTrigger);
 const Landing = () => {
   const [featured, setFeatured] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
-  const { } = useCart();
   const { isLowEnd } = usePerformance();
   
   const mainRef = useRef(null);

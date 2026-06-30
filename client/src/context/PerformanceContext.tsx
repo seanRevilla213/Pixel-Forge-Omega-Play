@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import { createContext, useContext, useState, useEffect, type FC, type ReactNode } from 'react';
 
 export type PerformanceMode = 'premium' | 'performance' | 'auto';
 
@@ -11,7 +11,7 @@ interface PerformanceContextType {
 
 const PerformanceContext = createContext<PerformanceContextType | undefined>(undefined);
 
-export const PerformanceProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+export const PerformanceProvider: FC<{ children: ReactNode }> = ({ children }) => {
   const [performanceMode, setPerformanceModeState] = useState<PerformanceMode>(() => {
     const saved = localStorage.getItem('pixel-forge-performance-mode');
     return (saved as PerformanceMode) || 'auto';

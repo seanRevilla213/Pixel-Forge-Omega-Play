@@ -47,65 +47,65 @@ function App() {
           <CartProvider>
             <div className="min-h-screen bg-matte-black text-text-primary flex flex-col">
               <Navbar />
-            <main className="flex-1">
-              <Suspense fallback={<PageLoader />}>
-                <ErrorBoundary>
-                  <AnimatePresence mode="wait">
-                    <Routes>
-                    {/* Public Routes */}
-                    <Route path="/" element={<Landing />} />
-                    <Route path="/products" element={<Products />} />
-                    <Route path="/products/:slug" element={<ProductDetails />} />
-                    <Route path="/cart" element={<Cart />} />
-                    <Route path="/contact" element={<Contact />} />
+              <main className="flex-1" role="main">
+                <Suspense fallback={<PageLoader />}>
+                  <ErrorBoundary>
+                    <AnimatePresence mode="wait">
+                      <Routes>
+                        {/* Public Routes */}
+                        <Route path="/" element={<Landing />} />
+                        <Route path="/products" element={<Products />} />
+                        <Route path="/products/:slug" element={<ProductDetails />} />
+                        <Route path="/cart" element={<Cart />} />
+                        <Route path="/contact" element={<Contact />} />
 
-                    {/* Guest-only Routes */}
-                    <Route path="/login" element={<GuestGuard><AuthPages /></GuestGuard>} />
-                    <Route path="/register" element={<GuestGuard><RegisterPage /></GuestGuard>} />
+                        {/* Guest-only Routes */}
+                        <Route path="/login" element={<GuestGuard><AuthPages /></GuestGuard>} />
+                        <Route path="/register" element={<GuestGuard><RegisterPage /></GuestGuard>} />
 
-                    {/* Protected Routes */}
-                    <Route path="/checkout" element={<AuthGuard><Checkout /></AuthGuard>} />
-                    <Route path="/dashboard" element={<AuthGuard><UserDashboard /></AuthGuard>} />
+                        {/* Protected Routes */}
+                        <Route path="/checkout" element={<AuthGuard><Checkout /></AuthGuard>} />
+                        <Route path="/dashboard" element={<AuthGuard><UserDashboard /></AuthGuard>} />
 
-                    {/* Admin Routes (hidden from navigation) */}
-                    <Route path="/admin" element={<AdminGuard><AdminDashboard /></AdminGuard>} />
+                        {/* Admin Routes (hidden from navigation) */}
+                        <Route path="/admin" element={<AdminGuard><AdminDashboard /></AdminGuard>} />
 
-                    {/* 404 */}
-                    <Route path="*" element={
-                      <div className="min-h-screen pt-24 flex items-center justify-center">
-                        <div className="text-center">
-                          <h1 className="font-heading text-6xl font-bold text-luxury-cyan mb-4">404</h1>
-                          <p className="text-text-secondary mb-6">Page not found</p>
-                          <a href="/" className="text-luxury-cyan hover:text-luxury-cyan/80 transition-colors">Go Home</a>
-                        </div>
-                      </div>
-                    } />
-                  </Routes>
-                </AnimatePresence>
-                </ErrorBoundary>
-              </Suspense>
-            </main>
-            <Footer />
-          </div>
+                        {/* 404 */}
+                        <Route path="*" element={
+                          <div className="min-h-screen pt-24 flex items-center justify-center">
+                            <div className="text-center">
+                              <h1 className="font-heading text-6xl font-bold text-luxury-cyan mb-4">404</h1>
+                              <p className="text-text-secondary mb-6">Page not found</p>
+                              <Link to="/" className="text-luxury-cyan hover:text-luxury-cyan/80 transition-colors">Go Home</Link>
+                            </div>
+                          </div>
+                        } />
+                      </Routes>
+                    </AnimatePresence>
+                  </ErrorBoundary>
+                </Suspense>
+              </main>
+              <Footer />
+            </div>
 
-          <Toaster
-            position="top-right"
-            toastOptions={{
-              style: {
-                background: '#151525',
-                color: '#E8E8F0',
-                border: '1px solid rgba(255,255,255,0.08)',
-                borderRadius: '12px',
-                fontSize: '14px',
-              },
-              success: { iconTheme: { primary: '#39FF14', secondary: '#0A0A0F' } },
-              error: { iconTheme: { primary: '#FF3131', secondary: '#0A0A0F' } },
-            }}
-          />
-        </CartProvider>
-      </AuthProvider>
-    </PerformanceProvider>
-  </BrowserRouter>
+            <Toaster
+              position="top-right"
+              toastOptions={{
+                style: {
+                  background: '#151525',
+                  color: '#E8E8F0',
+                  border: '1px solid rgba(255,255,255,0.08)',
+                  borderRadius: '12px',
+                  fontSize: '14px',
+                },
+                success: { iconTheme: { primary: '#39FF14', secondary: '#0A0A0F' } },
+                error: { iconTheme: { primary: '#FF3131', secondary: '#0A0A0F' } },
+              }}
+            />
+          </CartProvider>
+        </AuthProvider>
+      </PerformanceProvider>
+    </BrowserRouter>
   );
 }
 

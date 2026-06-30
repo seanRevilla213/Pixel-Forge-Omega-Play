@@ -185,15 +185,17 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, index }) => {
           <div className="absolute inset-x-6 top-1/2 -translate-y-1/2 flex justify-between z-30 opacity-0 group-hover:opacity-100 transition-opacity">
             <button
               onClick={handlePrev}
+              aria-label="Previous variant"
               className="w-12 h-12 rounded-full glasswave-strong flex items-center justify-center text-white hover:scale-110 active:scale-95 shadow-[0_0_30px_rgba(0,240,255,0.2)] border border-white/20 transition-all"
             >
-              <ChevronLeft size={24} />
+              <ChevronLeft size={24} aria-hidden="true" />
             </button>
             <button
               onClick={handleNext}
+              aria-label="Next variant"
               className="w-12 h-12 rounded-full glasswave-strong flex items-center justify-center text-white hover:scale-110 active:scale-95 shadow-[0_0_30px_rgba(0,240,255,0.2)] border border-white/20 transition-all"
             >
-              <ChevronRight size={24} />
+              <ChevronRight size={24} aria-hidden="true" />
             </button>
           </div>
         )}
@@ -203,12 +205,14 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, index }) => {
           <div className="absolute bottom-6 right-6 flex gap-2 z-30 opacity-0 group-hover:opacity-100 transition-opacity">
             {variants.map((v: any, i: number) => (
               <button
-                key={i}
+                key={v.name || i}
                 onClick={(e) => {
                   e.preventDefault();
                   e.stopPropagation();
                   setCurrentVariant(i);
                 }}
+                aria-label={`Select ${v.name} variant`}
+                aria-pressed={currentVariant === i}
                 className={`w-4 h-4 rounded-full border border-white/20 transition-all ${
                   currentVariant === i ? 'scale-125 border-white shadow-[0_0_10px_rgba(255,255,255,0.5)]' : 'hover:scale-110'
                 }`}

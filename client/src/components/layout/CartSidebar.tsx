@@ -30,6 +30,9 @@ export const CartSidebar = ({ isOpen, onClose }: CartSidebarProps) => {
             animate={{ x: 0 }}
             exit={{ x: '100%' }}
             transition={{ type: 'spring', damping: 25, stiffness: 200 }}
+            role="dialog"
+            aria-modal="true"
+            aria-label="Shopping cart"
             className="fixed right-0 top-0 bottom-0 w-full max-w-md glasswave-strong z-[80] shadow-2xl flex flex-col"
           >
             <div className="p-8 border-b border-white/5 flex items-center justify-between">
@@ -37,7 +40,7 @@ export const CartSidebar = ({ isOpen, onClose }: CartSidebarProps) => {
                 <ShoppingBag className="text-luxury-cyan" size={24} />
                 <h2 className="font-heading text-xl font-black text-white uppercase tracking-tighter">Acquisition Queue</h2>
               </div>
-              <button onClick={onClose} className="p-3 hover:bg-white/5 rounded-2xl text-text-muted transition-colors active:scale-95">
+              <button onClick={onClose} aria-label="Close cart" className="p-3 hover:bg-white/5 rounded-2xl text-text-muted transition-colors active:scale-95">
                 <X size={20} />
               </button>
             </div>
@@ -92,9 +95,9 @@ export const CartSidebar = ({ isOpen, onClose }: CartSidebarProps) => {
                         
                         <div className="flex items-center justify-between mt-4 gap-2">
                           <div className="flex items-center glasswave rounded-xl h-8 border border-white/5 shadow-inner">
-                            <button onClick={() => updateQuantity(item.id, item.quantity - 1)} className="px-3 py-1 text-text-muted hover:text-white transition-colors hover:bg-white/5 rounded-l-xl"><Minus size={12} /></button>
-                            <span className="px-3 text-[10px] font-black text-white tabular-nums">{item.quantity}</span>
-                            <button onClick={() => updateQuantity(item.id, item.quantity + 1)} className="px-3 py-1 text-text-muted hover:text-white transition-colors hover:bg-white/5 rounded-r-xl"><Plus size={12} /></button>
+                            <button onClick={() => updateQuantity(item.id, item.quantity - 1)} aria-label={`Decrease quantity of ${item.product.name}`} className="px-3 py-1 text-text-muted hover:text-white transition-colors hover:bg-white/5 rounded-l-xl"><Minus size={12} aria-hidden="true" /></button>
+                            <span className="px-3 text-[10px] font-black text-white tabular-nums" aria-live="polite" aria-atomic="true">{item.quantity}</span>
+                            <button onClick={() => updateQuantity(item.id, item.quantity + 1)} aria-label={`Increase quantity of ${item.product.name}`} className="px-3 py-1 text-text-muted hover:text-white transition-colors hover:bg-white/5 rounded-r-xl"><Plus size={12} aria-hidden="true" /></button>
                           </div>
                           <span className="text-sm font-black text-white tabular-nums">{formatPHP(item.product.price * item.quantity)}</span>
                         </div>

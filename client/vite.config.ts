@@ -17,6 +17,13 @@ export default defineConfig({
     sourcemap: false,
     rollupOptions: {
       output: {
+        // Split large vendor libraries into separate cacheable chunks
+        manualChunks: {
+          'vendor-react': ['react', 'react-dom', 'react-router-dom'],
+          'vendor-motion': ['framer-motion'],
+          'vendor-gsap': ['gsap'],
+          'vendor-three': ['three', '@react-three/fiber', '@react-three/drei'],
+        },
       },
     },
   },
