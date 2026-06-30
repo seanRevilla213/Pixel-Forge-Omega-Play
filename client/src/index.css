@@ -49,6 +49,7 @@
 /* Luxury Base */
 html {
   overflow-x: hidden; /* belt-and-suspenders: block horizontal scroll at root */
+  position: relative;
 }
 
 body {
@@ -56,6 +57,7 @@ body {
   background-color: var(--color-matte-black);
   color: var(--color-text-primary);
   overflow-x: hidden;
+  position: relative;
   -webkit-font-smoothing: antialiased;
 }
 
