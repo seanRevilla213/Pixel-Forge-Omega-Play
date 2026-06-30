@@ -60,13 +60,13 @@ const Navbar = () => {
         Outer band: full viewport width, no overflow-x, handles show/hide animation.
         The pill appearance lives on the inner container.
       */}
-      <header role="banner">
+      <header role="banner" className="relative z-50">
         <motion.nav
           aria-label="Main navigation"
           initial={{ y: -100, opacity: 0 }}
           animate={{ y: isVisible ? 0 : -120, opacity: isVisible ? 1 : 0 }}
           transition={{ type: 'spring', stiffness: 100, damping: 20 }}
-          className="overflow-hidden fixed top-0 left-0 right-0 z-50 w-full pt-4 px-4 sm:px-6 lg:px-8"
+          className="overflow-x-hidden fixed top-0 left-0 right-0 z-50 w-full pt-4 px-4 sm:px-6 lg:px-8"
         >
           {/*
             Inner pill container:
