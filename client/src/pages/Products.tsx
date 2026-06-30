@@ -156,6 +156,7 @@ const Products = () => {
                     type="text"
                     value={search}
                     onChange={(e) => { setSearch(e.target.value); setPage(1); }}
+                    aria-label="Search products"
                     placeholder="Search query..."
                     className="w-full bg-white/5 border-b border-white/10 py-4 text-white text-[10px] font-black tracking-[0.3em] focus:outline-none focus:border-luxury-cyan transition-all placeholder:text-white/20 uppercase"
                   />
@@ -239,9 +240,10 @@ const Products = () => {
             <div className="lg:hidden fixed bottom-8 left-1/2 -translate-x-1/2 z-[60]">
               <button 
                 onClick={() => setShowMobileFilters(true)}
+                aria-label="Open product filters"
                 className="glasswave-strong px-8 py-5 rounded-full flex items-center gap-3 border border-white/10 shadow-[0_20px_50px_rgba(0,0,0,0.5)] active:scale-95 transition-all"
               >
-                <Filter size={18} className="text-luxury-cyan" />
+                <Filter size={18} className="text-luxury-cyan" aria-hidden="true" />
                 <span className="text-[10px] font-black tracking-widest text-white uppercase">Filter Selection</span>
               </button>
             </div>
@@ -267,7 +269,7 @@ const Products = () => {
                     <div className="flex flex-col gap-12">
                       <div className="flex items-center justify-between">
                         <h2 className="text-xl font-black text-white uppercase tracking-tighter italic">Filters</h2>
-                        <button onClick={() => setShowMobileFilters(false)} className="text-white/40 hover:text-white">Close</button>
+                        <button onClick={() => setShowMobileFilters(false)} aria-label="Close filters" className="text-white/40 hover:text-white">Close</button>
                       </div>
                       
                       {/* Search */}

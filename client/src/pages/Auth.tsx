@@ -59,10 +59,11 @@ const Login = () => {
             <form onSubmit={handleSubmit} className="space-y-6">
               {/* Email */}
               <div className="space-y-2">
-                <label className="block text-[10px] text-text-muted font-black uppercase tracking-[0.3em]">Email</label>
+                <label htmlFor="login-email" className="block text-[10px] text-text-muted font-black uppercase tracking-[0.3em]">Email</label>
                 <div className="relative">
-                  <FiMail className="absolute left-4 top-1/2 -translate-y-1/2 text-text-muted" size={16} />
+                  <FiMail className="absolute left-4 top-1/2 -translate-y-1/2 text-text-muted" size={16} aria-hidden="true" />
                   <input
+                    id="login-email"
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
@@ -77,10 +78,11 @@ const Login = () => {
 
               {/* Password */}
               <div className="space-y-2">
-                <label className="block text-[10px] text-text-muted font-black uppercase tracking-[0.3em]">Password</label>
+                <label htmlFor="login-password" className="block text-[10px] text-text-muted font-black uppercase tracking-[0.3em]">Password</label>
                 <div className="relative">
-                  <FiLock className="absolute left-4 top-1/2 -translate-y-1/2 text-text-muted" size={16} />
+                  <FiLock className="absolute left-4 top-1/2 -translate-y-1/2 text-text-muted" size={16} aria-hidden="true" />
                   <input
+                    id="login-password"
                     type={showPw ? 'text' : 'password'}
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
@@ -93,9 +95,10 @@ const Login = () => {
                   <button
                     type="button"
                     onClick={() => setShowPw(!showPw)}
+                    aria-label={showPw ? 'Hide password' : 'Show password'}
                     className="absolute right-4 top-1/2 -translate-y-1/2 text-text-muted hover:text-white transition-colors"
                   >
-                    {showPw ? <FiEyeOff size={16} /> : <FiEye size={16} />}
+                    {showPw ? <FiEyeOff size={16} aria-hidden="true" /> : <FiEye size={16} aria-hidden="true" />}
                   </button>
                 </div>
               </div>
@@ -214,10 +217,11 @@ const Register = () => {
 
               {/* Password */}
               <div className="space-y-2">
-                <label className="block text-[10px] text-text-muted font-black uppercase tracking-[0.3em]">Password</label>
+                <label htmlFor="reg-password" className="block text-[10px] text-text-muted font-black uppercase tracking-[0.3em]">Password</label>
                 <div className="relative">
-                  <FiLock className="absolute left-4 top-1/2 -translate-y-1/2 text-text-muted" size={16} />
+                  <FiLock className="absolute left-4 top-1/2 -translate-y-1/2 text-text-muted" size={16} aria-hidden="true" />
                   <input
+                    id="reg-password"
                     type={showPw ? 'text' : 'password'}
                     value={form.password}
                     onChange={(e) => setForm(f => ({ ...f, password: e.target.value }))}
@@ -231,9 +235,10 @@ const Register = () => {
                   <button
                     type="button"
                     onClick={() => setShowPw(!showPw)}
+                    aria-label={showPw ? 'Hide password' : 'Show password'}
                     className="absolute right-4 top-1/2 -translate-y-1/2 text-text-muted hover:text-white transition-colors"
                   >
-                    {showPw ? <FiEyeOff size={16} /> : <FiEye size={16} />}
+                    {showPw ? <FiEyeOff size={16} aria-hidden="true" /> : <FiEye size={16} aria-hidden="true" />}
                   </button>
                 </div>
               </div>
