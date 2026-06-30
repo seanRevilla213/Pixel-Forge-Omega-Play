@@ -47,12 +47,22 @@
 }
 
 /* Luxury Base */
+html {
+  overflow-x: hidden; /* belt-and-suspenders: block horizontal scroll at root */
+}
+
 body {
   font-family: var(--font-body);
   background-color: var(--color-matte-black);
   color: var(--color-text-primary);
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
+}
+
+/* Navbar outer band always spans 100 % of the viewport width */
+.navbar-band {
+  width: 100vw;
+  max-width: 100%;
 }
 
 /* Glasswave Utilities */

@@ -44,26 +44,45 @@ const Navbar = () => {
   return (
     <>
       <CartSidebar isOpen={isCartOpen} onClose={() => setIsCartOpen(false)} />
-      
+
+      {/*
+        Outer band: full viewport width, no overflow-x, handles show/hide animation.
+        The pill appearance lives on the inner container.
+      */}
       <motion.nav
         initial={{ y: -100, opacity: 0 }}
-        animate={{ y: isVisible ? 20 : -100, opacity: isVisible ? 1 : 0 }}
+        animate={{ y: isVisible ? 0 : -120, opacity: isVisible ? 1 : 0 }}
         transition={{ type: 'spring', stiffness: 100, damping: 20 }}
-        className={`fixed left-1/2 -translate-x-1/2 z-50 w-[92%] max-w-6xl px-8 py-4 rounded-3xl transition-all duration-700 ease-[cubic-bezier(0.23,1,0.32,1)] ${
-          isScrolled ? 'glasswave-strong shadow-2xl backdrop-blur-3xl' : 'bg-transparent border-transparent'
-        }`}
+        style={{ overflow: 'hidden' }}
+        className="fixed top-0 left-0 right-0 z-50 w-full pt-4 px-4 sm:px-6 lg:px-8"
       >
-        <div className="flex items-center justify-between">
-          {/* Minimal Logo */}
-          <Link to="/" className="flex items-center gap-4 group">
+        {/*
+          Inner pill container:
+          - max-w-7xl + mx-auto keeps content centred on wide screens
+          - clamp-based px ensures consistent padding at every breakpoint
+          - items-center + h ensures all icons/text stay vertically centred
+        */}
+        <div
+          className={`
+            relative flex items-center justify-between
+            max-w-7xl mx-auto
+            px-5 sm:px-7 lg:px-9
+            py-3.5
+            rounded-3xl
+            transition-all duration-700 ease-[cubic-bezier(0.23,1,0.32,1)]
+            ${isScrolled ? 'glasswave-strong shadow-2xl backdrop-blur-3xl' : 'bg-transparent border-transparent'}
+          `}
+        >
+          {/* ── Logo ── */}
+          <Link to="/" className="flex items-center gap-3 group shrink-0">
             <div className="w-10 h-10 rounded-2xl bg-white/5 flex items-center justify-center border border-white/10 group-hover:scale-110 group-hover:rotate-6 transition-all duration-500 overflow-hidden">
-              <img 
-                src={pixelForgeLogo} 
-                alt="Pixel Forge Logo" 
-                className="w-full h-full object-contain group-hover:scale-105 transition-all duration-500" 
+              <img
+                src={pixelForgeLogo}
+                alt="Pixel Forge Logo"
+                className="w-full h-full object-contain group-hover:scale-105 transition-all duration-500"
               />
             </div>
-            <div className="hidden sm:block">
+            <div className="hidden sm:block leading-none">
               <h1 className="font-heading text-sm font-black tracking-[0.3em] text-white">
                 PIXEL<span className="text-luxury-violet">FORGE</span>
               </h1>
@@ -71,19 +90,19 @@ const Navbar = () => {
             </div>
           </Link>
 
-          {/* Luxury Links */}
-          <div className="hidden md:flex items-center gap-10">
+          {/* ── Desktop Nav Links — absolutely centred inside the pill ── */}
+          <div className="hidden md:flex items-center gap-8 lg:gap-10 absolute left-1/2 -translate-x-1/2">
             {navLinks.map((link) => (
               <Link
                 key={link.to}
                 to={link.to}
-                className={`relative text-[10px] font-black tracking-[0.2em] uppercase transition-all duration-500 hover:text-white ${
+                className={`relative text-[10px] font-black tracking-[0.2em] uppercase transition-all duration-500 hover:text-white whitespace-nowrap ${
                   location.pathname === link.to ? 'text-white' : 'text-text-secondary'
                 }`}
               >
                 {link.label}
                 {location.pathname === link.to && (
-                  <motion.div 
+                  <motion.div
                     layoutId="nav-glow"
                     className="absolute -bottom-2 left-0 right-0 h-[2px] bg-gradient-to-r from-luxury-violet to-luxury-cyan shadow-[0_0_10px_rgba(124,58,237,0.5)]"
                   />
@@ -92,21 +111,22 @@ const Navbar = () => {
             ))}
           </div>
 
-          {/* Actions */}
-          <div className="flex items-center gap-6">
-            {/* System Performance Mode Switcher */}
-            <button 
+          {/* ── Right Actions ── */}
+          <div className="flex items-center gap-3 sm:gap-4 lg:gap-5 shrink-0">
+
+            {/* System Performance Mode Toggle */}
+            <button
               onClick={() => {
-                const nextMode = performanceMode === 'premium' 
-                  ? 'performance' 
-                  : performanceMode === 'performance' 
-                    ? 'auto' 
+                const nextMode = performanceMode === 'premium'
+                  ? 'performance'
+                  : performanceMode === 'performance'
+                    ? 'auto'
                     : 'premium';
                 setPerformanceMode(nextMode);
               }}
-              className={`flex items-center gap-2 px-3.5 py-1.5 rounded-full border transition-all duration-300 text-[9px] font-black tracking-widest uppercase cursor-pointer hover:scale-105 active:scale-95 select-none ${
-                performanceMode === 'performance' 
-                  ? 'bg-red-500/10 border-red-500/30 text-red-400' 
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full border transition-all duration-300 text-[9px] font-black tracking-widest uppercase cursor-pointer hover:scale-105 active:scale-95 select-none ${
+                performanceMode === 'performance'
+                  ? 'bg-red-500/10 border-red-500/30 text-red-400'
                   : performanceMode === 'premium'
                     ? 'bg-green-500/10 border-green-500/30 text-green-400'
                     : 'bg-blue-500/10 border-blue-500/30 text-blue-400'
@@ -114,20 +134,22 @@ const Navbar = () => {
               title="Toggle system visuals to save RAM and processor overhead"
             >
               <Cpu size={12} className={performanceMode === 'performance' ? 'animate-pulse' : ''} />
-              <span className="hidden sm:inline">
-                {performanceMode === 'performance' 
-                  ? 'SYSTEM: LITE' 
+              <span className="hidden lg:inline">
+                {performanceMode === 'performance'
+                  ? 'SYSTEM: LITE'
                   : performanceMode === 'premium'
                     ? 'SYSTEM: ULTRA'
                     : 'SYSTEM: AUTO'}
               </span>
             </button>
 
-            <button className="hidden sm:block text-text-secondary hover:text-white transition-colors">
+            {/* Search — hidden on xs */}
+            <button className="hidden sm:flex items-center text-text-secondary hover:text-white transition-colors">
               <Search size={18} />
             </button>
-            
-            <button 
+
+            {/* Cart */}
+            <button
               onClick={() => setIsCartOpen(true)}
               className="relative text-text-secondary hover:text-white transition-all group"
             >
@@ -135,10 +157,10 @@ const Navbar = () => {
               <AnimatePresence>
                 {itemCount > 0 && (
                   <motion.span
-                    initial={{ scale: 0 }} 
-                    animate={{ scale: 1 }} 
+                    initial={{ scale: 0 }}
+                    animate={{ scale: 1 }}
                     exit={{ scale: 0 }}
-                    key={itemCount} // Triggers animation on count change
+                    key={itemCount}
                     className="absolute -top-2 -right-2 w-5 h-5 bg-white text-matte-black text-[9px] font-black rounded-full flex items-center justify-center shadow-xl"
                   >
                     {itemCount}
@@ -147,9 +169,10 @@ const Navbar = () => {
               </AnimatePresence>
             </button>
 
+            {/* Login / User — desktop only */}
             <ResponsiveShow isNot="mobile">
               {isAuthenticated ? (
-                <div className="flex items-center gap-4 pl-4 border-l border-white/10">
+                <div className="flex items-center gap-3 pl-3 border-l border-white/10">
                   <Link to={user?.role === 'admin' ? '/admin' : '/dashboard'} className="text-text-secondary hover:text-white transition-all">
                     <User size={20} />
                   </Link>
@@ -158,14 +181,22 @@ const Navbar = () => {
                   </button>
                 </div>
               ) : (
-                <Link to="/login" className="px-8 py-2.5 bg-white text-matte-black hover:bg-opacity-90 rounded-2xl text-[10px] font-black tracking-widest transition-all uppercase text-center">
+                <Link
+                  to="/login"
+                  className="px-6 py-2.5 bg-white text-matte-black hover:bg-opacity-90 rounded-2xl text-[10px] font-black tracking-widest transition-all uppercase text-center whitespace-nowrap"
+                >
                   LOGIN
                 </Link>
               )}
             </ResponsiveShow>
 
+            {/* Hamburger — mobile only */}
             <ResponsiveShow is="mobile">
-              <button onClick={() => setIsMobileOpen(!isMobileOpen)} className="text-text-secondary hover:text-white">
+              <button
+                onClick={() => setIsMobileOpen(!isMobileOpen)}
+                className="text-text-secondary hover:text-white transition-colors p-1"
+                aria-label="Toggle menu"
+              >
                 {isMobileOpen ? <X size={24} /> : <Menu size={24} />}
               </button>
             </ResponsiveShow>
@@ -173,7 +204,7 @@ const Navbar = () => {
         </div>
       </motion.nav>
 
-      {/* Luxury Mobile Overlay */}
+      {/* ── Mobile Full-Screen Overlay ── */}
       <AnimatePresence>
         {isMobileOpen && (
           <motion.div
@@ -182,12 +213,17 @@ const Navbar = () => {
             exit={{ opacity: 0, backdropFilter: 'blur(0px)' }}
             className="fixed inset-0 z-[60] bg-matte-black/40 flex flex-col items-center justify-center p-12"
           >
-            <button onClick={() => setIsMobileOpen(false)} className="absolute top-10 right-10 p-4 glasswave rounded-full text-white">✕</button>
+            <button
+              onClick={() => setIsMobileOpen(false)}
+              className="absolute top-10 right-10 p-4 glasswave rounded-full text-white"
+            >
+              ✕
+            </button>
             <div className="space-y-12 text-center w-full max-w-sm">
               {navLinks.map((link) => (
-                <Link 
-                  key={link.to} 
-                  to={link.to} 
+                <Link
+                  key={link.to}
+                  to={link.to}
                   className="block text-5xl font-heading font-black text-white hover:text-luxury-cyan transition-all tracking-tighter"
                   onClick={() => setIsMobileOpen(false)}
                 >
@@ -203,8 +239,8 @@ const Navbar = () => {
                       key={mode}
                       onClick={() => setPerformanceMode(mode)}
                       className={`px-4 py-2 rounded-xl text-[9px] font-black tracking-widest uppercase transition-all ${
-                        performanceMode === mode 
-                          ? 'bg-white text-black font-black' 
+                        performanceMode === mode
+                          ? 'bg-white text-black font-black'
                           : 'bg-white/5 border border-white/10 text-white/60 hover:text-white'
                       }`}
                     >
@@ -216,9 +252,19 @@ const Navbar = () => {
 
               <div className="pt-6 border-t border-white/10">
                 {isAuthenticated ? (
-                  <button onClick={() => { logout(); setIsMobileOpen(false); }} className="text-xl text-red-400 font-bold tracking-widest uppercase">TERMINATE SESSION</button>
+                  <button
+                    onClick={() => { logout(); setIsMobileOpen(false); }}
+                    className="text-xl text-red-400 font-bold tracking-widest uppercase"
+                  >
+                    TERMINATE SESSION
+                  </button>
                 ) : (
-                  <Link to="/login" className="text-xl text-luxury-cyan font-bold tracking-[0.2em] uppercase">LOGIN</Link>
+                  <Link
+                    to="/login"
+                    className="text-xl text-luxury-cyan font-bold tracking-[0.2em] uppercase"
+                  >
+                    LOGIN
+                  </Link>
                 )}
               </div>
             </div>
