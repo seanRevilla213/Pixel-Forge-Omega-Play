@@ -66,8 +66,7 @@ const Navbar = () => {
           initial={{ y: -100, opacity: 0 }}
           animate={{ y: isVisible ? 0 : -120, opacity: isVisible ? 1 : 0 }}
           transition={{ type: 'spring', stiffness: 100, damping: 20 }}
-          style={{ overflow: 'hidden' }}
-          className="fixed top-0 left-0 right-0 z-50 w-full pt-4 px-4 sm:px-6 lg:px-8"
+          className="overflow-hidden fixed top-0 left-0 right-0 z-50 w-full pt-4 px-4 sm:px-6 lg:px-8"
         >
           {/*
             Inner pill container:
